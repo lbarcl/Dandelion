@@ -1,0 +1,10 @@
+{
+  "url": "mongodb-url",
+  "token": "discord-bot-token",
+  "api": "youtube-api",
+  "noMusic": "image-url",
+  "owner": "owner-id",
+  "noMusicTitle": "embed-title",
+  "embedColor": "hex-color-code",
+  "prefix": "your-prefix"
+}

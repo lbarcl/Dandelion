@@ -4,7 +4,7 @@ const serverScheme = require('../schemes/server-scheme');
 const userScheme = require('../schemes/user-scheme');
 const { scrapePlaylist } = require("youtube-playlist-scraper");
 const { YTSearcher } = require('ytsearcher');
-const searcher = new YTSearcher("AIzaSyCGItpXdHjPL5blDAgmlROuGJccM9QikqQ");
+const searcher = new YTSearcher(config.api);
 const mongo = require('../utils/mongo');
 const ytdl = require('ytdl-core');
 

@@ -145,3 +145,4 @@ $RECYCLE.BIN/
 
 *.bat
 package-lock.json
+config.json

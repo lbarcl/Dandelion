@@ -40,5 +40,5 @@ const favorite = require('./commands/favorite');
     //test(client);
   });
 
-  client.login("Nzk3NTM3NzkzNjg5MTI0ODk0.X_n68w.i8f0MaXmIlingwYf0O-0a7h15ZY");
+  client.login(config.token);
 

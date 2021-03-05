@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-const url = "mongodb+srv://Oblivion:gHzFVWnNlgLJx5Qv@jahardo.fuchd.mongodb.net/radio?retryWrites=true&w=majority";
+const config = require('../config.json');
+const url = "config.url";
 
 module.exports = async () => {
   await mongoose.connect(url, {
