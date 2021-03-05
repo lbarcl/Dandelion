@@ -1,0 +1,23 @@
+{
+  "name": "radioBotV2",
+  "version": "2.5.2",
+  "description": "",
+  "main": "radio.js",
+  "scripts": {
+    "start": "node radio.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@discordjs/opus": "^0.4.0",
+    "discord.js": "^12.5.1",
+    "mongoose": "^5.11.18",
+    "youtube-playlist-scraper": "^2.1.1",
+    "ytdl-core": "^4.5.0",
+    "ytsearcher": "^1.2.3"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0"
+  }
+}
