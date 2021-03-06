@@ -3,7 +3,7 @@ const {MessageEmbed} = require('discord.js');
 const command = require('../utils/command');
 const ytdl = require('ytdl-core');
 const { YTSearcher } = require('ytsearcher');
-const searcher = new YTSearcher(process.env.API);
+const searcher = new YTSearcher(config.api);
 
 module.exports = async (client) => {
   command(client, ['videobul', 'vbul', 'video'], async (message, args, text) =>{

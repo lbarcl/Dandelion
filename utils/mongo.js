@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const config = require('../config.json');
-const url = "config.url";
+const url = config.url;
 
 module.exports = async () => {
   await mongoose.connect(url, {

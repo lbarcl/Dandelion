@@ -28,8 +28,14 @@ module.exports = async (client) => {
 
     const newMessage = await newChannel.send(embed)
 
-    /*  newMessage.react('⏭️');
-      newMessage.react('🗑️'); */
+     newMessage.react('⏭️');
+     newMessage.react('⏏️');
+     newMessage.react('🔁');
+     newMessage.react('🆑');
+     newMessage.react('❤️');
+     newMessage.react('🗒️');
+     newMessage.react('#️⃣');
+     newMessage.react('*️⃣');
 
     server.channelId = newChannel.id;
     server.messageId = newMessage.id;
