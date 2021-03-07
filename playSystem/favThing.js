@@ -28,7 +28,9 @@ async function favThing(server, message, messageDeleteTime, user){
         await userScheme.findByIdAndUpdate({ _id: user.id }, {
           $pull: {
             favoriteSongs: server.list[0],
-          }
+          },
+          discordTag: user.tag,
+          discordAvatar: user.avatarURL()
         })
         deleteAfterSend('Beğenilenlerden çıkarıldı', messageDeleteTime, message);
       }
@@ -36,7 +38,9 @@ async function favThing(server, message, messageDeleteTime, user){
         await userScheme.findByIdAndUpdate({ _id: user.id }, {
           $addToSet: {
             favoriteSongs: server.list[0],
-          }
+          },
+          discordTag: user.tag,
+          discordAvatar: user.avatarURL()
         })
         deleteAfterSend('Beğenilenlere eklendi', messageDeleteTime, message);
       }
@@ -47,7 +51,11 @@ async function favThing(server, message, messageDeleteTime, user){
   })
 }
 
-async function listThing(server, message, messageDeleteTime, guild){
+async function listThing(server, message, messageDeleteTime, guild, member){
+  if(!member.hasPermission('MANAGE_GUILD')){
+    deleteAfterSend('Üzgünüm bu işlemi sadece `sunucuyu yönet` izni olanlar kullanabilir', messageDeleteTime, message);
+    return
+  }
   await mongo().then(async mongoose => {
     try {
       console.log(`Veritabına kişi bilgisi almak için bağlanıyor [${guild.id}]`);

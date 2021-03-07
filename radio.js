@@ -3,11 +3,7 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 const mongo = require('./utils/mongo')
 const {token} = require('./config.json')
 const main = require('./playSystem/main')
-const setup = require('./commands/setup')
-const search = require('./commands/videoSearch');
-const help = require('./commands/help');
-const favorite = require('./commands/favorite');
-const update = require('./commands/test')
+const commands = require('./commands/index')
 
   client.on('ready', async () =>{
 
@@ -29,16 +25,7 @@ const update = require('./commands/test')
 
     await main(client)
 
-    await setup(client)
-
-    await search(client);
-
-    await help(client);
-
-    await favorite(client);
-
-  //  await update(client)
-
+    await commands(client)
   });
 
   client.login(token);

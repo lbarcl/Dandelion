@@ -7,7 +7,9 @@ const reqString = {
 
 const favs = mongoose.Schema({
   _id: reqString,
-  favoriteSongs: [String]
+  favoriteSongs: [String],
+  discordTag: String,
+  discordAvatar: String
 })
 
 module.exports = mongoose.model('user-infos', favs)

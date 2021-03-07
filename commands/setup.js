@@ -9,7 +9,7 @@ module.exports = async (client) => {
   command(client, ['st', 'setup'], async (message) => {
     const { member, guild } = message;
 
-    if (!member.hasPermission('ADMINISTRATOR')) {
+    if (!member.hasPermission('MANAGE_GUILD')) {
       message.reply("Bu komutu kullanabilmek için yetkiniz yok");
       return;
     }
@@ -68,6 +68,8 @@ module.exports = async (client) => {
         if (!result) {
           await new userScheme({
             _id: member.user.id,
+            discordTag: member.user.tag,
+            discordAvatar: member.user.avatarURL()
           }).save()
           message.reply('Sisteme başarlı bir şekilde kayıt oldunuz, aramıza hoşgeldin ' + member.user.username)
           return;

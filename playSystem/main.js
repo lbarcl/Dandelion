@@ -124,7 +124,7 @@ module.exports = async (client) => {
       favThing(server, reaction.message, messageDeleteTime, user)
     break
     case '🗒️':
-      listThing(server, reaction.message, messageDeleteTime, reaction.message.guild)
+      listThing(server, reaction.message, messageDeleteTime, reaction.message.guild, member)
     break
     case '#️⃣':
       var x = false;
