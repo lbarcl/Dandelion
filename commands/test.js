@@ -14,15 +14,8 @@ module.exports = (client) => {
 
             const channel = guild.channels.cache.get(result.channelId)
             const mes = await channel.messages.fetch(result.messageId)
+            channel.setTopic("[⏭️] Sonraki şarkı | [⏏️] Kanaldan ayrıl | [🔁] Sırayı döngüye al/çıkar | [🆑] Sırayı temizle | [❤️] Çalan şarkıyı beğen/beğenme | [🗒️] Çalan şarkıyı sunucu listesine ekler/çıkartır | [#️⃣] Beğenilen şarkıları sıraya ekler | [*️⃣] Sunucu şarkı listesini sıraya ekler")
 
-            mes.react('⏭️');
-            mes.react('⏏️');
-            mes.react('🔁');
-            mes.react('🆑');
-            mes.react('❤️');
-            mes.react('🗒️');
-            mes.react('#️⃣');
-            mes.react('*️⃣'); 
           }
         })
       } finally {

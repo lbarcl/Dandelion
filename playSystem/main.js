@@ -10,9 +10,10 @@ module.exports = async (client) => {
   const messageDeleteTime = 10000
 
   client.on('message', async (message) => {
-    if (message.author.bot || message.content.charAt(0) == '-') return //gönderilen mesajın bot tarfından mı veya komtu olup olmadığı kontrolü
+    if (message.author.bot) return //gönderilen mesajın bot tarfından mı olup olmadığı kontrolü
     const {guild, channel, member} = message //guild , channel ve member değerlerinin mesajdan alınması
     var server = await setup(cache, guild) // cache guild kayıdı ve veritabanı bağlantısı
+    if(server[guild.id] == null) return
     server = server[guild.id]
 
     if(server.channelId != channel.id) return // mesajın özel kanala gönderilip gönderilmediği kontrolü
