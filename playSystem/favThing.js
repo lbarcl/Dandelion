@@ -19,7 +19,7 @@ async function favThing(server, message, messageDeleteTime, user){
       }
       var b = false
       result.favoriteSongs.forEach(song => {
-        if(server.list[0] == song){
+        if(server.queue.url[0] == song){
           b = true
         }
       })
@@ -27,7 +27,7 @@ async function favThing(server, message, messageDeleteTime, user){
       if(b){
         await userScheme.findByIdAndUpdate({ _id: user.id }, {
           $pull: {
-            favoriteSongs: server.list[0],
+            favoriteSongs: server.queue.url[0],
           },
           discordTag: user.tag,
           discordAvatar: user.avatarURL()
@@ -37,7 +37,7 @@ async function favThing(server, message, messageDeleteTime, user){
       else {
         await userScheme.findByIdAndUpdate({ _id: user.id }, {
           $addToSet: {
-            favoriteSongs: server.list[0],
+            favoriteSongs: server.queue.url[0],
           },
           discordTag: user.tag,
           discordAvatar: user.avatarURL()
@@ -63,7 +63,7 @@ async function listThing(server, message, messageDeleteTime, guild, member){
 
       var b = false
       result.serverList.forEach(song => {
-        if(server.list[0] == song){
+        if(server.queue.url[0] == song){
           b = true
         }
       })
@@ -71,7 +71,7 @@ async function listThing(server, message, messageDeleteTime, guild, member){
       if(b){
         await serverScheme.findByIdAndUpdate({ _id: guild.id }, {
           $pull: {
-            serverList: server.list[0],
+            serverList: server.queue.url[0],
           }
         })
         deleteAfterSend('Listeden çıkarıldı', messageDeleteTime, message);
@@ -79,7 +79,7 @@ async function listThing(server, message, messageDeleteTime, guild, member){
       else {
         await serverScheme.findByIdAndUpdate({ _id: guild.id }, {
           $addToSet: {
-            serverList: server.list[0],
+            serverList: server.queue.url[0],
           }
         })
         deleteAfterSend('Listeye eklendi', messageDeleteTime, message);

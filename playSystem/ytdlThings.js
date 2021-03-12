@@ -1,54 +1,70 @@
 const ytdl = require('ytdl-core')
 const {embedEdit} = require('./messageWorks')
 
-module.exports = {play, urlToInfo}
+module.exports = {play, urlToInfo, urlToInfoFirst}
 
-function play(perServer, connection, channel) {
+function play(server, connection, channel) {
 
-  perServer.dispatcher = connection.play(ytdl(perServer.list[0], { filter: "audioonly" }),
+  server.dispatcher = connection.play(ytdl(server.queue.url[0], { filter: "audioonly" }),
     { volume: 0.25 });
-  perServer.dispatcher.on('finish', () => {
-    if (perServer.ıslooping === 'false') {
-      perServer.list.shift();
-      perServer.name.shift();
-      perServer.time.shift();
-      perServer.thumbnail.shift();
-      if (perServer.list[0]) {
-        play(perServer, connection, channel)
-        embedEdit('playing', perServer, channel);
+  server.dispatcher.on('finish', () => {
+    if (server.queue.loop === 'false') {
+      server.queue.url.shift();
+      server.queue.name.shift();
+      server.queue.time.shift();
+      server.queue.thumbnail.shift();
+      if (server.queue.url[0]) {
+        play(server, connection, channel)
+        embedEdit('playing', server, channel);
         return;
       }
-    } else if (perServer.ıslooping === 'true') {
-      perServer.list.push(perServer.list[0]);
-      perServer.name.push(perServer.name[0]);
-      perServer.time.push(perServer.time[0]);
-      perServer.thumbnail.push(perServer.thumbnail[0]);
-      perServer.list.shift();
-      perServer.name.shift();
-      perServer.time.shift();
-      perServer.thumbnail.shift();
-      play(perServer, connection, channel);
-      embedEdit('playing', perServer, channel);
+    } else if (server.queue.loop === 'true') {
+      server.queue.url.push(server.queue.url[0]);
+      server.queue.name.push(server.queue.name[0]);
+      server.queue.time.push(server.queue.time[0]);
+      server.queue.thumbnail.push(server.queue.thumbnail[0]);
+      server.queue.url.shift();
+      server.queue.name.shift();
+      server.queue.time.shift();
+      server.queue.thumbnail.shift();
+      play(server, connection, channel);
+      embedEdit('playing', server, channel);
       return;
     }
-    var guild = perServer.dispatcher.player.voiceConnection.channel.guild;
+    var guild = server.dispatcher.player.voiceConnection.channel.guild;
     connection.disconnect();
-    embedEdit('noMusic', perServer, channel);
+    embedEdit('noMusic', server, channel);
   })
 }
 
-async function urlToInfo(perServer, url) {
+async function urlToInfo(server, url, user) {
   var vInfo = await getBasicInfo(url);
   if (vInfo) {
     vInfo = vInfo.player_response.videoDetails;
     var thumbnail = vInfo.thumbnail.thumbnails;
-    perServer.name.push(vInfo.title);
-    perServer.time.push(calculateTime(vInfo.lengthSeconds));
-    perServer.thumbnail.push(thumbnail[thumbnail.length - 1].url);
+    server.queue.name.push(vInfo.title);
+    server.queue.time.push(calculateTime(vInfo.lengthSeconds));
+    server.queue.thumbnail.push(thumbnail[thumbnail.length - 1].url);
+    server.queue.requester.push(user.id)
   } else {
-    perServer.list.pop()
+    server.queue.url.pop()
   }
-  return perServer;
+  return server;
+}
+
+async function urlToInfoFirst(server, url, user) {
+  var vInfo = await getBasicInfo(url);
+  if (vInfo) {
+    vInfo = vInfo.player_response.videoDetails;
+    var thumbnail = vInfo.thumbnail.thumbnails;
+    server.queue.name.unshift(vInfo.title);
+    server.queue.time.unshift(calculateTime(vInfo.lengthSeconds));
+    server.queue.thumbnail.unshift(thumbnail[thumbnail.length - 1].url);
+    server.queue.requester.unshift(user.id)
+  } else {
+    server.queue.url.shift()
+  }
+  return server;
 }
 
 async function getBasicInfo(url) {

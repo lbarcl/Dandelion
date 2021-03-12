@@ -11,8 +11,8 @@ async function deleteAfterSend(text, messageDeleteTime, message){
   setTimeout(function() { m.delete(); }, messageDeleteTime);
 }
 
-async function embedEdit(isDefault, perServer, channel) {
-  var embedMessagge = await channel.messages.fetch(perServer.messageId); // Özel kanal içerisindeki bilgi mesajını bulma
+async function embedEdit(isDefault, server, channel) {
+  var embedMessagge = await channel.messages.fetch(server.messageId); // Özel kanal içerisindeki bilgi mesajını bulma
   const embed = new MessageEmbed();
   // NoMusic haline çevirme
   switch (isDefault) {
@@ -24,23 +24,24 @@ async function embedEdit(isDefault, perServer, channel) {
       embed.setDescription('Şuan çalmakta olan hiç bir müzik yok')
       break;
     case 'playing': // Çalan şarkı bilgilerini gösterme
-      var footerText = `Şuan ${perServer.name[0]} çalıyor | Süre ${perServer.time[0]} | Döngü ${perServer.ıslooping}`
-      embed.setTitle(perServer.name[0])
-      embed.setURL(perServer.list[0])
-      embed.setImage(perServer.thumbnail[0])
+      var footerText = `Şuan ${server.queue.name[0]} çalıyor | Döngü ${server.queue.loop}`
+      embed.setTitle(server.queue.name[0])
+      embed.setURL(server.queue.url[0])
+      embed.setImage(server.queue.thumbnail[0])
       embed.setColor(config.embedColor)
       embed.setFooter(footerText)
-      if (perServer.list[0]) {
-        var sPoint = perServer.name.length - 1;
-        if (perServer.name.length > 24) {
+      embed.setDescription("Süre `" + server.queue.time[0] + "`" +` | İsteyen <@${server.queue.requester[0]}>`)
+      if (server.queue.url[0]) {
+        var sPoint = server.queue.name.length - 1;
+        if (server.queue.name.length > 24) {
           sPoint = 25;
         }
         for (var i = sPoint; i >= 1; i--) {
           if (i === 25) {
-            embed.addField(`Ve ${perServer.list.length - 24} daha fazla video`, '...');
+            embed.addField(`Ve ${server.queue.url.length - 24} daha fazla video`, '...');
           }
-          var t = perServer.time[i]
-          embed.addField(`${i} - ${perServer.name[i]}`, "`" + t + "`");
+          var t = server.queue.time[i]
+          embed.addField(`${i} - ${server.queue.name[i]}`, "`" + t + "` " + `isteyen: <@${server.queue.requester[i]}>` );
           if (i === 1) {
             break;
           }

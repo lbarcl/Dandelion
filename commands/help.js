@@ -15,7 +15,7 @@ module.exports = async (client) => {
     embed.addField(`${config.prefix}b`, 'Beğendiğiniz şarkıları listeler, kayıt olmak gereklidir', true)
     embed.addField(`${config.prefix}sl`, 'Suncu çalma listesini görüntüler', true)
     embed.setColor(config.embedColor)
-
+    console.log(client.servers)
     message.channel.send(embed)
   })
 }

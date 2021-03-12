@@ -6,7 +6,7 @@ module.exports = setup
 
 async function setup(cache, guild) {
   if (!cache[guild.id]) {
-    cache[guild.id] = { channelId: '', messageId: '', list: [], name: [], time: [], thumbnail: [], ıslooping: 'false' }
+    cache[guild.id] = { channelId: '', messageId: '', queue: { url: [], name: [], time: [], thumbnail: [], requester: [], loop: 'false'}}
 
     await mongo().then(async mongoose => {
       try {
@@ -25,5 +25,5 @@ async function setup(cache, guild) {
       }
     })
   }
-  return cache
+  return cache[guild.id]
 }

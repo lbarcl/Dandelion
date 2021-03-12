@@ -9,7 +9,7 @@ module.exports = {
   place
 }
 
-async function place(perServer, user, messageDeleteTime, message) {
+async function place(server, user, messageDeleteTime, message) {
   var list = [];
   await mongo().then(async mongoose => {
     try {
@@ -29,16 +29,16 @@ async function place(perServer, user, messageDeleteTime, message) {
 
   if (list[0]) {
     for (var i = 0; i < list.length; i++) {
-      perServer.list.push(list[i]);
-      perServer = await urlToInfo(perServer, list[i]);
+      server.queue.url.push(list[i]);
+      server = await urlToInfo(server, list[i], user);
     }
     deleteAfterSend(`Beğenilen şarkılar ekleniyor`, messageDeleteTime, message);
-    return perServer;
+    return server;
   }
   deleteAfterSend("Beğenilen şarkılarınız boş, şarkı beğenmek için `❤️` basmanız yeterli ", messageDeleteTime, message);
 }
 
-async function pasteList(perServer, message, messageDeleteTime){
+async function pasteList(server, message, messageDeleteTime, user){
   var list = [];
   const { guild } = message;
   await mongo().then(async mongoose => {
@@ -56,12 +56,12 @@ async function pasteList(perServer, message, messageDeleteTime){
 
   if (list[0]) {
     for (var i = 0; i < list.length; i++) {
-      perServer.list.push(list[i]);
-      perServer = await urlToInfo(perServer, list[i]);
+      server.queue.url.push(list[i]);
+      server = await urlToInfo(server, list[i], user);
     }
     deleteAfterSend(`Sunucu listesi ekleniyor`, messageDeleteTime, message);
-    return perServer;
+    return server;
   }
   deleteAfterSend("Suncu listesi boş, listeye şarkı eklemek için `🗒️` basmanız yeterli", messageDeleteTime, message);
-  return perServer;
+  return server;
 }

@@ -28,6 +28,7 @@ module.exports = async (client) => {
 
     const newMessage = await newChannel.send(embed)
 
+     newMessage.react('⏯️');
      newMessage.react('⏭️');
      newMessage.react('⏏️');
      newMessage.react('🔁');
@@ -40,7 +41,7 @@ module.exports = async (client) => {
     server.channelId = newChannel.id;
     server.messageId = newMessage.id;
 
-    newChannel.setTopic("[⏭️] Sonraki şarkı | [⏏️] Kanaldan ayrıl | [🔁] Sırayı döngüye al/çıkar | [🆑] Sırayı temizle | [❤️] Çalan şarkıyı beğen/beğenme | [🗒️] Çalan şarkıyı sunucu listesine ekler/çıkartır | [#️⃣] Beğenilen şarkıları sıraya ekler | [*️⃣] Sunucu şarkı listesini sıraya ekler")
+    newChannel.setTopic("[⏯️] Durdur/Devam | [⏭️] Sonraki şarkı | [⏏️] Kanaldan ayrıl | [🔁] Sırayı döngüye al/çıkar | [🆑] Sırayı temizle | [❤️] Çalan şarkıyı beğen/beğenme | [🗒️] Çalan şarkıyı sunucu listesine ekler/çıkartır | [#️⃣] Beğenilen şarkıları sıraya ekler | [*️⃣] Sunucu şarkı listesini sıraya ekler")
 
     await mongo().then(async mongoose => {
       try {
