@@ -9,7 +9,8 @@ const setup = mongoose.Schema({
   _id: reqString,
   channelId: reqString,
   messageId: reqString,
-  serverList: [String]
+  serverList: [String],
+  embedImageUrl: String
 })
 
 module.exports = mongoose.model('server-infos', setup)

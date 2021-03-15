@@ -1,12 +1,13 @@
-const mongo = require('../utils/mongo')
+const mongo = require('./mongo')
 const serverScheme = require('../schemes/server-scheme')
+const config = require('../config.json')
 
 module.exports = setup
 
 
 async function setup(cache, guild) {
   if (!cache[guild.id]) {
-    cache[guild.id] = { channelId: '', messageId: '', queue: { url: [], name: [], time: [], thumbnail: [], requester: [], loop: 'false'}}
+    cache[guild.id] = { channelId: '', messageId: '', embedImageUrl: '', queue: { url: [], name: [], time: [], thumbnail: [], requester: [], loop: 'false'}}
 
     await mongo().then(async mongoose => {
       try {
@@ -15,6 +16,8 @@ async function setup(cache, guild) {
         if (result != null) {
           cache[guild.id].channelId = result.channelId
           cache[guild.id].messageId = result.messageId
+          if (result.embedImageUrl) embedImageUrl = result.embedImageUrl
+          else embedImageUrl = config.embed.image
         } else {
           console.log(`Kanal bilgisi bulunamadı [${guild.id}]`)
           cache[guild.id] = null

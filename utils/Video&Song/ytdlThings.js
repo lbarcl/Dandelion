@@ -1,7 +1,7 @@
 const ytdl = require('ytdl-core')
-const {embedEdit} = require('./messageWorks')
+const {embedEdit} = require('../messageWorks')
 
-module.exports = {play, urlToInfo, urlToInfoFirst}
+module.exports = {play, urlToInfo, urlToInfoFirst, calculateTime}
 
 function play(server, connection, channel) {
 

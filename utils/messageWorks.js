@@ -17,10 +17,10 @@ async function embedEdit(isDefault, server, channel) {
   // NoMusic haline çevirme
   switch (isDefault) {
     case 'noMusic': // NoMusic haline çevirme
-      embed.setTitle(config.noMusicTitle)
+      embed.setTitle(config.embed.title)
       embed.setURL('http://devb.ga')
-      embed.setImage(config.noMusic)
-      embed.setColor(config.embedColor)
+      embed.setImage(server.embedImageUrl)
+      embed.setColor(config.embed.color)
       embed.setDescription('Şuan çalmakta olan hiç bir müzik yok')
       break;
     case 'playing': // Çalan şarkı bilgilerini gösterme
@@ -28,7 +28,7 @@ async function embedEdit(isDefault, server, channel) {
       embed.setTitle(server.queue.name[0])
       embed.setURL(server.queue.url[0])
       embed.setImage(server.queue.thumbnail[0])
-      embed.setColor(config.embedColor)
+      embed.setColor(config.embed.color)
       embed.setFooter(footerText)
       embed.setDescription("Süre `" + server.queue.time[0] + "`" +` | İsteyen <@${server.queue.requester[0]}>`)
       if (server.queue.url[0]) {

@@ -1,7 +1,7 @@
-const serverScheme = require('../schemes/server-scheme');
-const userScheme = require('../schemes/user-scheme');
-const mongo = require('../utils/mongo');
-const {deleteAfterSend} = require('./messageWorks')
+const serverScheme = require('../../schemes/server-scheme');
+const userScheme = require('../../schemes/user-scheme');
+const mongo = require('../mongo');
+const {deleteAfterSend} = require('../messageWorks')
 
 module.exports = {
   favThing,

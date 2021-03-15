@@ -1,18 +1,24 @@
 {
-  "name": "RadioBot",
-  "version": "2.5.4",
+  "name": "radiobot",
+  "version": "2.6.0",
   "description": "",
-  "main": "radio.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node radio.js"
+    "start": "node index.js",
+    "test": "nodemon index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@discordjs/opus": "^0.4.0",
+    "axios": "^0.21.1",
     "discord.js": "^12.5.1",
-    "mongoose": "^5.11.18",
+    "lyrics-parse": "^1.1.1",
+    "mongoose": "^5.12.0",
+    "spotify-uri": "^2.1.0",
+    "spotify-web-api-node": "^5.0.2",
+    "wokcommands": "^1.2.8",
     "youtube-playlist-scraper": "^2.1.1",
     "ytdl-core": "^4.5.0",
     "ytsearcher": "^1.2.3"
