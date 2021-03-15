@@ -14,6 +14,7 @@
     "@discordjs/opus": "^0.4.0",
     "axios": "^0.21.1",
     "discord.js": "^12.5.1",
+    "ffmpeg-static": "^4.2.7",
     "lyrics-parse": "^1.1.1",
     "mongoose": "^5.12.0",
     "spotify-uri": "^2.1.0",
