@@ -5,7 +5,7 @@ module.exports = {
   name: 'resimdeğiş',
   aliases: ['resimdeğiş', 'rd'],
   guildOnly: true,
-  //permissions: ['MANAGE_GUILD'],
+  permissions: ['MANAGE_GUILD'],
   minArgs: 0,
   syntaxError: "Yanlış kullanım, sadece `{PREFIX}kurulum` yazmanız yeterli",
   callback: async ({ message, client, text }) => {

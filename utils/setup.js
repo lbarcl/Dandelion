@@ -12,12 +12,12 @@ async function setup(cache, guild) {
     await mongo().then(async mongoose => {
       try {
         console.log(`Veritabanına kanal bilgisi almak için bağlanıyor [${guild.id}]`)
-        const result = await serverScheme.findOne({ _id: guild.id })
+        const result = await serverScheme.findById(guild.id )
         if (result != null) {
           cache[guild.id].channelId = result.channelId
           cache[guild.id].messageId = result.messageId
-          if (result.embedImageUrl) embedImageUrl = result.embedImageUrl
-          else embedImageUrl = config.embed.image
+          if (result.embedImageUrl) cache[guild.id].embedImageUrl = result.embedImageUrl
+          else cache[guild.id].embedImageUrl = config.embed.image
         } else {
           console.log(`Kanal bilgisi bulunamadı [${guild.id}]`)
           cache[guild.id] = null
