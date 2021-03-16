@@ -4,6 +4,7 @@ module.exports = {
   name: 'kayıt',
   aliases: ['kayıt', 'kt'],
   minArgs: 0,
+  description: 'Kullanıcıyı sisteme kayıt eder',
   syntaxError: "Yanlış kullanım, sadece `{PREFIX}kayıt` yazmanız yeterli",
   callback: async ({ message, client }) => {
     await mongo().then(async mongoose => {

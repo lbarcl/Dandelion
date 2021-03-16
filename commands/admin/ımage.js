@@ -2,12 +2,14 @@ const mongo = require('../../utils/mongo')
 const {embedEdit} = require('../../utils/messageWorks')
 
 module.exports = {
-  name: 'resimdeğiş',
-  aliases: ['resimdeğiş', 'rd'],
-  guildOnly: true,
-  permissions: ['MANAGE_GUILD'],
   minArgs: 0,
-  syntaxError: "Yanlış kullanım, sadece `{PREFIX}kurulum` yazmanız yeterli",
+  name: 'resimdeğiş',
+  guildOnly: true,
+  aliases: ['resimdeğiş', 'rd'],
+  permissions: ['MANAGE_GUILD'],
+  description: 'Radio kanalındaki resmi değiştirir',
+  expectedArgs: '[discord-resim-linki / resimin-kendisi]',
+  syntaxError: "Yanlış kullanım, `{PREFIX}resimdeğiş [discord resim linki / resim dosyası]`",
   callback: async ({ message, client, text }) => {
     var image
     const { guild } = message

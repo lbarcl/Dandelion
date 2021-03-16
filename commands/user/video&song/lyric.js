@@ -5,6 +5,7 @@ module.exports = {
     name: 'sözbul',
     aliases: ['sözbul', 'sb'],
     minArgs: 0,
+    description: 'Çalmakta olan şarkının sözlerini bulur',
     syntaxError: "Yanlış kullanım, sadece `{PREFIX}sözbul` yazmanız yeterli",
     callback: async ({ message, client, args }) => {
         // Sunucu bilgileri alma

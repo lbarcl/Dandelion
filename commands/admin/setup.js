@@ -7,6 +7,7 @@ module.exports = {
   guildOnly: true,
   permissions: ['MANAGE_GUILD'],
   minArgs: 0,
+  description: 'Sunucuda radio kurulumu yapar, her sunucu için bir kere kullanılabilir',
   syntaxError: "Yanlış kullanım, sadece `{PREFIX}kurulum` yazmanız yeterli",
   callback: async ({ message, client }) => {
     await mongo().then(async mongoose => {

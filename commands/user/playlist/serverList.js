@@ -6,6 +6,7 @@ module.exports = {
   name: 'sunuculistesi',
   aliases: ['sunuculistesi', 'sl'],
   minArgs: 0,
+  description: 'Suncunun çalma listesini görüntüler',
   syntaxError: "Yanlış kullanım, sadece `{PREFIX}sunuculistesi` yazmanız yeterli",
   guildOnly: true,
   callback: async ({ message, client }) => {

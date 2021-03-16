@@ -7,7 +7,9 @@ module.exports = {
     aliases: ['ilkçal', 'iç'],
     minArgs: 1,
     guildOnly: true,
-    syntaxError: "Yanlış kullanım, sadece `{PREFIX}ilkçal [video-anahtar-kelime / video-url]` ",
+    expectedArgs: '[video-anahtar-kelime / video-linki]',
+    description: 'Çalma listesine girilen şarkıyı ilk sıraya alıp çalmaya başlar',
+    syntaxError: "Yanlış kullanım, sadece `{PREFIX}ilkçal [video-anahtar-kelime / video-linki]` ",
     callback: async ({ message, client, text}) => {
         var server = client.servers[message.guild.id]
         server = await firstPlace(server, text, 10000, message)

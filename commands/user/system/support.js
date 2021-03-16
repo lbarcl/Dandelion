@@ -4,6 +4,8 @@ module.exports = {
     name: 'sorunbildir',
     aliases: ['sorunbildir', 'sbd'],
     minArgs: 2,
+    description: 'Yardıma ihtiyaç duyduğunuzda bot destek ekibine mesaj iletilemek için kullanılır',
+    expectedArgs: '[mesaj-başlığı] [mesaj]',
     syntaxError: "Yanlış kullanım, sadece `{PREFIX}sorunbildir [mesaj-başlığı] [mesaj]` yazmanız yeterli",
     callback: ({ message, client, args, text }) => {
         const owner = client.users.cache.get(client.config.owner)

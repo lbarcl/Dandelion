@@ -8,6 +8,8 @@ module.exports = {
     name: 'videobul',
     aliases: ['videobul', 'vb'],
     minArgs: 1,
+    description: 'Girilen anahtar kelimeleri veya girilen video linkini kullanarak bulduğu youtube videosu hakkında bilgi verir',
+    expectedArgs: '[video-anahtar-kelime / video-url]',
     syntaxError: "Yanlış kullanım, sadece `{PREFIX}videbul [video-anahtar-kelime / video-url]` yazmanız yeterli",
     callback: async ({ message, client, text }) => {
         var url;

@@ -4,6 +4,8 @@ module.exports = {
     name: 'yardım',
     aliases: ['yardım', 'y'],
     maxArgs: 1,
+    description: 'Bot komutları hakkında bilgi verir',
+    expectedArgs: '(isteğe bağlı [komut-ismi])',
     syntaxError: "Yanlış kullanım, sadece `{PREFIX}yardım (isteğe bağlı [komut-ismi])` yazmanız yeterli",
     callback: async ({ message, client, args, instance }) => {
         if(!args[0]){
@@ -29,7 +31,7 @@ module.exports = {
             }
           })
         });
-        var syntax = command.syntax || `${client.config.prefix}${command.names[0]}`
+        var syntax = command.syntax || `Girilmesi gereken bir değer yok`
         var description = command.description || 'Açıklama yakında eklenecek';
         var allies = command.names.join(' | ');
         const helpEmbed = new MessageEmbed()

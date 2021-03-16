@@ -6,6 +6,7 @@ module.exports = {
   name: 'beğenilenler',
   aliases: ['beğenilenler', 'b'],
   minArgs: 0,
+  description: 'Kullanıcının beğenilen şarkılarını görüntüler',
   syntaxError: "Yanlış kullanım, sadece `{PREFIX}beğenilenler` yazmanız yeterli",
   callback: async ({ message, client }) => {
         var list = []

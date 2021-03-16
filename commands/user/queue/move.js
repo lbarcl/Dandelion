@@ -8,6 +8,8 @@ module.exports = {
     maxArgs: 1,
     minArgs: 1,
     guildOnly: true,
+    description: 'Çalma listesindeki sırası girilen şarkıyı ilk sıraya çekip çalmaya başlar',
+    expectedArgs: '[şarkının-sıradaki-yeri]',
     syntaxError: "Yanlış kullanım, sadece `{PREFIX}taşı [sıradaki-yeri]` ",
     callback: async ({ message, client, args }) => {
         var server = client.servers[message.guild.id]
