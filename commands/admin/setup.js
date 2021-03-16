@@ -25,11 +25,11 @@ module.exports = {
          
          // Embed hazırlama
          const embed = new MessageEmbed()
-         .setTitle(client.user.username)
+         .setTitle(client.config.embed.title)
          .setURL('http://devb.ga')
          .setImage(client.config.embed.image)
          .setColor(client.config.embed.color)
-         .setDescription('Şuan herhangi bir müzik oynamıyor')
+         .setDescription(client.config.embed.description)
 
           // Embed mesajı oluşturulan kanala gönderme
           const newMessage = await newChannel.send(embed)
