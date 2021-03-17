@@ -26,33 +26,27 @@ function validatePlayList(url) {
 async function songAdd(server, messageContent, messageDeleteTime, message) {
 
   // Sıraya ekleme
-  
   if (messageContent.includes('spotify')){
     const uriResponse = spotifyUri.parse(messageContent)
     const spotifyApi = new SpotifyWebApi({clientId: config.api.spotify.client.id, clientSecret: config.api.spotify.client.secret})
     const authRespons = await auth( config.api.spotify.client.id, config.api.spotify.client.secret)
     if (!authRespons.access_token) return console.log('Red')
     spotifyApi.setAccessToken(authRespons.access_token)
-    switch (uriResponse.type){
-      case 'playlist':
-        const playlistResult = await spotifyApi.getPlaylist(uriResponse.id)  
-        const list = playlistResult.body.tracks.items
-        deleteAfterSend("`" + playlistResult.body.name + "` çalma listesinden " + list.length + " tane şarkı ekleniyor", messageDeleteTime, message);
-        var i = 0
-        list.forEach(async item => {
-          const searchString = item.track.artists[0].name + ' - ' + item.track.name
-          const searchResult = await mongoCheck(searchString)
-          if(ytdl.validateURL(searchResult)){
-            server.queue.url.push(searchResult)
-            server.queue.thumbnail.push(item.track.album.images[0].url)
-            server.queue.time.push(calculateTime(item.track.duration_ms / 1000))
-            server.queue.name.push(searchString)
-            server.queue.requester.push(message.author.id)
-          }
-          if (i == list.length - 1) embedEdit('playing', server, message.channel)
-          i++
-        })  
-      break;
+    if (uriResponse.type == 'playlist'){
+      const playlistResult = await spotifyApi.getPlaylist(uriResponse.id)  
+      const list = playlistResult.body.tracks.items
+      deleteAfterSend("`" + playlistResult.body.name + "` çalma listesinden " + list.length + " tane şarkı ekleniyor", messageDeleteTime, message);
+
+      for(var i = 0; i < list.length; i++){
+        const searchString = list[i].track.artists[0].name + ' - ' + list[i].track.name
+        server.queue.url.push(await mongoCheck(searchString))
+        server.queue.name.push(searchString)
+        server.queue.time.push(calculateTime(list[i].track.duration_ms / 1000))
+        server.queue.thumbnail.push(list[i].track.album.images[0].url)
+        server.queue.requester.push(message.author.id)
+      
+        if (i == list.length - 1) embedEdit('playing', server, message.channel)
+      }
     }
   } // playlist ekeleme
   else if (validatePlayList(messageContent)) {
