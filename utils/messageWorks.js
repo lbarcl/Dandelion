@@ -25,16 +25,16 @@ async function embedEdit(isDefault, server, channel) {
       embed.setDescription(server.embedInfo.description)
       break;
     case 'playing': // Çalan şarkı bilgilerini gösterme
-      var footerText = `Şuan ${server.queue.name[0]} çalıyor | Döngü ${server.queue.loop}`
-      embed.setTitle(server.queue.name[0])
+      var footerText = `Şuan ${server.queue.title[0]} çalıyor | Döngü ${server.queue.loop}`
+      embed.setTitle(server.queue.title[0])
       embed.setURL(server.queue.url[0])
-      embed.setImage(server.queue.thumbnail[0])
+      embed.setImage(server.queue.image[0])
       embed.setColor(server.embedInfo.hexColor)
       embed.setFooter(footerText)
       embed.setDescription("Süre `" + server.queue.time[0] + "`" +` | İsteyen <@${server.queue.requester[0]}>`)
       if (server.queue.url[0]) {
-        var sPoint = server.queue.name.length - 1;
-        if (server.queue.name.length > 24) {
+        var sPoint = server.queue.title.length - 1;
+        if (server.queue.title.length > 24) {
           sPoint = 25;
         }
         for (var i = sPoint; i >= 1; i--) {
@@ -42,7 +42,7 @@ async function embedEdit(isDefault, server, channel) {
             embed.addField(`Ve ${server.queue.url.length - 24} daha fazla video`, '...');
           }
           var t = server.queue.time[i]
-          embed.addField(`${i} - ${server.queue.name[i]}`, "`" + t + "` " + `isteyen: <@${server.queue.requester[i]}>` );
+          embed.addField(`${i} - ${server.queue.title[i]}`, "`" + t + "` " + `isteyen: <@${server.queue.requester[i]}>` );
           if (i === 1) {
             break;
           }

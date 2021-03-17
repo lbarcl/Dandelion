@@ -41,9 +41,9 @@ module.exports = (client) => {
           break
           case '⏭️':
           server.queue.url.shift()
-          server.queue.name.shift()
+          server.queue.title.shift()
           server.queue.time.shift()
-          server.queue.thumbnail.shift()
+          server.queue.image.shift()
           server.queue.requester.shift()
           if(!server.queue.url[0]){
             embedEdit('noMusic', server, reaction.message.channel)
@@ -59,9 +59,9 @@ module.exports = (client) => {
           if (server.queue.url[0]) {
             for (var i = server.queue.url.length; i > 0; i--) {
               server.queue.url.pop();
-              server.queue.name.pop();
+              server.queue.title.pop();
               server.queue.time.pop();
-              server.queue.thumbnail.pop();
+              server.queue.image.pop();
               server.queue.requester.pop();
             }
           }
@@ -91,9 +91,9 @@ module.exports = (client) => {
                 break;
               }
               server.queue.url.pop();
-              server.queue.name.pop();
+              server.queue.title.pop();
               server.queue.time.pop();
-              server.queue.thumbnail.pop();
+              server.queue.image.pop();
               server.queue.requester.pop()
             }
             deleteAfterSend('Sıra temizlendi', messageDeleteTime, reaction.message);

@@ -1,6 +1,6 @@
 const serverScheme = require('../../schemes/server-scheme')
 const userScheme = require('../../schemes/user-scheme')
-const mongo = require('../mongo')
+const mongo = require('../database/mongo')
 const {deleteAfterSend} = require('../messageWorks')
 const {urlToInfo} = require('../Video&Song/ytdlThings')
 

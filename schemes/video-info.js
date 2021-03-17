@@ -10,7 +10,7 @@ const videoSearch = mongoose.Schema({
   url: reqString,
   title: reqString,
   time: reqString,
-  thumbnail: reqString
+  image: reqString
 })
 
 module.exports = mongoose.model('video-infos', videoSearch)

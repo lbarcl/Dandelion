@@ -1,5 +1,5 @@
 const { MessageEmbed } = require('discord.js')
-const mongo = require('../../../../utils/mongo')
+const mongo = require('../../../../utils/database/mongo')
 const ytdl = require('ytdl-core')
 
 module.exports = {

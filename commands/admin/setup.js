@@ -1,4 +1,4 @@
-const mongo = require('../../utils/mongo')
+const mongo = require('../../utils/database/mongo')
 const { MessageEmbed } = require('discord.js')
 
 module.exports = {
