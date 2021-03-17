@@ -1,5 +1,5 @@
 const Discord = require('discord.js')
-const mongo = require('./utils/mongo')
+const mongo = require('./utils/database/mongo')
 const config = require('./config.json')
 const WOKCommands = require('wokcommands');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })

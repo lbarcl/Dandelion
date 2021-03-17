@@ -43,25 +43,25 @@ async function mongoCheck(keyWord){
 }
 
 async function mongoFind(url){
-    await mongo().then(async mongoose => {
-        try{
-          let id = ytdl.getURLVideoID(url)  
-          let result = await videoInfoScheme.findById(id)
-          if (result) return result
-          else {
-            result = await urlToInfo(url)
-
-            await videoInfoScheme({
-                _id: id,
-                url: result.url,
-                title: result.title,
-                time: result.time,
-                image: result.image
-            }).save()
-          }
-        }
-        finally {
-          mongoose.connection.close()
-        }
-    })
+  let result
+  await mongo().then(async mongoose => {
+    try{
+      let id = ytdl.getURLVideoID(url)  
+      result = await videoInfoScheme.findById(id)
+      if (!result){
+        result = await urlToInfo(url)
+        await videoInfoScheme({
+            _id: id,
+            url: result.url,
+            title: result.title,
+            time: result.time,
+            image: result.image
+        }).save()
+      }
+    }
+    finally {
+      mongoose.connection.close()
+    }
+  })
+  return result
 }

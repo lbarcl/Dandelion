@@ -54,7 +54,7 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
     deleteAfterSend(`${playList.playlist.length} video ekleniyor`, messageDeleteTime, message);
   } // url ekleme
   else if (ytdl.validateURL(messageContent)) {
-    server = await shift(messageContent)
+    server = await shift(messageContent, message, server)
     deleteAfterSend(`video ekleniyor`, messageDeleteTime, message);
   } // kelimeden araştırıp ekleme
   else {
@@ -63,7 +63,7 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
       deleteAfterSend('Girdiğiniz kelimeler ile bir video bulunamadı', messageDeleteTime, message);
       return;
     }
-    server = await shift(messageContent)
+    server = await shift(messageContent, message, server)
     deleteAfterSend(`video ekleniyor`, messageDeleteTime, message);
   }
   return server;
@@ -95,10 +95,10 @@ async function shift(url, message, server){
 
 async function unShift(url, message, server){
   const result = await mongoFind(url)
-  server.queue.url.unsihft(result.url)
-  server.queue.title.unsihft(result.title)
-  server.queue.time.unsihft(calculateTime(result.time))
-  server.queue.image.unsihft(result.image)
-  server.queue.requester.unsihft(message.author.id)
+  server.queue.url.unshift(result.url)
+  server.queue.title.unshift(result.title)
+  server.queue.time.unshift(calculateTime(result.time))
+  server.queue.image.unshift(result.image)
+  server.queue.requester.unshift(message.author.id)
   return server
 }
