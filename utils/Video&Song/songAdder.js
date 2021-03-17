@@ -12,8 +12,7 @@ const spotifyUri = require('spotify-uri')
 const auth = require('../spotify')
 //--------------------------Mongo-------------------------------------
 const mongo = require('../mongo')
-const videoSearchScheme = require('../../schemes/video-search-cheme');
-const { Mongoose } = require('mongoose');
+const videoSearchScheme = require('../../schemes/video-search-scheme');
 
 module.exports = {songAdd, firstPlace}
 

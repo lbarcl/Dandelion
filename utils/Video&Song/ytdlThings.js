@@ -13,6 +13,7 @@ function play(server, connection, channel) {
       server.queue.name.shift();
       server.queue.time.shift();
       server.queue.thumbnail.shift();
+      server.queue.requester.shift();
       if (server.queue.url[0]) {
         play(server, connection, channel)
         embedEdit('playing', server, channel);
@@ -23,10 +24,12 @@ function play(server, connection, channel) {
       server.queue.name.push(server.queue.name[0]);
       server.queue.time.push(server.queue.time[0]);
       server.queue.thumbnail.push(server.queue.thumbnail[0]);
+      server.queue.requester.push(server.queue.requester[0])
       server.queue.url.shift();
       server.queue.name.shift();
       server.queue.time.shift();
       server.queue.thumbnail.shift();
+      server.queue.requester.shift();
       play(server, connection, channel);
       embedEdit('playing', server, channel);
       return;

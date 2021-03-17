@@ -3,7 +3,8 @@ const config = require('../config')
 
 module.exports = {
   deleteAfterSend,
-  embedEdit
+  embedEdit,
+  getReply
 }
 
 async function deleteAfterSend(text, messageDeleteTime, message){
@@ -50,4 +51,21 @@ async function embedEdit(isDefault, server, channel) {
       break;
   }
   embedMessagge.edit(embed);
+}
+
+async function getReply(message, options) {
+  let time = 30000
+  let user = message.author
+  let words = []
+  if (options) {
+      if (options.time) time = options.time
+      if (options.user) user = options.user
+      if (options.words) words = options.words
+  }
+  const filter = msg => {
+      return msg.author.id === user.id && (words.length === 0 || words.includes(msg.content.toLowerCase()))
+  }
+  const msgs = await message.channel.awaitMessages(filter, { max: 1, time: time })
+  if (msgs.size > 0) return msgs.first()
+  return false
 }

@@ -44,6 +44,7 @@ module.exports = (client) => {
           server.queue.name.shift()
           server.queue.time.shift()
           server.queue.thumbnail.shift()
+          server.queue.requester.shift()
           if(!server.queue.url[0]){
             embedEdit('noMusic', server, reaction.message.channel)
             member.voice.channel.leave()
@@ -61,6 +62,7 @@ module.exports = (client) => {
               server.queue.name.pop();
               server.queue.time.pop();
               server.queue.thumbnail.pop();
+              server.queue.requester.pop();
             }
           }
           deleteAfterSend('Kanaldan ayrılıyor', messageDeleteTime, reaction.message);
@@ -92,6 +94,7 @@ module.exports = (client) => {
               server.queue.name.pop();
               server.queue.time.pop();
               server.queue.thumbnail.pop();
+              server.queue.requester.pop()
             }
             deleteAfterSend('Sıra temizlendi', messageDeleteTime, reaction.message);
             if (!server.queue.url[0]) {
