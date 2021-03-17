@@ -10,6 +10,10 @@ const ytdl = require('ytdl-core')
 const SpotifyWebApi = require('spotify-web-api-node')
 const spotifyUri = require('spotify-uri')
 const auth = require('../spotify')
+//--------------------------Mongo-------------------------------------
+const mongo = require('../mongo')
+const videoSearchScheme = require('../../schemes/video-search-cheme');
+const { Mongoose } = require('mongoose');
 
 module.exports = {songAdd, firstPlace}
 
@@ -37,12 +41,12 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
         var i = 0
         list.forEach(async item => {
           const searchString = item.track.artists[0].name + ' - ' + item.track.name
-          const searchResult = await searcher.search(searchString, { type: 'video' })
-          if(ytdl.validateURL(searchResult.first.url)){
-            server.queue.url.push(searchResult.first.url)
+          const searchResult = await mongoCheck(searchString)
+          if(ytdl.validateURL(searchResult)){
+            server.queue.url.push(searchResult)
             server.queue.thumbnail.push(item.track.album.images[0].url)
             server.queue.time.push(calculateTime(item.track.duration_ms / 1000))
-            server.queue.name.push(item.track.name)
+            server.queue.name.push(searchString)
             server.queue.requester.push(message.author.id)
           }
           if (i == list.length - 1) embedEdit('playing', server, message.channel)
@@ -65,13 +69,13 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
     deleteAfterSend(`video ekleniyor`, messageDeleteTime, message);
   } // kelimeden araştırıp ekleme
   else {
-    let result = await searcher.search(messageContent, { type: 'video' });
-    if (!ytdl.validateURL(result.first.url)) {
+    let result = await mongoCheck(messageContent)
+    if (!ytdl.validateURL(result)) {
       deleteAfterSend('Girdiğiniz kelimeler ile bir video bulunamadı', messageDeleteTime, message);
       return;
     }
-    server.queue.url.push(result.first.url);
-    server = await urlToInfo(server, result.first.url, message.member.user);
+    server.queue.url.push(result);
+    server = await urlToInfo(server, result, message.member.user);
     deleteAfterSend(`video ekleniyor`, messageDeleteTime, message);
   }
   return server;
@@ -94,4 +98,40 @@ async function firstPlace(server, messageContent, messageDeleteTime, message){
     deleteAfterSend(`video başa ekleniyor`, messageDeleteTime, message);
   }
   return server;
+}
+
+async function mongoCheck(keyWord){
+  let url
+  await mongo().then(async mongoose => {
+    try{
+      let result = await videoSearchScheme.findOne({keyWords: keyWord})
+      if (result){
+        url = result.videoUrl
+//      console.log('DB')
+      } else {
+        result = await searcher.search(keyWord, { type: 'video' })
+        url = result.first.url
+        let id = ytdl.getURLVideoID(url)
+        result = await videoSearchScheme.findById(id)
+        if (result){
+          await videoSearchScheme.findByIdAndUpdate(id, {
+            $addToSet: {
+              keyWords: keyWord
+            }
+          })
+        } else {
+          await new videoSearchScheme({
+            _id: id,
+            keyWords: keyWord,
+            videoUrl: url
+          }).save()
+        }
+//        console.log('API')
+      }
+    }
+    finally {
+      mongoose.connection.close()
+    }
+  })
+  return url
 }
