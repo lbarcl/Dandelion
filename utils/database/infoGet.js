@@ -31,11 +31,12 @@ async function mongoCheck(keyWord){
               }
             })
           } else {
-            await new videoInfoScheme({
-              _id: id,
-              keyWords: keyWord,
-              videoUrl: url
-            }).save()
+            await mongoFind(url)
+            await videoInfoScheme.findByIdAndUpdate(id, {
+              $addToSet: {
+                keyWords: keyWord
+              }
+            })
           }
         }
       }

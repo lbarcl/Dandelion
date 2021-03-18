@@ -22,7 +22,7 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
 
   // Sıraya ekleme
   if (messageContent.includes('spotify')){
-    const uriResponse = spotifyUri.parse(messageContent)
+   /* const uriResponse = spotifyUri.parse(messageContent)
     const spotifyApi = new SpotifyWebApi({clientId: config.api.spotify.client.id, clientSecret: config.api.spotify.client.secret})
     const authRespons = await auth( config.api.spotify.client.id, config.api.spotify.client.secret)
     if (!authRespons.access_token) return console.log('Red')
@@ -42,7 +42,7 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
       
         if (i == list.length - 1) embedEdit('playing', server, message.channel)
       }
-    }
+    } */
   } // playlist ekeleme
   else if (validatePlayList(messageContent)) {
     const playList = await scrapePlaylist(validatePlayList(messageContent));
