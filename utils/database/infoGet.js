@@ -1,4 +1,3 @@
-const videoSearchScheme = require('../../schemes/video-search-scheme');
 const videoInfoScheme = require("../../schemes/video-info")
 const {urlToInfo} = require("../Video&Song/ytdlThings")
 const ytdl = require("ytdl-core")
@@ -10,29 +9,27 @@ async function mongoCheck(keyWord){
     let url
     await mongo().then(async mongoose => {
       try{
-        let result = await videoSearchScheme.findOne({keyWords: keyWord})
+        let result = await videoInfoScheme.findOne({keyWords: keyWord})
         if (result){
           url = result.videoUrl
-  //      console.log('DB')
         } else {
           result = await searcher.search(keyWord, { type: 'video' })
           url = result.first.url
           let id = ytdl.getURLVideoID(url)
-          result = await videoSearchScheme.findById(id)
+          result = await videoInfoScheme.findById(id)
           if (result){
-            await videoSearchScheme.findByIdAndUpdate(id, {
+            await videoInfoScheme.findByIdAndUpdate(id, {
               $addToSet: {
                 keyWords: keyWord
               }
             })
           } else {
-            await new videoSearchScheme({
+            await new videoInfoScheme({
               _id: id,
               keyWords: keyWord,
               videoUrl: url
             }).save()
           }
-  //        console.log('API')
         }
       }
       finally {
