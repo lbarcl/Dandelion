@@ -1,4 +1,4 @@
-const mongo = require('./mongo')
+const mongo = require('./database/mongo')
 const serverScheme = require('../schemes/server-scheme')
 const config = require('../config.json')
 
@@ -7,7 +7,7 @@ module.exports = setup
 
 async function setup(cache, guild) {
   if (!cache[guild.id]) {
-    cache[guild.id] = { channelId: '', messageId: '', embedInfo: {ımageUrl: '', hexColor: '', description: ''}, queue: { url: [], name: [], time: [], thumbnail: [], requester: [], loop: 'false'}}
+    cache[guild.id] = { channelId: '', messageId: '', embedInfo: {ımageUrl: '', hexColor: '', description: ''}, queue: { url: [], title: [], time: [], image: [], requester: [], loop: 'false'}}
 
     await mongo().then(async mongoose => {
       try {

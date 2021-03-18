@@ -1,7 +1,7 @@
 const ytdl = require('ytdl-core')
 const {embedEdit} = require('../messageWorks')
 
-module.exports = {play, urlToInfo, urlToInfoFirst, calculateTime}
+module.exports = {play, urlToInfo, calculateTime}
 
 function play(server, connection, channel) {
 
@@ -40,34 +40,20 @@ function play(server, connection, channel) {
   })
 }
 
-async function urlToInfo(server, url, user) {
+async function urlToInfo(url) {
   var vInfo = await getBasicInfo(url);
   if (vInfo) {
     vInfo = vInfo.player_response.videoDetails;
     var thumbnail = vInfo.thumbnail.thumbnails;
-    server.queue.name.push(vInfo.title);
-    server.queue.time.push(calculateTime(vInfo.lengthSeconds));
-    server.queue.thumbnail.push(thumbnail[thumbnail.length - 1].url);
-    server.queue.requester.push(user.id)
-  } else {
-    server.queue.url.pop()
+  
+    var result = {}
+    result.url = url
+    result.title = vInfo.title
+    result.time = vInfo.lengthSeconds
+    result.image = thumbnail[thumbnail.length - 1].url
   }
-  return server;
-}
 
-async function urlToInfoFirst(server, url, user) {
-  var vInfo = await getBasicInfo(url);
-  if (vInfo) {
-    vInfo = vInfo.player_response.videoDetails;
-    var thumbnail = vInfo.thumbnail.thumbnails;
-    server.queue.name.unshift(vInfo.title);
-    server.queue.time.unshift(calculateTime(vInfo.lengthSeconds));
-    server.queue.thumbnail.unshift(thumbnail[thumbnail.length - 1].url);
-    server.queue.requester.unshift(user.id)
-  } else {
-    server.queue.url.shift()
-  }
-  return server;
+  return result;
 }
 
 async function getBasicInfo(url) {

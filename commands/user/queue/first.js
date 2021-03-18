@@ -14,7 +14,7 @@ module.exports = {
         var server = client.servers[message.guild.id]
         server = await firstPlace(server, text, 10000, message)
         embedEdit('playing', server, client.channels.cache.get(server.channelId));
-        message.reply(`${server.queue.name[0]} Şimdi oynatılıyor`)
+        message.reply(`${server.queue.title[0]} Şimdi oynatılıyor`)
         if (!message.guild.voiceConnection) message.member.voice.channel.join().then(function(connection) { // bir ses kanalında değil ise komutu çalıştıran kullanıcının ses kanalına girip listeyi çalmaya başlar
             play(server, connection, client.channels.cache.get(server.channelId));
         })

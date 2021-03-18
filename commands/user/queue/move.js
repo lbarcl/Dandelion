@@ -15,9 +15,9 @@ module.exports = {
         var server = client.servers[message.guild.id]
         if(!server.queue.url[args[0]]) return message.reply(`${args[0]}. sırada şarkı yok`)
         server.queue.url.unshift(server.queue.url[args[0]])
-        server.queue.name.unshift(server.queue.name[args[0]])
+        server.queue.title.unshift(server.queue.name[args[0]])
         server.queue.time.unshift(server.queue.time[args[0]])
-        server.queue.thumbnail.unshift(server.queue.thumbnail[args[0]])
+        server.queue.image.unshift(server.queue.image[args[0]])
         server.queue.requester.unshift(server.queue.requester[args[0]])
         embedEdit('playing', server, client.channels.cache.get(server.channelId));
         message.reply(`${server.queue.name[0]} Şimdi oynatılıyor`)
