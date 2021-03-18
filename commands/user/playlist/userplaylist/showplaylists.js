@@ -25,7 +25,6 @@ module.exports = {
 }
 
 function embed(lists, owner, config, message){
-    console.log('T')
     const baban = new MessageEmbed()
     .setTitle(`${owner.username} çalma listeleri`)
     .setAuthor(owner.username, owner.avatarURL())
