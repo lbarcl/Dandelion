@@ -15,7 +15,7 @@ module.exports = {
                 if(!user) return message.reply('Sisteme kayıtlı değilsiniz, kayıt olmak için `{PREFIX}kayıt yazmanız yeterli`')
 
                 const lists = await client.DBPlaylist.find({ownerId: owner.id})
-                if(!lists) return message.reply('Çalma listesi oluşturmamışsınız, oluşturmak için `{PREFIX}çalmalistesioluştur` veya `{PREFIX}ço`')
+                if(!lists[0]) return message.reply('Çalma listesi oluşturmamışsınız, oluşturmak için `{PREFIX}çalmalistesioluştur` veya `{PREFIX}ço`')
                 embed(lists, owner, client.config, message)
             }finally {
                 mongoose.connection.close()

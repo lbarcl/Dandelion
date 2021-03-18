@@ -12,7 +12,7 @@ module.exports = {
   callback: async ({ message, client, args }) => {
         await mongo().then(async mongoose => {
             try{
-                console.log(args[0] + args[1])
+
                 const user = await client.DBUser.findById(message.author.id)
                 if (!user) return message.reply('Sisteme kayıtlı değilsiniz, kayıt olmak için `{PREFIX}kayıt` yazmanız yeterli')
                 const list = await client.DBPlaylist.findById(args[0])

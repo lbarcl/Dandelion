@@ -28,20 +28,15 @@ module.exports = {
 
                 message.reply('çalma listesi resmini girin, eğer eklemek istemiyorsanız `boş` yazmanız yeterli')
                 let image = await getReply(message, { time: 120000, type: 'image' });
-                if (image.content.toLowerCase() != 'boş'){
-                    if(!image.content){
-                        image.attachments.forEach(Image => {
-                            if (!image) image = Image.url
-                        }); 
-                    }
-                    else {
-                        if(!image.content.includes('://cdn.discordapp.com/attachments/')) return message.reply('Bir discord resim linki veya resmin kendisini atmanız gerekmektedir')
-                        image = image.content
-                    }
-                }else {
-                    image = null
+                
+                if (image.attachments){
+                  image.attachments.forEach(i => {
+                    image = i.url
+                  })
                 }
-
+                else if (image.content.toLowerCase() != 'boş') image = 'boş'
+                else if (!image) image = 'boş'
+                
                 await client.DBPlaylist({
                     _id: message.id,
                     ownerId: message.author.id,
@@ -55,9 +50,9 @@ module.exports = {
                 .setTitle(title)
                 .setDescription(description)
                 .setAuthor(message.author.username, message.author.avatarURL())
-                .setFooter(`Çalmalistesi: ${message.id} | Oluşturan: <@${message.author.id}>`)
+                .setFooter(`Çalmalistesi: ${message.id} | Oluşturan: ${message.author.username}`)
                 .setColor(client.config.embed.color)
-                if(image) embed.setImage(image)
+                if(image != 'boş') embed.setImage(image)
 
                 message.channel.send(embed)
 
