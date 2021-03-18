@@ -4,8 +4,6 @@ const config = require('../../config.json');
 //--------------------------Youtube-----------------------------------
 const { scrapePlaylist } = require("youtube-playlist-scraper");
 const { calculateTime } = require('./ytdlThings')
-const { YTSearcher } = require('ytsearcher');
-const searcher = new YTSearcher(config.api.youtube.dataV3.primary);
 const ytdl = require('ytdl-core')
 //--------------------------Spotify-----------------------------------
 const SpotifyWebApi = require('spotify-web-api-node')

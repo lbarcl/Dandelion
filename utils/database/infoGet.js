@@ -2,6 +2,9 @@ const videoInfoScheme = require("../../schemes/video-info")
 const {urlToInfo} = require("../Video&Song/ytdlThings")
 const ytdl = require("ytdl-core")
 const mongo = require("./mongo")
+const { YTSearcher } = require('ytsearcher');
+const searcher1 = new YTSearcher(config.api.youtube.dataV3.primary);
+const searcher2 = new YTSearcher(config.api.youtube.dataV3.third);
 
 module.exports = {mongoCheck, mongoFind}
 
@@ -13,7 +16,10 @@ async function mongoCheck(keyWord){
         if (result){
           url = result.videoUrl
         } else {
-          result = await searcher.search(keyWord, { type: 'video' })
+          result = await searcher1.search(keyWord, { type: 'video' })
+          if (!result.first.url){
+            result = await searcher2.search(keyWord, { type: 'video' })
+          }
           url = result.first.url
           let id = ytdl.getURLVideoID(url)
           result = await videoInfoScheme.findById(id)
@@ -54,6 +60,12 @@ async function mongoFind(url){
             time: result.time,
             image: result.image
         }).save()
+
+        await videoInfoScheme.findByIdAndUpdate(id, {
+          $addToSet: {
+            keyWords: result.title
+          }
+        })
       }
     }
     finally {
