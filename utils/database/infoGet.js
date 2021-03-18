@@ -3,6 +3,7 @@ const {urlToInfo} = require("../Video&Song/ytdlThings")
 const ytdl = require("ytdl-core")
 const mongo = require("./mongo")
 const { YTSearcher } = require('ytsearcher');
+const config = require("../../config.json")
 const searcher1 = new YTSearcher(config.api.youtube.dataV3.primary);
 const searcher2 = new YTSearcher(config.api.youtube.dataV3.third);
 

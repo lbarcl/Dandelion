@@ -47,7 +47,7 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
   else if (validatePlayList(messageContent)) {
     const playList = await scrapePlaylist(validatePlayList(messageContent));
     for (var i = 0; i < playList.playlist.length; i++) {
-      server = await shift(playList.playlist[i].url)
+      server = await shift(playList.playlist[i].url, message, server)
     }
     deleteAfterSend(`${playList.playlist.length} video ekleniyor`, messageDeleteTime, message);
   } // url ekleme

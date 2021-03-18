@@ -2,8 +2,8 @@ const serverScheme = require('../../schemes/server-scheme')
 const userScheme = require('../../schemes/user-scheme')
 const mongo = require('../database/mongo')
 const {deleteAfterSend} = require('../messageWorks')
-const {urlToInfo} = require('../Video&Song/ytdlThings')
-
+const {mongoFind} = require('../database/infoGet')
+const { calculateTime } = require('../Video&Song/ytdlThings')
 module.exports = {
   pasteList,
   place
@@ -29,8 +29,12 @@ async function place(server, user, messageDeleteTime, message) {
 
   if (list[0]) {
     for (var i = 0; i < list.length; i++) {
-      server.queue.url.push(list[i]);
-      server = await urlToInfo(server, list[i], user);
+      const result = await mongoFind(list[i])
+      server.queue.url.push(result.url)
+      server.queue.title.push(result.title)
+      server.queue.time.push(calculateTime(result.time))
+      server.queue.image.push(result.image)
+      server.queue.requester.push(message.author.id)
     }
     deleteAfterSend(`Beğenilen şarkılar ekleniyor`, messageDeleteTime, message);
     return server;
@@ -56,8 +60,12 @@ async function pasteList(server, message, messageDeleteTime, user){
 
   if (list[0]) {
     for (var i = 0; i < list.length; i++) {
-      server.queue.url.push(list[i]);
-      server = await urlToInfo(server, list[i], user);
+      const result = await mongoFind(list[i])
+      server.queue.url.push(result.url)
+      server.queue.title.push(result.title)
+      server.queue.time.push(calculateTime(result.time))
+      server.queue.image.push(result.image)
+      server.queue.requester.push(message.author.id)
     }
     deleteAfterSend(`Sunucu listesi ekleniyor`, messageDeleteTime, message);
     return server;
