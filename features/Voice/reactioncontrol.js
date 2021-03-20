@@ -73,12 +73,12 @@ module.exports = (client) => {
           case '🔁':
           if (server.queue.url[0]) {
     
-            if (server.queue.loop === 'true') {
-              server.queue.loop = 'false';
+            if (server.queue.loop === 'açık') {
+              server.queue.loop = 'kapalı';
               deleteAfterSend('Döngüden çıktı', messageDeleteTime, reaction.message);
             }
             else {
-              server.queue.loop = 'true';
+              server.queue.loop = 'açık';
               deleteAfterSend('Şarkı döngüye açıldı', messageDeleteTime, reaction.message);
             }
             embedEdit('playing', server, reaction.message.channel);

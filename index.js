@@ -4,6 +4,7 @@ const config = require('./config.json')
 const WOKCommands = require('wokcommands');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
 
+
   client.on('ready', async () =>{
 
     client.user.setPresence({
@@ -35,8 +36,8 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 
     new WOKCommands(client, {
       disabledDefaultCommands,
-      commandsDir: 'commands',
-      featureDir: 'features',
+      commandsDir: 'radio/commands',
+      featureDir: 'radio/features',
       showWarns: false,
       messagesPath,
 

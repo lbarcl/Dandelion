@@ -29,7 +29,7 @@ module.exports = (client) => {
     }
 
     server = await songAdd(server, message.content, messageDeleteTime, message);
-
+    if(!server.queue.url[0]) return
     embedEdit('playing', server, channel);
     if (!message.guild.voiceConnection) message.member.voice.channel.join().then(function(connection) { // bir ses kanalında değil ise komutu çalıştıran kullanıcının ses kanalına girip listeyi çalmaya başlar
       play(server, connection, channel);

@@ -59,10 +59,11 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
     let result = await mongoCheck(messageContent)
     if (!ytdl.validateURL(result)) {
       deleteAfterSend('Girdiğiniz kelimeler ile bir video bulunamadı', messageDeleteTime, message);
-      return;
-    }
-    server = await shift(messageContent, message, server)
+
+    } else {
+      server = await shift(result, message, server)
     deleteAfterSend(`video ekleniyor`, messageDeleteTime, message);
+    }
   }
   return server;
 }

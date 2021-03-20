@@ -8,34 +8,34 @@ function play(server, connection, channel) {
   server.dispatcher = connection.play(ytdl(server.queue.url[0], { filter: "audioonly" }),
     { volume: 0.25 });
   server.dispatcher.on('finish', () => {
-    if (server.queue.loop === 'false') {
+    if (server.queue.loop === 'kapalı') {
       server.queue.url.shift();
-      server.queue.name.shift();
+      server.queue.title.shift();
       server.queue.time.shift();
-      server.queue.thumbnail.shift();
+      server.queue.image.shift();
       server.queue.requester.shift();
       if (server.queue.url[0]) {
         play(server, connection, channel)
         embedEdit('playing', server, channel);
         return;
       }
-    } else if (server.queue.loop === 'true') {
+    } else if (server.queue.loop === 'açık') {
       server.queue.url.push(server.queue.url[0]);
-      server.queue.name.push(server.queue.name[0]);
+      server.queue.title.push(server.queue.title[0]);
       server.queue.time.push(server.queue.time[0]);
-      server.queue.thumbnail.push(server.queue.thumbnail[0]);
+      server.queue.image.push(server.queue.image[0]);
       server.queue.requester.push(server.queue.requester[0])
       server.queue.url.shift();
-      server.queue.name.shift();
+      server.queue.title.shift();
       server.queue.time.shift();
-      server.queue.thumbnail.shift();
+      server.queue.image.shift();
       server.queue.requester.shift();
       play(server, connection, channel);
       embedEdit('playing', server, channel);
       return;
     }
     var guild = server.dispatcher.player.voiceConnection.channel.guild;
-    connection.disconnect();
+
     embedEdit('noMusic', server, channel);
   })
 }
