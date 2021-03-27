@@ -22,7 +22,7 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
 
   // Sıraya ekleme
   if (messageContent.includes('spotify')){
-   /* const uriResponse = spotifyUri.parse(messageContent)
+    const uriResponse = spotifyUri.parse(messageContent)
     const spotifyApi = new SpotifyWebApi({clientId: config.api.spotify.client.id, clientSecret: config.api.spotify.client.secret})
     const authRespons = await auth( config.api.spotify.client.id, config.api.spotify.client.secret)
     if (!authRespons.access_token) return console.log('Red')
@@ -33,16 +33,20 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
       deleteAfterSend("`" + playlistResult.body.name + "` çalma listesinden " + list.length + " tane şarkı ekleniyor", messageDeleteTime, message);
 
       for(var i = 0; i < list.length; i++){
-        const searchString = list[i].track.artists[0].name + ' - ' + list[i].track.name
-        server.queue.url.push(await mongoCheck(searchString))
-        server.queue.name.push(searchString)
-        server.queue.time.push(calculateTime(list[i].track.duration_ms / 1000))
-        server.queue.thumbnail.push(list[i].track.album.images[0].url)
-        server.queue.requester.push(message.author.id)
+        try{
+          const searchString = list[i].track.artists[0] .name + ' - ' + list[i].track.name
+          var result = await mongoCheck(searchString)
+          server = await shift(result, message, server)
+        } catch (err){
+          deleteAfterSend("Bir hata meydana geldi lütfen destek ekibi ile iletişime geçin", messageDeleteTimmessage);
+        }
       
-        if (i == list.length - 1) embedEdit('playing', server, message.channel)
+        if (i == 20){
+          embedEdit('playing', server, message.channel)
+          break 
+        } 
       }
-    } */
+    } 
   } // playlist ekeleme
   else if (validatePlayList(messageContent)) {
     const playList = await scrapePlaylist(validatePlayList(messageContent));

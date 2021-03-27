@@ -16,5 +16,5 @@ function search(keyWord, list){
             searched.push(list[l])
         }
     }
-    console.log(searched)
+    return searched
 }

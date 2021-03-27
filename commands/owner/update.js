@@ -12,17 +12,26 @@ module.exports = {
         const reactions = ['⏯️', '⏭️', '⏏️', '🔁', '🆑', '❤️', '🗒️', '#️⃣', '*️⃣']  
         await mongo().then(async mongoose => {
             try {
-                const result = await serverScheme.find({})
-                result.forEach(async (server) => {
-                    client.channels.cache.get(server.channelId).setTopic(topicText)
-                    var mes = await client.channels.cache.get(server.channelId).messages.fetch(server.messageId)
-                    
-                    mes.reactions.removeAll().catch(error => console.error('Failed to clear reactions: ', error));
-                    reactions.forEach(r => {
-                      mes.react(r)
-                    })
-                })
-            
+              const result = await client.DBServer.find({})
+              result.forEach(async (server) => {
+                var channel = client.channels.cache.get(server.channelId)
+                if(channel){
+                  channel.setTopic(topicText)
+                  var name = channel.name
+                  if(name.includes('radio')) name.replace('radio',client.user.username)
+                  var mes = await channel.messages.fetch(server.messageId)
+                /*  try {
+                    mes.reactions.removeAll()
+                  } catch (err){
+                    console.log(err)
+                  }
+                  for(var i = 0; i < reactions.length; i++){
+                    mes.react(reactions[i])
+                  } */
+                } else {
+                  await client.DBServer.findOneAndDelete({_id: server._id})
+                }
+              })
             } finally {
               mongoose.connection.close();
             }

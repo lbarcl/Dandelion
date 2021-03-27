@@ -27,6 +27,7 @@ module.exports = (client) => {
           deleteAfterSend('Kullanabilmek için ses kanalında olman gerekli', messageDeleteTime, reaction.message) // belirli süre sonra silinen uyarı mesajı
           return
         }
+        reaction.users.remove(user)
         switch (reaction.emoji.name){
           case '⏯️':
           if(!server.dispatcher) return
@@ -140,6 +141,6 @@ module.exports = (client) => {
           embedEdit('playing', server, reaction.message.channel);
         break
       }
-      reaction.users.remove(user)
+
       })
 }
