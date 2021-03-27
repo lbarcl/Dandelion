@@ -34,7 +34,7 @@ async function place(server, user, messageDeleteTime, message) {
       server.queue.title.push(result.title)
       server.queue.time.push(calculateTime(result.time))
       server.queue.image.push(result.image)
-      server.queue.requester.push(message.author.id)
+      server.queue.requester.push(user.id)
     }
     deleteAfterSend(`Beğenilen şarkılar ekleniyor`, messageDeleteTime, message);
     return server;

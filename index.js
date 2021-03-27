@@ -36,8 +36,8 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 
     new WOKCommands(client, {
       disabledDefaultCommands,
-      commandsDir: 'radio/commands',
-      featureDir: 'radio/features',
+      commandsDir: 'commands',
+      featureDir: 'features',
       showWarns: false,
       messagesPath,
 

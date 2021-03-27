@@ -38,6 +38,7 @@ module.exports = {
             newMessage.react('⏯️');
             newMessage.react('⏭️');
             newMessage.react('⏏️');
+            newMessage.react('🔀');
             newMessage.react('🔁');
             newMessage.react('🆑');
             newMessage.react('❤️');

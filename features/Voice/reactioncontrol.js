@@ -71,20 +71,49 @@ module.exports = (client) => {
           embedEdit('noMusic', server, reaction.message.channel);
     
           break
-          case '🔁':
-          if (server.queue.url[0]) {
-    
-            if (server.queue.loop === 'açık') {
-              server.queue.loop = 'kapalı';
-              deleteAfterSend('Döngüden çıktı', messageDeleteTime, reaction.message);
-            }
-            else {
-              server.queue.loop = 'açık';
-              deleteAfterSend('Şarkı döngüye açıldı', messageDeleteTime, reaction.message);
-            }
-            embedEdit('playing', server, reaction.message.channel);
+          case '🔀':
+          if (!server.queue.url[0]) return deleteAfterSend('Liste karıştırabileceğim hiç bir şey yok', messageDeleteTime, reaction.message)
+          var queue = server.queue
+          var currentIndex = queue.url.length
+
+          while(0 !== currentIndex){
+            var randomIndex = Math.floor(Math.random() * currentIndex)
+            currentIndex -= 1
+
+            var temp = {url: queue.url[currentIndex], title: queue.title[currentIndex], time: queue.time[currentIndex], image: queue.image[currentIndex], requester: queue.requester[currentIndex]}
+            queue.url[currentIndex] = queue.url[randomIndex]
+            queue.title[currentIndex] = queue.title[randomIndex]
+            queue.time[currentIndex] = queue.time[randomIndex]
+            queue.image[currentIndex] = queue.image[randomIndex]
+            queue.requester[currentIndex] = queue.requester[randomIndex]
+
+            queue.url[randomIndex] = temp.url
+            queue.title[randomIndex] = temp.title
+            queue.time[randomIndex] = temp.time
+            queue.image[randomIndex] = temp.image
+            queue.requester[randomIndex] = temp.requester
           }
+
+          server.queue = queue
+          embedEdit('playing', server, reaction.message.channel);
+          member.voice.channel.join().then(function(connection) {
+            play(server, connection, reaction.message.channel);
+          })
           break
+          case '🔁':
+            if (server.queue.url[0]) {
+      
+              if (server.queue.loop === 'açık') {
+                server.queue.loop = 'kapalı';
+                deleteAfterSend('Döngüden çıktı', messageDeleteTime, reaction.message);
+              }
+              else {
+                server.queue.loop = 'açık';
+                deleteAfterSend('Şarkı döngüye açıldı', messageDeleteTime, reaction.message);
+              }
+              embedEdit('playing', server, reaction.message.channel);
+            }
+            break
           case '🆑':
           if (server.queue.url[1]) {
             for (var i = server.queue.url.length; i > 0; i--) {
