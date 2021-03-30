@@ -1,4 +1,4 @@
-const lyricsFetcher = require('lyrics-parse')
+const music = require('musicmatch')({apikey:"5e079c22e00ebeb72aae84020166f46c"});
 const {MessageEmbed} = require('discord.js')
 
 module.exports = {
@@ -14,15 +14,56 @@ module.exports = {
             if(!server.queue.url[0]) return message.reply('Şuan çalmakta olan şarkı olmadğından şarkı sözü görüntüleyemezsiniz')
 
         // Şarkıyı araştırmak
-        console.log(server.queue.title[0])
         var args = server.queue.title[0]
-        args = args.split('-')
-        result = await lyricsFetcher(args[0], args[1])
+        var result = await music.trackSearch({q: args})
+        var tracks = result.message.body.track_list
+
+        var t = {title: [], id: []}
+        for (var i = 0; i < tracks.length; i++){
+          t.title.push(`${tracks[i].track.track_name} - ${tracks[i].track.artist_name}`)
+          t.id.push(tracks[i].track.track_id)
+        }
+
+        result = search(args, t.title)
+        var index = t.title.indexOf(result[0])
+        result = await music.trackLyrics({track_id:t.id[index]})  
+        console.log(result.message.body.lyrics)
+        /*
             // Söz bulamadıysa red
             if(!result) return message.reply('Şarkı sözü bulunamadı')
 
         embed(result, message, client)
+        */
     }
+}
+
+function search(keyWord, list){
+  var flag = 0
+  const max = keyWord.length
+  var searched = []
+  for(var l = 0; l < list.length; l++){
+      for(var m = 0; m < max; m++){
+          flag = 0
+          if(list[l].toLowerCase()[m] != keyWord.toLowerCase()[m]){
+              flag = 1
+              break
+          }
+      }
+      if(flag == 0){
+          searched.push(list[l])
+      }
+  }
+
+  if(!searched[0]){
+    var args = keyWord.split(' - ')
+    var temp = args[0]
+    args[0] = args[1]
+    args[1] = temp
+    keyWord = args.join(' - ')
+    searched = search(keyWord, list)
+  }
+
+  return searched
 }
 
 function embed(lyrics, message, client){
