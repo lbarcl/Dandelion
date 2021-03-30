@@ -38,7 +38,8 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
           var result = await mongoCheck(searchString)
           server = await shift(result, message, server)
         } catch (err){
-          deleteAfterSend("Bir hata meydana geldi lütfen destek ekibi ile iletişime geçin", messageDeleteTimmessage);
+          console.error(err)
+          deleteAfterSend("Şarkıyı bulamadık özür dileriz", messageDeleteTime, message);
         }
       
         if (i == 20){

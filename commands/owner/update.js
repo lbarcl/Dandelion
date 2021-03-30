@@ -8,7 +8,7 @@ module.exports = {
   description: 'Sadece bot sahibi tarafından kullanılabilen bot kanalı ve bot mesajını güncellemek için kullanılan komut',
   syntaxError: "Yanlış kullanım, sadece `{PREFIX}kurulum` yazmanız yeterli",
   callback: async ({ message, client }) => {
-        const topicText = '[⏯️] Durdur/Devam | [⏭️] Sonraki şarkı | [⏏️] Kanaldan ayrıl | [🔁] Sırayı döngüye al/çıkar | [🆑] Sırayı temizle | [❤️] Çalan şarkıyı beğen/beğenme | [🗒️] Çalan şarkıyı sunucu listesine ekler/çıkartır | [#️⃣] Beğenilen şarkıları sıraya ekler |  [*️⃣] Sunucu şarkı listesini sıraya ekler'
+        const topicText = '[⏯️] Durdur/Devam | [⏭️] Sonraki şarkı | [⏏️] Kanaldan ayrıl | [🔀] Sırayı karıştırır | [🔁] Sırayı döngüye al/çıkar | [🆑] Sırayı temizle | [❤️] Çalan şarkıyı beğen/beğenme | [🗒️] Çalan şarkıyı sunucu listesine ekler/çıkartır | [#️⃣] Beğenilen şarkıları sıraya ekler |  [*️⃣] Sunucu şarkı listesini sıraya ekler'
         const reactions = ['⏯️', '⏭️', '⏏️', '🔁', '🔀', '🆑', '❤️', '🗒️', '#️⃣', '*️⃣']  
         await mongo().then(async mongoose => {
             try {
@@ -34,6 +34,7 @@ module.exports = {
               })
             } finally {
               mongoose.connection.close();
+              message.reply('Komut çalıştı, logları kontrol et!')
             }
         })
     }
