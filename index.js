@@ -3,6 +3,7 @@ const mongo = require('./utils/database/mongo')
 const config = require('./config.json')
 const WOKCommands = require('wokcommands');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
+const API = require('./API')
 
 
   client.on('ready', async () =>{
@@ -51,6 +52,7 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION']
     client.config = config
     client.servers = {}
 
+    API(client)
   });
 
-  client.login(config.api.discord.bot.main);
+  client.login(config.api.discord.bot.test);
