@@ -3,7 +3,6 @@ const mongo = require('./utils/database/mongo')
 const config = require('./config.json')
 const WOKCommands = require('wokcommands');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
-const API = require('./API')
 
 
   client.on('ready', async () =>{
@@ -37,8 +36,8 @@ const API = require('./API')
 
     new WOKCommands(client, {
       disabledDefaultCommands,
-      commandsDir: 'commands',
-      featureDir: 'features',
+      commandsDir: './commands',
+      featureDir: './features',
       showWarns: false,
       messagesPath,
 
@@ -51,8 +50,6 @@ const API = require('./API')
     client.DBPlaylist = require('./schemes/playlist-scheme')
     client.config = config
     client.servers = {}
-
-    API(client)
   });
 
   client.login(config.api.discord.bot.test);
