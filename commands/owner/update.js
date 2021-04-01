@@ -5,6 +5,7 @@ module.exports = {
   aliases: ['güncelle', 'gl'],
   ownerOnly: true,
   minArgs: 0,
+  hidden: true,
   description: 'Sadece bot sahibi tarafından kullanılabilen bot kanalı ve bot mesajını güncellemek için kullanılan komut',
   syntaxError: "Yanlış kullanım, sadece `{PREFIX}kurulum` yazmanız yeterli",
   callback: async ({ message, client }) => {

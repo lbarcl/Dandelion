@@ -1,28 +1,14 @@
-const express = require('express')
-const app = express()
-const port = 1250
 const os = require('os');
 
-
-app.listen(port, () => console.log(`Port ${port} dinleniyor`))
-
-app.get('/servers/:id', (req, res) => {
-    var server = client.servers[req.params.id]
-    if (!server) res.sendStatus(404)
-    else {
-        res.send({
-            channel: {
-                id: server.channelId,
-                message: {
-                    id: server.messageId,
-                    content: server.embedInfo
-                }
-            },
-            queue: server.queue
-        })
-    }
-})
-app.get('/os', (req, res) => {
+module.exports = {
+  name: 'sistem',
+  aliases: ['os'],
+  ownerOnly: true,
+  minArgs: 0,
+  hidden: true,
+  description: 'Botun bulunduğu makine hakkında bilgi verir',
+  syntaxError: "Yanlış kullanım, sadece `{PREFIX}os` yazmanız yeterli",
+  callback: async ({ client }) => {
     var cpus = os.cpus()
     var tram = parseInt(os.totalmem() / 1000000000)
     var fram = parseInt(os.freemem() / 1000000000)
@@ -41,17 +27,11 @@ app.get('/os', (req, res) => {
     cpu.avgTimes.sys /= cpus.length
     cpu.avgTimes.idle /= cpus.length
     cpu.avgTimes.irq /= cpus.length 
-    res.send({
+    console.log({
         cpu,
         totalRam: tram,
         freeRam: fram,
         ramUsing: uram
     })
-})
-app.get('/servers', (req, res) => {
-    var servers = []
-    client.guilds.cache.forEach(guild => {
-        servers.push({"id": guild.id, "name": guild.name})
-    })
-    res.send(servers)
-})
+  }
+}
