@@ -17,8 +17,8 @@ module.exports = (client) => {
     if(server.channelId != channel.id) return // mesajın özel kanala gönderilip gönderilmediği kontrolü
     message.delete() // mesajı silmek
 
-    if (server.dispatcher && server.queue.url[0]){
-      if (!member.voice.channelID == server.dispatcher.player.voiceConnection.channel.id) { // kullanıcının ses kanalında olup olmadığı kontrolü
+    if (server.dispatcher){
+      if (member.voice.channelID != server.dispatcher.player.voiceConnection.channel.id) { // kullanıcının ses kanalında olup olmadığı kontrolü
         deleteAfterSend('Kullanabilmek için aynı ses kanalında olman gerekli', messageDeleteTime, message) // belirli süre sonra silinen uyarı mesajı
         return
       }
@@ -33,7 +33,7 @@ module.exports = (client) => {
     server = await songAdd(server, message.content, messageDeleteTime, message);
     if(!server.queue.url[0]) return
     embedEdit('playing', server, channel);
-    if (!server.dispatcher) message.member.voice.channel.join().then(function(connection) { // bir ses kanalında değil ise komutu çalıştıran kullanıcının ses kanalına girip listeyi çalmaya başlar
+    if (!server.dispatcher) member.voice.channel.join().then(function(connection) { // bir ses kanalında değil ise komutu çalıştıran kullanıcının ses kanalına girip listeyi çalmaya başlar
       play(server, connection, channel);
     })
 

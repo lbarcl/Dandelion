@@ -23,13 +23,15 @@ module.exports = (client) => {
     
         if (reaction.message.id != server.messageId) return
         const member = reaction.message.guild.members.cache.get(user.id)
-        if (server.dispatcher && server.queue.url[0]){
-          if (!member.voice.channelID == server.dispatcher.player.voiceConnection.channel.id) { // kullanıcının ses kanalında olup olmadığı kontrolü
+        reaction.users.remove(user)
+        
+        if (server.dispatcher){
+          if (member.voice.channelID != server.dispatcher.player.voiceConnection.channel.id) { // kullanıcının ses kanalında olup olmadığı kontrolü
             deleteAfterSend('Kullanabilmek için aynı ses kanalında olman gerekli', messageDeleteTime, message) // belirli süre sonra silinen uyarı mesajı
             return
           }
-        } else if (!member.voice.channelID) return deleteAfterSend('Kullanabilmek için ses kanalında olman gerekli', messageDeleteTime, message)
-        reaction.users.remove(user)
+        } else if (!member.voice.channelID) return deleteAfterSend('Kullanabilmek için ses kanalında olman gerekli', messageDeleteTime, message)        
+        
         switch (reaction.emoji.name){
           case '⏯️':
           if(!server.dispatcher) return
@@ -51,12 +53,14 @@ module.exports = (client) => {
           if(!server.queue.url[0]){
             embedEdit('noMusic', server, reaction.message.channel)
             server.dispatcher.player.voiceConnection.disconnect();
+            server.dispatcher = null
             return
           }
           embedEdit('playing', server, reaction.message.channel);
           member.voice.channel.join().then(function(connection) {
             play(server, connection, reaction.message.channel);
           })
+          
           break
           case '⏏️':
           if (server.queue.url[0]) {
@@ -70,8 +74,8 @@ module.exports = (client) => {
           }
           deleteAfterSend('Kanaldan ayrılıyor', messageDeleteTime, reaction.message);
           server.dispatcher.player.voiceConnection.disconnect();
+          server.dispatcher = null
           embedEdit('noMusic', server, reaction.message.channel);
-    
           break
           case '🔀':
           if (!server.queue.url[0]) return deleteAfterSend('Liste karıştırabileceğim hiç bir şey yok', messageDeleteTime, reaction.message)
@@ -172,6 +176,5 @@ module.exports = (client) => {
           embedEdit('playing', server, reaction.message.channel);
         break
       }
-
-      })
+  })
 }
