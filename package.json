@@ -1,6 +1,6 @@
 {
-  "name": "radiobot",
-  "version": "2.7.5",
+  "name": "dandelion",
+  "version": "2.7.6",
   "description": "",
   "main": "index.js",
   "scripts": {

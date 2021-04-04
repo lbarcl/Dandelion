@@ -14,7 +14,7 @@ module.exports = {
     callback: async ({ message, client, text }) => {
         var url;
         if(ytdl.validateURL(text)){
-            url = args[0];
+            url = text;
         } 
         else{
             try {
@@ -29,6 +29,7 @@ module.exports = {
         }
 
         var vInfo = await ytdl.getBasicInfo(url);
+        if(vInfo.videoDetails.age_restricted && !message.channel.nsfw) return message.reply('Bulduğumuz video NSFW bir video olduğundan SFW kanala gönderemeyiz')
         vInfo = vInfo.player_response.videoDetails;
         var thumbnail = vInfo.thumbnail.thumbnails;
         thumbnail[thumbnail.length - 1].url
@@ -39,7 +40,7 @@ module.exports = {
         .setURL(url)
         .setAuthor(vInfo.author)
         .setColor(client.config.embed.color)
-        .setDescription(vInfo.shortDescription.split('.')[0])
+        .setDescription(vInfo.shortDescription.slice(0, 200) + '...')
         .setFooter(`${vInfo.viewCount} görüntülenme | ${time}`)
         .setImage(thumbnail[thumbnail.length - 1].url);
 
