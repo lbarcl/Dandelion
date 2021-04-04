@@ -50,7 +50,7 @@ module.exports = (client) => {
           server.queue.requester.shift()
           if(!server.queue.url[0]){
             embedEdit('noMusic', server, reaction.message.channel)
-            server.dispatcher.disconnect();
+            server.dispatcher.player.voiceConnection.disconnect();
             return
           }
           embedEdit('playing', server, reaction.message.channel);
@@ -69,7 +69,7 @@ module.exports = (client) => {
             }
           }
           deleteAfterSend('Kanaldan ayrılıyor', messageDeleteTime, reaction.message);
-          server.dispatcher.disconnect();
+          server.dispatcher.player.voiceConnection.disconnect();
           embedEdit('noMusic', server, reaction.message.channel);
     
           break

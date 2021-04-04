@@ -20,7 +20,7 @@ function play(server, connection, channel) {
         return;
       }
       else {
-        setTimeout(() => {if(!server.queue.url[0] && server.dispatcher) server.dispatcher.disconnect()}, 300000);
+        setTimeout(() => {if(!server.queue.url[0] && server.dispatcher) connection.disconnect()}, 300000);
       }
     } else if (server.queue.loop === 'açık') {
       server.queue.url.push(server.queue.url[0]);
