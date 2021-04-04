@@ -17,7 +17,7 @@ module.exports = (client) => {
     if(server.channelId != channel.id) return // mesajın özel kanala gönderilip gönderilmediği kontrolü
     message.delete() // mesajı silmek
 
-    if (server.dispatcher){
+    if (server.dispatcher && server.queue.url[0]){
       if (!member.voice.channelID == server.dispatcher.player.voiceConnection.channel.id) { // kullanıcının ses kanalında olup olmadığı kontrolü
         deleteAfterSend('Kullanabilmek için aynı ses kanalında olman gerekli', messageDeleteTime, message) // belirli süre sonra silinen uyarı mesajı
         return
