@@ -19,6 +19,9 @@ function play(server, connection, channel) {
         embedEdit('playing', server, channel);
         return;
       }
+      else {
+        setTimeout(() => {if(!server.queue.url[0] && server.dispatcher) server.dispatcher.disconnect()}, 300000);
+      }
     } else if (server.queue.loop === 'açık') {
       server.queue.url.push(server.queue.url[0]);
       server.queue.title.push(server.queue.title[0]);
@@ -34,7 +37,6 @@ function play(server, connection, channel) {
       embedEdit('playing', server, channel);
       return;
     }
-    var guild = server.dispatcher.player.voiceConnection.channel.guild;
 
     embedEdit('noMusic', server, channel);
   })

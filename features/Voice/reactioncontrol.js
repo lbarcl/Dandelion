@@ -23,8 +23,8 @@ module.exports = (client) => {
     
         if (reaction.message.id != server.messageId) return
         const member = reaction.message.guild.members.cache.get(user.id)
-        if (!member.voice.channelID) { // kullanıcının ses kanalında olup olmadığı kontrolü
-          deleteAfterSend('Kullanabilmek için ses kanalında olman gerekli', messageDeleteTime, reaction.message) // belirli süre sonra silinen uyarı mesajı
+        if (!member.voice.channelID == server.dispatcher.player.voiceConnection.channel.id) { // kullanıcının ses kanalında olup olmadığı kontrolü
+          deleteAfterSend('Kullanabilmek için aynı ses kanalında olman gerekli', messageDeleteTime, reaction.message) // belirli süre sonra silinen uyarı mesajı
           return
         }
         reaction.users.remove(user)

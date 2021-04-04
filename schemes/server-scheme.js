@@ -9,6 +9,7 @@ const setup = mongoose.Schema({
   _id: reqString,
   channelId: reqString,
   messageId: reqString,
+  serverOut: String,
   serverList: [String],
   imageUrl: String,
   hexColor: String,
