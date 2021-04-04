@@ -23,10 +23,12 @@ module.exports = (client) => {
     
         if (reaction.message.id != server.messageId) return
         const member = reaction.message.guild.members.cache.get(user.id)
-        if (!member.voice.channelID == server.dispatcher.player.voiceConnection.channel.id) { // kullanıcının ses kanalında olup olmadığı kontrolü
-          deleteAfterSend('Kullanabilmek için aynı ses kanalında olman gerekli', messageDeleteTime, reaction.message) // belirli süre sonra silinen uyarı mesajı
-          return
-        }
+        if (server.dispatcher){
+          if (!member.voice.channelID == server.dispatcher.player.voiceConnection.channel.id) { // kullanıcının ses kanalında olup olmadığı kontrolü
+            deleteAfterSend('Kullanabilmek için aynı ses kanalında olman gerekli', messageDeleteTime, message) // belirli süre sonra silinen uyarı mesajı
+            return
+          }
+        } else if (!member.voice.channelID) return deleteAfterSend('Kullanabilmek için ses kanalında olman gerekli', messageDeleteTime, message)
         reaction.users.remove(user)
         switch (reaction.emoji.name){
           case '⏯️':
