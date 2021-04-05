@@ -1,5 +1,5 @@
 const ytdl = require('ytdl-core')
-const {embedEdit} = require('../messageWorks')
+const {embedEdit, deleteAfterSend} = require('../messageWorks')
 
 module.exports = {play, urlToInfo, calculateTime}
 
@@ -20,7 +20,12 @@ function play(server, connection, channel) {
         return;
       }
       else {
-        setTimeout(() => {if(!server.queue.url[0] && server.dispatcher) connection.disconnect()}, 300000);
+        setTimeout(() => {
+          if(!server.queue.url[0] && server.dispatcher){ 
+            connection.disconnect()
+            server.dispatcher = null
+            deleteAfterSend("Aktif olmadığım için ses kanalından ayrılıyorum", 10000, await channel.messages.fetch(server.messageId));
+        }}, 300000);
       }
     } else if (server.queue.loop === 'açık') {
       server.queue.url.push(server.queue.url[0]);
