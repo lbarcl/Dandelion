@@ -20,7 +20,7 @@ function play(server, connection, channel) {
         return;
       }
       else {
-        setTimeout(() => {
+        setTimeout(async () => {
           if(!server.queue.url[0] && server.dispatcher){ 
             connection.disconnect()
             server.dispatcher = null
