@@ -24,7 +24,8 @@ function play(server, connection, channel) {
           if(!server.queue.url[0] && server.dispatcher){ 
             connection.disconnect()
             server.dispatcher = null
-            deleteAfterSend("Aktif olmadığım için ses kanalından ayrılıyorum", 10000, await channel.messages.fetch(server.messageId));
+            var message = await channel.messages.fetch(server.messageId)
+            deleteAfterSend("Aktif olmadığım için ses kanalından ayrılıyorum", 10000, message);
         }}, 300000);
       }
     } else if (server.queue.loop === 'açık') {
