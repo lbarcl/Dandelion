@@ -1,4 +1,4 @@
-const {deleteAfterSend, embedEdit} = require('../messageWorks')
+const {deleteAfterSend, embedEdit} = require('../API/messageWorks')
 const {mongoCheck, mongoFind} = require('../database/infoGet')
 const config = require('../../config.json');
 //--------------------------Youtube-----------------------------------
@@ -8,7 +8,7 @@ const ytpl = require('ytpl');
 //--------------------------Spotify-----------------------------------
 const SpotifyWebApi = require('spotify-web-api-node')
 const spotifyUri = require('spotify-uri')
-const auth = require('../spotify')
+const auth = require('../API/spotify')
 
 module.exports = {songAdd, firstPlace}
 
@@ -35,20 +35,26 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
           console.error(err)
           deleteAfterSend("Şarkıyı bulamadık özür dileriz", messageDeleteTime, message);
         }
-      
-        if (i == 20){
-          embedEdit('playing', server, message.channel)
-          break 
-        } 
       }
     } 
+    else if (uriResponse.type == 'track') {
+      const track = await (await spotifyApi.getTrack(uriResponse.id)).body
+      const searchString = track.artists[0].name + ' - ' + track.name
+      try{
+        var result = await mongoCheck(searchString)
+        server = await shift(result, message, server)
+      } catch (err){
+        console.error(err)
+        deleteAfterSend("Şarkıyı bulamadık özür dileriz", messageDeleteTime, message);
+      }
+    }
   } // playlist ekeleme
   else if (ytpl.validateID(messageContent)) {
     const playList = await ytpl(messageContent, {limit: Infinity})
-   for (var i = 0; i < playList.items.length; i++) {
+    deleteAfterSend("`" + playList.title + "` çalma listesinden " + playList.items.length + " tane şarkı ekleniyor", messageDeleteTime, message)
+    for (var i = 0; i < playList.items.length; i++) {
       server = await shift(playList.items[i].shortUrl, message, server)
     } 
-    deleteAfterSend("`" + playList.title + "` çalma listesinden " + playList.items.length + " tane şarkı ekleniyor", messageDeleteTime, message)
   } // url ekleme
   else if (ytdl.validateURL(messageContent)) {
     server = await shift(messageContent, message, server)
@@ -58,10 +64,9 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
     let result = await mongoCheck(messageContent)
     if (!ytdl.validateURL(result)) {
       deleteAfterSend('Girdiğiniz kelimeler ile bir video bulunamadı', messageDeleteTime, message);
-
     } else {
       server = await shift(result, message, server)
-    deleteAfterSend(`video ekleniyor`, messageDeleteTime, message);
+      deleteAfterSend(`video ekleniyor`, messageDeleteTime, message);
     }
   }
   return server;

@@ -1,5 +1,5 @@
 const {MessageEmbed} = require('discord.js')
-const {embedEdit} = require('../../../utils/messageWorks')
+const {embedEdit} = require('../../../utils/API/messageWorks')
 const {play} = require('../../../utils/Video&Song/ytdlThings')
 
 module.exports = {

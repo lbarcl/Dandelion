@@ -1,7 +1,7 @@
 const {listThing, favThing} = require('../../utils/Playlist/favThing')
 const {pasteList, place} = require('../../utils/Playlist/listImport')
 const {play} = require('../../utils/Video&Song/ytdlThings')
-const {deleteAfterSend, embedEdit} = require('../../utils/messageWorks')
+const {deleteAfterSend, embedEdit} = require('../../utils/API/messageWorks')
 const setup = require('../../utils/setup')
 
 module.exports = (client) => {

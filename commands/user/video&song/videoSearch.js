@@ -2,7 +2,10 @@ const {MessageEmbed} = require('discord.js')
 const ytdl = require('ytdl-core')
 const { YTSearcher } = require('ytsearcher')
 const config = require('../../../config.json')
-const searcher = new YTSearcher(config.api.youtube.dataV3.secondry)
+const searchers = []
+for (var i = 0; i < config.api.youtube.dataV3.length; i++){
+  searchers.push(new YTSearcher(config.api.youtube.dataV3[i]))
+}
 
 module.exports = {
     name: 'videobul',
@@ -18,13 +21,16 @@ module.exports = {
         } 
         else{
             try {
-                let result = await searcher.search(text, { type: 'video' });
-                if(!ytdl.validateURL(result.first.url)) return message.reply("Girdiğiniz bilgiler ile bir video bulunamadı");
-                url = result.first.url;
+              let result 
+              for (var i = 0; i < searchers.length; i++){
+                result = await searchers[i].search(text, { type: 'video' })
+                if (result) break
+              }
+              url = result.first.url;
             } catch (e) {
-                console.error(e)
-                message.reply("Girdiğiniz bilgiler ile bir video bulunamadı");
-                return
+              console.error(e)
+              message.reply("Girdiğiniz bilgiler ile bir video bulunamadı");
+              return
             }
         }
 

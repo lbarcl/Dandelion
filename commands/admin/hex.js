@@ -1,5 +1,5 @@
 const mongo = require('../../utils/database/mongo')
-const {embedEdit} = require('../../utils/messageWorks')
+const {embedEdit} = require('../../utils/API/messageWorks')
 
 module.exports = {
   minArgs: 0,

@@ -1,6 +1,6 @@
 const {songAdd} = require('../../utils/Video&Song/songAdder')
 const {play} = require('../../utils/Video&Song/ytdlThings')
-const {deleteAfterSend, embedEdit} = require('../../utils/messageWorks')
+const {deleteAfterSend, embedEdit} = require('../../utils/API/messageWorks')
 const setup = require('../../utils/setup')
 
 module.exports = (client) => {

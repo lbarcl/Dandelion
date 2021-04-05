@@ -34,8 +34,8 @@ function search(arr, inputvalue) {
   }
   
   function editDistance(val1, val2) {
-    val1 = val1.toLowerCase();
-    val2 = val2.toLowerCase();
+    val1 = val1.toString().toLowerCase();
+    val2 = val2.toString().toLowerCase();
   
     let costs = [];
   

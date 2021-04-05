@@ -1,5 +1,5 @@
 const ytdl = require('ytdl-core')
-const {embedEdit, deleteAfterSend} = require('../messageWorks')
+const {embedEdit, deleteAfterSend} = require('../API/messageWorks')
 
 module.exports = {play, urlToInfo, calculateTime}
 
