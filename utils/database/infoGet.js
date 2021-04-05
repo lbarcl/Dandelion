@@ -26,8 +26,8 @@ async function mongoCheck(keyWord){
             titles.push(result[t].title)
           }
           result = search(keyWord, titles)
-          if(result[0]){
-            result = await videoInfoScheme.findOne({title: result[0]})
+          if(result){
+            result = await videoInfoScheme.findOne({title: result})
             url = result.url
           }
           else {
