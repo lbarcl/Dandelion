@@ -20,13 +20,8 @@ function play(server, connection, channel) {
         return;
       }
       else {
-        setTimeout(async () => {
-          if(!server.queue.url[0] && server.dispatcher){ 
-            connection.disconnect()
-            server.dispatcher = null
-            var message = await channel.messages.fetch(server.messageId)
-            deleteAfterSend("Aktif olmadığım için ses kanalından ayrılıyorum", 10000, message);
-        }}, 300000);
+        disconnect(server, 300000, channel, connection)
+        server.dispatcher = null
       }
     } else if (server.queue.loop === 'açık') {
       server.queue.url.push(server.queue.url[0]);
@@ -95,4 +90,14 @@ function calculateTime(seconds){
     time = `${m}:${s}`
   }
   return time
+}
+
+function disconnect(server, timeOut, channel, connection){
+  setTimeout(async () => {
+    if(!server.queue.url[0]){ 
+      connection.disconnect()
+      var message = await channel.messages.fetch(server.messageId)
+      deleteAfterSend("Aktif olmadığım için ses kanalından ayrılıyorum", 10000, message);
+    }
+  }, timeOut);
 }
