@@ -1,6 +1,6 @@
 const videoInfoScheme = require("../../schemes/video-info")
 const {urlToInfo} = require("../Video&Song/ytdlThings")
-const search = require("../algorithm/search")
+const search = require("../Algorithm/search")
 const ytdl = require("ytdl-core")
 const mongo = require("./mongo")
 const { YTSearcher } = require('ytsearcher');
