@@ -31,7 +31,7 @@ module.exports = (client) => {
     server = await songAdd(server, message.content, messageDeleteTime, message);
     if(!server.queue.url[0]) return
     embedEdit('playing', server, channel);
-    if (!server.dispatcher) member.voice.channel.join().then(function(connection) { // bir ses kanalında değil ise komutu çalıştıran kullanıcının ses kanalına girip listeyi çalmaya başlar
+    member.voice.channel.join().then(function(connection) { // bir ses kanalında değil ise komutu çalıştıran kullanıcının ses kanalına girip listeyi çalmaya başlar
       play(server, connection, channel);
     })
   })

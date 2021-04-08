@@ -92,14 +92,12 @@ async function mongoFind(url){
             url: result.url,
             title: result.title,
             time: result.time,
-            image: result.image
+            image: result.image,
+            requestCounter: 1,
+            lastTime: Date.now()
         }).save()
-
-        await videoInfoScheme.findByIdAndUpdate(id, {
-          $addToSet: {
-            keyWords: result.title
-          }
-        })
+      } else {
+        await videoInfoScheme.findOneAndUpdate(id, {$inc: {requestCounter: 1}, $set: {lastTime: Date.now()}})
       }
     }
     finally {

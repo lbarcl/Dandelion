@@ -21,7 +21,6 @@ function play(server, connection, channel) {
       }
       else {
         disconnect(server, 300000, channel, connection)
-        server.dispatcher = null
       }
     } else if (server.queue.loop === 'açık') {
       server.queue.url.push(server.queue.url[0]);
@@ -92,10 +91,11 @@ function calculateTime(seconds){
   return time
 }
 
-function disconnect(server, timeOut, channel, connection){
+function disconnect(server, timeOut, channel){
   setTimeout(async () => {
     if(!server.queue.url[0]){ 
-      connection.disconnect()
+      server.dispatcher?.player.voiceConnection.disconnect();
+      server.dispatcher = null
       var message = await channel.messages.fetch(server.messageId)
       deleteAfterSend("Aktif olmadığım için ses kanalından ayrılıyorum", 10000, message);
     }

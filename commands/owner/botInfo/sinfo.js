@@ -21,7 +21,8 @@ module.exports = {
                     content: server.embedInfo
                 }
             },
-            queue: server.queue
+            queue: server.queue,
+            dispatcher: server.dispatcher
         })
     }
   }
