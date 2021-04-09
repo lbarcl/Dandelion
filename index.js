@@ -1,5 +1,6 @@
 const Discord = require('discord.js')
 const mongo = require('./utils/database/mongo')
+const videoRemove = require('./utils/database/videoRemove')
 const config = require('./config.json')
 const WOKCommands = require('wokcommands');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
@@ -51,6 +52,12 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION']
     client.config = config
     client.servers = {}
 
+    setInterval(function(){
+      var hour = new Date().getHours()
+      if (hour == 23) {
+        videoRemove(604800)
+      }
+    }, 1800000)
   });
 
   client.login(config.api.discord.bot.main);

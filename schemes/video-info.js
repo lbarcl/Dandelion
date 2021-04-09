@@ -11,6 +11,8 @@ const videoSearch = mongoose.Schema({
   title: reqString,
   time: reqString,
   image: reqString,
+  lastTime: Number,
+  requestCounter: Number,
   keyWords: [String] 
 })
 

@@ -1,7 +1,7 @@
 const {listThing, favThing} = require('../../utils/Playlist/favThing')
 const {pasteList, place} = require('../../utils/Playlist/listImport')
 const {play} = require('../../utils/Video&Song/ytdlThings')
-const {deleteAfterSend, embedEdit} = require('../../utils/messageWorks')
+const {deleteAfterSend, embedEdit} = require('../../utils/API/messageWorks')
 const setup = require('../../utils/setup')
 
 module.exports = (client) => {
@@ -23,11 +23,15 @@ module.exports = (client) => {
     
         if (reaction.message.id != server.messageId) return
         const member = reaction.message.guild.members.cache.get(user.id)
-        if (!member.voice.channelID) { // kullanıcının ses kanalında olup olmadığı kontrolü
-          deleteAfterSend('Kullanabilmek için ses kanalında olman gerekli', messageDeleteTime, reaction.message) // belirli süre sonra silinen uyarı mesajı
-          return
-        }
         reaction.users.remove(user)
+        
+        if (server.dispatcher){
+          if (member.voice.channelID != server.dispatcher.player.voiceConnection.channel.id) { // kullanıcının ses kanalında olup olmadığı kontrolü
+            deleteAfterSend('Kullanabilmek için aynı ses kanalında olman gerekli', messageDeleteTime, message) // belirli süre sonra silinen uyarı mesajı
+            return
+          }
+        } else if (!member.voice.channelID) return deleteAfterSend('Kullanabilmek için ses kanalında olman gerekli', messageDeleteTime, message)        
+        
         switch (reaction.emoji.name){
           case '⏯️':
           if(!server.dispatcher) return
@@ -48,13 +52,15 @@ module.exports = (client) => {
           server.queue.requester.shift()
           if(!server.queue.url[0]){
             embedEdit('noMusic', server, reaction.message.channel)
-            member.voice.channel.leave()
+            server.dispatcher.player.voiceConnection.disconnect();
+            server.dispatcher = null
             return
           }
           embedEdit('playing', server, reaction.message.channel);
           member.voice.channel.join().then(function(connection) {
             play(server, connection, reaction.message.channel);
           })
+          
           break
           case '⏏️':
           if (server.queue.url[0]) {
@@ -67,9 +73,9 @@ module.exports = (client) => {
             }
           }
           deleteAfterSend('Kanaldan ayrılıyor', messageDeleteTime, reaction.message);
-          member.voice.channel.leave();
+          server.dispatcher.player.voiceConnection.disconnect();
+          server.dispatcher = null
           embedEdit('noMusic', server, reaction.message.channel);
-    
           break
           case '🔀':
           if (!server.queue.url[0]) return deleteAfterSend('Liste karıştırabileceğim hiç bir şey yok', messageDeleteTime, reaction.message)
@@ -170,6 +176,5 @@ module.exports = (client) => {
           embedEdit('playing', server, reaction.message.channel);
         break
       }
-
-      })
+  })
 }

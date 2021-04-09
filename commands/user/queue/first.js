@@ -1,4 +1,4 @@
-const {embedEdit} = require('../../../utils/messageWorks')
+const {embedEdit} = require('../../../utils/API/messageWorks')
 const {play} = require('../../../utils/Video&Song/ytdlThings')
 const {mongoCheck, mongoFind}  = require('../../../utils/database/infoGet')
 const {calculateTime} = require('../../../utils/Video&Song/ytdlThings')

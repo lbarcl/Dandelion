@@ -15,8 +15,10 @@ module.exports = {
           .setAuthor(message.member.nickname || message.member.user.username, message.member.user.avatarURL())
           .setDescription(`Komutlar hakında daha fazla bilgi almak için  ${client.config.prefix}yardım <komut ismi>`)
           instance.commandHandler.commands.forEach((command) => {
-            var description = command.description || 'Açıklama yakında eklenecek';
-            helpEmbed.addField(`${command.names[0]}`, description, true)
+            if(!command.hidden){
+              var description = command.description || 'Açıklama yakında eklenecek';
+              helpEmbed.addField(`${command.names[0]}`, description, true)
+            }
           })
           message.channel.send(helpEmbed);
           return;

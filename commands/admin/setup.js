@@ -13,7 +13,7 @@ module.exports = {
     await mongo().then(async mongoose => {
       const {guild} = message
       try{
-        console.log(`<${guild.id}> Sunucu kurulumu için veritabanına bağlanıyor`)
+        console.log(`[${guild.id}] Sunucu kurulumu için veritabanına bağlanıyor`)
         
         // Database kontorlü
         const result = await client.DBServer.findById(guild.id)
@@ -21,7 +21,7 @@ module.exports = {
 
         // Radio kanalı oluşturma
         const newChannel = await guild.channels.create(client.user.username, { type: 'text' });
-        newChannel.setTopic("[⏯️] Durdur/Devam | [⏭️] Sonraki şarkı | [⏏️] Kanaldan ayrıl | [🔁] Sırayı döngüye al/çıkar | [🆑] Sırayı temizle | [❤️] Çalan şarkıyı beğen/beğenme | [🗒️] Çalan şarkıyı sunucu listesine ekler/çıkartır | [#️⃣] Beğenilen şarkıları sıraya ekler | [*️⃣] Sunucu şarkı listesini sıraya ekler")
+        newChannel.setTopic("[⏯️] Durdur/Devam | [⏭️] Sonraki şarkı | [⏏️] Kanaldan ayrıl | [🔀] Sırayı karıştırır | [🔁] Sırayı döngüye al/çıkar | [🆑] Sırayı temizle | [❤️] Çalan şarkıyı beğen/beğenme | [🗒️] Çalan şarkıyı sunucu listesine ekler/çıkartır | [#️⃣] Beğenilen şarkıları sıraya ekler |  [*️⃣] Sunucu şarkı listesini sıraya ekler")
          
          // Embed hazırlama
          const embed = new MessageEmbed()
@@ -56,7 +56,7 @@ module.exports = {
       } catch (err) {
         message.reply(`Üzgünüm bir hatadan dolayı işlemi gerçekleştiremiyorum. Hata:\n ${err} \n ` + "`{PREFIX}destek` komudunu kullanarak yardım isteğinde bulunabilirsiniz")
       } finally{
-        console.log(`<${guild.id}> Veritabanı bağlantısı kesiliyor`)
+        console.log(`[${guild.id}] Veritabanı bağlantısı kesiliyor`)
         mongoose.connection.close()
       }
     })

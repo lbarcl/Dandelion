@@ -2,7 +2,10 @@ const {MessageEmbed} = require('discord.js')
 const ytdl = require('ytdl-core')
 const { YTSearcher } = require('ytsearcher')
 const config = require('../../../config.json')
-const searcher = new YTSearcher(config.api.youtube.dataV3.secondry)
+const searchers = []
+for (var i = 0; i < config.api.youtube.dataV3.length; i++){
+  searchers.push(new YTSearcher(config.api.youtube.dataV3[i]))
+}
 
 module.exports = {
     name: 'videobul',
@@ -14,21 +17,25 @@ module.exports = {
     callback: async ({ message, client, text }) => {
         var url;
         if(ytdl.validateURL(text)){
-            url = args[0];
+            url = text;
         } 
         else{
             try {
-                let result = await searcher.search(text, { type: 'video' });
-                if(!ytdl.validateURL(result.first.url)) return message.reply("Girdiğiniz bilgiler ile bir video bulunamadı");
-                url = result.first.url;
+              let result 
+              for (var i = 0; i < searchers.length; i++){
+                result = await searchers[i].search(text, { type: 'video' })
+                if (result) break
+              }
+              url = result.first.url;
             } catch (e) {
-                console.error(e)
-                message.reply("Girdiğiniz bilgiler ile bir video bulunamadı");
-                return
+              console.error(e)
+              message.reply("Girdiğiniz bilgiler ile bir video bulunamadı");
+              return
             }
         }
 
         var vInfo = await ytdl.getBasicInfo(url);
+        if(vInfo.videoDetails.age_restricted && !message.channel.nsfw) return message.reply('Bulduğumuz video NSFW bir video olduğundan SFW kanala gönderemeyiz')
         vInfo = vInfo.player_response.videoDetails;
         var thumbnail = vInfo.thumbnail.thumbnails;
         thumbnail[thumbnail.length - 1].url
@@ -39,7 +46,7 @@ module.exports = {
         .setURL(url)
         .setAuthor(vInfo.author)
         .setColor(client.config.embed.color)
-        .setDescription(vInfo.shortDescription.split('.')[0])
+        .setDescription(vInfo.shortDescription.slice(0, 200) + '...')
         .setFooter(`${vInfo.viewCount} görüntülenme | ${time}`)
         .setImage(thumbnail[thumbnail.length - 1].url);
 

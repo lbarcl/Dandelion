@@ -1,22 +1,16 @@
-const {deleteAfterSend, embedEdit} = require('../messageWorks')
+const {deleteAfterSend, embedEdit} = require('../API/messageWorks')
 const {mongoCheck, mongoFind} = require('../database/infoGet')
 const config = require('../../config.json');
 //--------------------------Youtube-----------------------------------
-const { scrapePlaylist } = require("youtube-playlist-scraper");
 const { calculateTime } = require('./ytdlThings')
 const ytdl = require('ytdl-core')
+const ytpl = require('ytpl');
 //--------------------------Spotify-----------------------------------
 const SpotifyWebApi = require('spotify-web-api-node')
 const spotifyUri = require('spotify-uri')
-const auth = require('../spotify')
+const auth = require('../API/spotify')
 
 module.exports = {songAdd, firstPlace}
-
-function validatePlayList(url) {
-  if (url.includes('https://www.youtube.com/playlist?list=')) {
-    return url.replace('https://www.youtube.com/playlist?list=', '');
-  }
-}
 
 async function songAdd(server, messageContent, messageDeleteTime, message) {
 
@@ -38,22 +32,29 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
           var result = await mongoCheck(searchString)
           server = await shift(result, message, server)
         } catch (err){
-          deleteAfterSend("Bir hata meydana geldi lütfen destek ekibi ile iletişime geçin", messageDeleteTimmessage);
+          console.error(err)
+          deleteAfterSend("Şarkıyı bulamadık özür dileriz", messageDeleteTime, message);
         }
-      
-        if (i == 20){
-          embedEdit('playing', server, message.channel)
-          break 
-        } 
       }
     } 
-  } // playlist ekeleme
-  else if (validatePlayList(messageContent)) {
-    const playList = await scrapePlaylist(validatePlayList(messageContent));
-    for (var i = 0; i < playList.playlist.length; i++) {
-      server = await shift(playList.playlist[i].url, message, server)
+    else if (uriResponse.type == 'track') {
+      const track = await (await spotifyApi.getTrack(uriResponse.id)).body
+      const searchString = track.artists[0].name + ' - ' + track.name
+      try{
+        var result = await mongoCheck(searchString)
+        server = await shift(result, message, server)
+      } catch (err){
+        console.error(err)
+        deleteAfterSend("Şarkıyı bulamadık özür dileriz", messageDeleteTime, message);
+      }
     }
-    deleteAfterSend(`${playList.playlist.length} video ekleniyor`, messageDeleteTime, message);
+  } // playlist ekeleme
+  else if (ytpl.validateID(messageContent)) {
+    const playList = await ytpl(messageContent, {limit: Infinity})
+    deleteAfterSend("`" + playList.title + "` çalma listesinden " + playList.items.length + " tane şarkı ekleniyor", messageDeleteTime, message)
+    for (var i = 0; i < playList.items.length; i++) {
+      server = await shift(playList.items[i].shortUrl, message, server)
+    } 
   } // url ekleme
   else if (ytdl.validateURL(messageContent)) {
     server = await shift(messageContent, message, server)
@@ -63,10 +64,9 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
     let result = await mongoCheck(messageContent)
     if (!ytdl.validateURL(result)) {
       deleteAfterSend('Girdiğiniz kelimeler ile bir video bulunamadı', messageDeleteTime, message);
-
     } else {
       server = await shift(result, message, server)
-    deleteAfterSend(`video ekleniyor`, messageDeleteTime, message);
+      deleteAfterSend(`video ekleniyor`, messageDeleteTime, message);
     }
   }
   return server;

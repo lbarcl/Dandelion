@@ -1,5 +1,5 @@
 const ytdl = require('ytdl-core')
-const {embedEdit} = require('../messageWorks')
+const {embedEdit, deleteAfterSend} = require('../API/messageWorks')
 
 module.exports = {play, urlToInfo, calculateTime}
 
@@ -19,6 +19,9 @@ function play(server, connection, channel) {
         embedEdit('playing', server, channel);
         return;
       }
+      else {
+        disconnect(server, 300000, channel, connection)
+      }
     } else if (server.queue.loop === 'açık') {
       server.queue.url.push(server.queue.url[0]);
       server.queue.title.push(server.queue.title[0]);
@@ -34,7 +37,6 @@ function play(server, connection, channel) {
       embedEdit('playing', server, channel);
       return;
     }
-    var guild = server.dispatcher.player.voiceConnection.channel.guild;
 
     embedEdit('noMusic', server, channel);
   })
@@ -87,4 +89,15 @@ function calculateTime(seconds){
     time = `${m}:${s}`
   }
   return time
+}
+
+function disconnect(server, timeOut, channel){
+  setTimeout(async () => {
+    if(!server.queue.url[0]){ 
+      server.dispatcher?.player.voiceConnection.disconnect();
+      server.dispatcher = null
+      var message = await channel.messages.fetch(server.messageId)
+      deleteAfterSend("Aktif olmadığım için ses kanalından ayrılıyorum", 10000, message);
+    }
+  }, timeOut);
 }
