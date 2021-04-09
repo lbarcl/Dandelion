@@ -6,9 +6,8 @@ const { calculateTime } = require('./ytdlThings')
 const ytdl = require('ytdl-core')
 const ytpl = require('ytpl');
 //--------------------------Spotify-----------------------------------
-const SpotifyWebApi = require('spotify-web-api-node')
 const spotifyUri = require('spotify-uri')
-const auth = require('../API/spotify')
+const spotify = require('../API/spotify')
 
 module.exports = {songAdd, firstPlace}
 
@@ -17,15 +16,10 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
   // Sıraya ekleme
   if (messageContent.includes('spotify')){
     const uriResponse = spotifyUri.parse(messageContent)
-    const spotifyApi = new SpotifyWebApi({clientId: config.api.spotify.client.id, clientSecret: config.api.spotify.client.secret})
-    const authRespons = await auth( config.api.spotify.client.id, config.api.spotify.client.secret)
-    if (!authRespons.access_token) return console.log('Red')
-    spotifyApi.setAccessToken(authRespons.access_token)
     if (uriResponse.type == 'playlist'){
-      const playlistResult = await spotifyApi.getPlaylist(uriResponse.id)  
-      const list = playlistResult.body.tracks.items
-      deleteAfterSend("`" + playlistResult.body.name + "` çalma listesinden " + list.length + " tane şarkı ekleniyor", messageDeleteTime, message);
-
+      const sresult = await spotify.getPlaylist(uriResponse.id , config.api.spotify.client.id, config.api.spotify.client.secret)
+      const list = sresult.tracks.items
+      deleteAfterSend("`" + sresult.name + "` çalma listesinden " + list.length + " tane şarkı ekleniyor", messageDeleteTime, message);
       for(var i = 0; i < list.length; i++){
         try{
           const searchString = list[i].track.artists[0] .name + ' - ' + list[i].track.name
@@ -38,7 +32,7 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
       }
     } 
     else if (uriResponse.type == 'track') {
-      const track = await (await spotifyApi.getTrack(uriResponse.id)).body
+      const track = await spotify.getTrack(uriResponse.id, config.api.spotify.client.id, config.api.spotify.client.secret)
       const searchString = track.artists[0].name + ' - ' + track.name
       try{
         var result = await mongoCheck(searchString)
