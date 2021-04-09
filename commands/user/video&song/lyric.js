@@ -1,5 +1,5 @@
-const lyricsFetcher = require('lyrics-parse')
 const {MessageEmbed} = require('discord.js')
+const axios = require('axios')
 
 module.exports = {
     name: 'sözbul',
@@ -7,21 +7,18 @@ module.exports = {
     minArgs: 0,
     description: 'Çalmakta olan şarkının sözlerini bulur',
     syntaxError: "Yanlış kullanım, sadece `{PREFIX}sözbul` yazmanız yeterli",
-    callback: async ({ message, client, args }) => {
-        // Sunucu bilgileri alma
-        const server = client.servers[message.guild.id]
-            // Çalan şarkı olmadığından red
-            if(!server.queue.url[0]) return message.reply('Şuan çalmakta olan şarkı olmadğından şarkı sözü görüntüleyemezsiniz')
+    callback: async ({ message, client }) => {
+      // Sunucu bilgileri alma
+      const server = client.servers[message.guild.id]
+          // Çalan şarkı olmadığından red
+          if(!server.queue.url[0]) return message.reply('Şuan çalmakta olan şarkı olmadğından şarkı sözü görüntüleyemezsiniz')
 
-        // Şarkıyı araştırmak
-        console.log(server.queue.title[0])
-        var args = server.queue.title[0]
-        args = args.split('-')
-        result = await lyricsFetcher(args[0], args[1])
-            // Söz bulamadıysa red
-            if(!result) return message.reply('Şarkı sözü bulunamadı')
-
-        embed(result, message, client)
+      // Şarkıyı araştırmak
+      var url = server.queue.title[0].toLowerCase().replace(' ', '+')
+      url = encodeURI(`https://lyric--api.herokuapp.com/lyric/${url}+şarkı+sözü`)
+      var result = await axios.get(url)
+      if (result.status != 200) return message.reply('Özür dileriz söz bulamadık')
+      embed(result.data.lyric, message, client)
     }
 }
 
