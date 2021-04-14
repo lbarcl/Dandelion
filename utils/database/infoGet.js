@@ -93,12 +93,9 @@ async function mongoFind(url){
             title: result.title,
             time: result.time,
             image: result.image,
-            requestCounter: 1,
-            lastTime: Date.now()
         }).save()
-      } else {
-        await videoInfoScheme.findOneAndUpdate(id, {$inc: {requestCounter: 1}, $set: {lastTime: Date.now()}})
       }
+      await videoInfoScheme.findByIdAndUpdate(id, {$inc: {requestCounter: 1}, $set: {lastTime: Date.now()}})
     }
     finally {
       mongoose.connection.close()

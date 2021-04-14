@@ -33,19 +33,12 @@ async function embedEdit(isDefault, server, channel) {
       embed.setFooter(footerText)
       embed.setDescription("Süre `" + server.queue.time[0] + "`" +` | İsteyen <@${server.queue.requester[0]}>`)
       if (server.queue.url[0]) {
-        var sPoint = server.queue.title.length - 1;
-        if (server.queue.title.length > 24) {
-          sPoint = 25;
-        }
-        for (var i = sPoint; i >= 1; i--) {
-          if (i === 25) {
-            embed.addField(`Ve ${server.queue.url.length - 24} daha fazla video`, '...');
-          }
+        var sPoint = server.queue.title.length;
+        if (server.queue.title.length > 24) sPoint = 24;
+        for (var i = sPoint; i >= 0; i--) {
+          if (i === 24) embed.addField(`Ve ${server.queue.url.length - 23} daha fazla video`, '...');
           var t = server.queue.time[i]
           embed.addField(`${i} - ${server.queue.title[i]}`, "`" + t + "` " + `isteyen: <@${server.queue.requester[i]}>` );
-          if (i === 1) {
-            break;
-          }
         }
       }
       break;
