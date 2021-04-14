@@ -38,10 +38,12 @@ module.exports = (client) => {
           if(server.dispatcher.pausedSince == null){
             server.dispatcher.pause()
             deleteAfterSend('Durduruluyor', messageDeleteTime, reaction.message)
+            embedEdit('paused', server, reaction.message.channel);
           }
           else if (server.dispatcher.pausedSince != null){
             server.dispatcher.resume()
             deleteAfterSend('Devam ediliyor', messageDeleteTime, reaction.message)
+            embedEdit('playing', server, reaction.message.channel);
           }
           break
           case '⏭️':

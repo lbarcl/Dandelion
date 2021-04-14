@@ -1,4 +1,4 @@
-const {deleteAfterSend, embedEdit} = require('../API/messageWorks')
+const {deleteAfterSend} = require('../API/messageWorks')
 const {mongoCheck, mongoFind} = require('../database/infoGet')
 const config = require('../../config.json');
 //--------------------------Youtube-----------------------------------

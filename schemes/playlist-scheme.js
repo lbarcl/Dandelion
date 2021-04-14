@@ -13,6 +13,10 @@ const playlist = mongoose.Schema({
   description: String,
   image: String,
   color: String,
+  private: {
+    type: Boolean,
+    default: false
+  }
 })
 
 module.exports = mongoose.model('playlists', playlist)

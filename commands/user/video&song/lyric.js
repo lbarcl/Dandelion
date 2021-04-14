@@ -8,6 +8,7 @@ module.exports = {
     description: 'Çalmakta olan şarkının sözlerini bulur',
     syntaxError: "Yanlış kullanım, sadece `{PREFIX}sözbul` yazmanız yeterli",
     callback: async ({ message, client }) => {
+     /*
       // Sunucu bilgileri alma
       const server = client.servers[message.guild.id]
           // Çalan şarkı olmadığından red
@@ -18,7 +19,8 @@ module.exports = {
       url = encodeURI(`https://lyric--api.herokuapp.com/lyric/${url}+şarkı+sözü`)
       var result = await axios.get(url)
       if (result.status != 200) return message.reply('Özür dileriz söz bulamadık')
-      embed(result.data.lyric, message, client)
+      embed(result.data.lyric, message, client) */
+      message.reply('Bu komut şuan için kapalı')
     }
 }
 

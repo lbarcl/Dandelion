@@ -43,6 +43,25 @@ async function embedEdit(isDefault, server, channel) {
         }
       }
       break;
+      case 'paused': // Çalan şarkı bilgilerini gösterme
+      var footerText = `Liste durduruldu, son çalınan şarkı ${server.queue.title[0]}`
+      embed.setTitle(server.queue.title[0])
+      embed.setURL(server.queue.url[0])
+      embed.setImage(server.queue.image[0])
+      embed.setColor(server.embedInfo.hexColor)
+      embed.setFooter(footerText)
+      embed.setDescription("Süre `" + server.queue.time[0] + "`" +` | İsteyen <@${server.queue.requester[0]}>`)
+      if (server.queue.url[0]) {
+        var sPoint = server.queue.title.length;
+        if (server.queue.title.length > 24) sPoint = 24;
+        for (var i = sPoint; i >= 1; i--) {
+          if (i === 24) embed.addField(`Ve ${server.queue.url.length - 23} daha fazla video`, '...');
+          if (!server.queue.url[i]) continue
+          var t = server.queue.time[i]
+          embed.addField(`${i} - ${server.queue.title[i]}`, "`" + t + "` " + `isteyen: <@${server.queue.requester[i]}>` );
+        }
+      }
+      break;  
   }
   embedMessagge.edit(embed);
 }
