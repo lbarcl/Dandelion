@@ -35,7 +35,7 @@ async function embedEdit(isDefault, server, channel) {
       if (server.queue.url[0]) {
         var sPoint = server.queue.title.length;
         if (server.queue.title.length > 24) sPoint = 24;
-        for (var i = sPoint; i >= 0; i--) {
+        for (var i = sPoint; i >= 1; i--) {
           if (i === 24) embed.addField(`Ve ${server.queue.url.length - 23} daha fazla video`, '...');
           if (!server.queue.url[i]) continue
           var t = server.queue.time[i]
