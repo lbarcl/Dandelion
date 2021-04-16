@@ -1,5 +1,4 @@
 const mongo = require('../../../../utils/database/mongo')
-const {MessageEmbed} = require('discord.js')
 
 module.exports = {
   name: 'yeniçalmalistesi',
