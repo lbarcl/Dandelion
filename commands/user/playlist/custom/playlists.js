@@ -14,12 +14,10 @@ module.exports = {
         if (requestedUser.id == message.author.id) selfUser = true
         await mongo().then(async mongoose => {
             try {
-                var user = await client.DBUser.findById(requestedUser.id)
-                if (!user) return message.reply('İstediğiniz kullanıcı sisteme kayıtlı değil') 
-                if (selfUser) list = await client.DBPlaylist.find({ownerId: requestedUser.id})
-                else if (!selfUser) list = await client.DBPlaylist.find({ownerId: requestedUser.id, private: false})
+                if (selfUser) list = await client.DBPlaylist.find({'info.owner': requestedUser.id})
+                else if (!selfUser) list = await client.DBPlaylist.find({'info.owner': requestedUser.id, 'settings.private': false})
 
-                if (!list) return message.reply('Her hangi bir çalmalisltesi bulunamadı')
+                if (!list[0]) return message.reply('Her hangi bir çalmalisltesi bulunamadı')
                 embed(list, message, client)
             } catch (error) {
                 console.error(error)
@@ -34,10 +32,10 @@ module.exports = {
 async function embed(playlists, message, client) {
     const embed = new MessageEmbed()
       .setAuthor(message.author.username, message.author.avatarURL())
-      .setTitle(`${client.users.cache.get(playlists[0].ownerId).username} ait çalma listeleri`)
-      .setColor(playlists[0].color || client.config.embed.color)
+      .setTitle(`${client.users.cache.get(playlists[0].info.owner).username} ait çalma listeleri`)
+      .setColor(playlists[0].settings.color || client.config.embed.color)
     for (var x = 0; x < playlists.length; x++) {
-      embed.addField(playlists[x].title, `ID ${playlists[x]._id} | Şarkı sayısı ${playlists[x].list.length}`)
+      embed.addField(playlists[x].info.title, `ID ${playlists[x]._id} | Şarkı sayısı ${playlists[x].items.length}`)
       if (x == 25) {
         for (var y = 0; y < 25; y++) {
           playlists.shift();

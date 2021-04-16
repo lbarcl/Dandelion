@@ -10,15 +10,16 @@ module.exports = {
   callback: async ({ message, client, text }) => {
         await mongo().then(async mongoose => {
             try {
-                var user = await client.DBUser.findById(message.author.id)
-                if (!user) return message.reply('Sisteme kayıt olmadığınızdan dolayı bu işlemi gerçekleştiremiyorum')
                 if (text.length > 100) return message.reply('Çalmalistesi adı 100 karakterden uzun olamaz')
                 var title = text
 
                 await client.DBPlaylist({
                     _id: message.id,
-                    ownerId: message.author.id,
-                    title
+                    info: {
+                        owner: message.author.id,
+                        title,
+                        type: 'custom'
+                    }
                 }).save()
 
                 message.reply(`\`${title}\` çalmalistesi oluşturuldu \`ID ${message.id}\``)

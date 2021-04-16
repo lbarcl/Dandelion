@@ -48,6 +48,7 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION']
 
     client.DBServer = require('./schemes/server-scheme')
     client.DBPlaylist = require('./schemes/playlist-scheme')
+    client.DBSong = require('./schemes/video-info') 
     client.config = config
     client.servers = {}
 
