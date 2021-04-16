@@ -12,7 +12,7 @@ module.exports = {
     expectedArgs: '[video-anahtar-kelime / video-linki]',
     description: 'Çalma listesine girilen şarkıyı ilk sıraya alıp çalmaya başlar',
     syntaxError: "Yanlış kullanım, sadece `{PREFIX}ilkçal [video-anahtar-kelime / video-linki]` ",
-    callback: async ({ message, client, text}) => {
+    callback: async ({ message, client}) => {
         var server = client.servers[message.guild.id]
         var result
         if(ytdl.validateURL(message.content)){

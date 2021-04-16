@@ -18,9 +18,7 @@ module.exports = {
     await mongo().then(async mongoose => {
         try{
             console.log(`<${guild.id}> Sunucu embed rengi değişmek için veritabanına bağlanıyor`)
-            await client.DBServer.findByIdAndUpdate(guild.id, {
-              hexColor: args[0]
-            })
+            await client.DBServer.findByIdAndUpdate(guild.id, {$set: {hexColor: text}})
             client.servers[guild.id].embedInfo.hexColor = args[0]
             if (client.servers[guild.id].queue.url[0]) embedEdit('playing', client.servers[guild.id], client.channels.cache.get(client.servers[guild.id].channelId))
             else if (!client.servers[guild.id].queue.url[0]) embedEdit('noMusic', client.servers[guild.id], client.channels.cache.get(client.servers[guild.id].channelId))

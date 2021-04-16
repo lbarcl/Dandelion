@@ -27,9 +27,7 @@ module.exports = {
     await mongo().then(async mongoose => {
         try{
             console.log(`<${guild.id}> Sunucu embed resmi değişmek için veritabanına bağlanıyor`)
-            await client.DBServer.findByIdAndUpdate(guild.id, {
-              imageUrl: image
-            })
+            await client.DBServer.findByIdAndUpdate(guild.id, {$set: {imageUrl: text}})
             client.servers[guild.id].embedInfo.imageUrl = image
             if (client.servers[guild.id].queue.url[0]) embedEdit('playing', client.servers[guild.id], client.channels.cache.get(client.servers[guild.id].channelId))
             else if (!client.servers[guild.id].queue.url[0]) embedEdit('noMusic', client.servers[guild.id], client.channels.cache.get(client.servers[guild.id].channelId))

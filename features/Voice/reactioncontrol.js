@@ -1,5 +1,3 @@
-const {listThing, favThing} = require('../../utils/Playlist/favThing')
-const {pasteList, place} = require('../../utils/Playlist/listImport')
 const {play} = require('../../utils/Video&Song/ytdlThings')
 const {deleteAfterSend, embedEdit} = require('../../utils/API/messageWorks')
 const setup = require('../../utils/setup')
@@ -145,7 +143,7 @@ module.exports = (client) => {
           }
           deleteAfterSend('Sırada içerik yok', messageDeleteTime, reaction.message);
           break
-        case '❤️':
+       /* case '❤️':
           favThing(server, reaction.message, messageDeleteTime, user)
         break
         case '🗒️':
@@ -176,7 +174,7 @@ module.exports = (client) => {
             })
           }
           embedEdit('playing', server, reaction.message.channel);
-        break
+        break */
       }
   })
 }
