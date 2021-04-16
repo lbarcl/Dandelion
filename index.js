@@ -47,7 +47,6 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION']
     .setBotOwner(config.owner)
 
     client.DBServer = require('./schemes/server-scheme')
-    client.DBUser = require('./schemes/user-scheme')
     client.DBPlaylist = require('./schemes/playlist-scheme')
     client.config = config
     client.servers = {}
