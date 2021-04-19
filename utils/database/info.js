@@ -2,7 +2,7 @@ const videoInfoScheme = require("../../schemes/video-info")
 const {urlToInfo} = require("../Video&Song/ytdlThings")
 const search = require("../Algorithm/search")
 const ytdl = require("ytdl-core")
-const mongo = require("./mongo")
+const mongo = require("./connect")
 const { YTSearcher } = require('ytsearcher');
 const config = require("../../config.json")
 const searchers = []
@@ -10,9 +10,9 @@ for (var i = 0; i < config.api.youtube.dataV3.length; i++){
   searchers.push(new YTSearcher(config.api.youtube.dataV3[i]))
 }
 
-module.exports = {mongoCheck, mongoFind}
+module.exports = {videoFind, videoInfoFind}
 
-async function mongoCheck(keyWord){
+async function videoFind(keyWord){
   var url
   await mongo().then(async mongoose => {
     info: try{
@@ -24,9 +24,9 @@ async function mongoCheck(keyWord){
         keyWords = keyWords.concat(list[i].keyWords.splice(0, 1))
       }
       var basicSearchResult = search.basicSearch(keyWord, keyWords)
-      if (basicSearchResult) {
+      if (basicSearchResult[0] != undefined) {
         let result = await videoInfoScheme.findOne({keyWords: basicSearchResult[0]})
-        url = result.url
+        url = result?.url
         break info
       }
       // Search with db titles | Bu yere gelene kadar sadece 1 await
@@ -36,8 +36,8 @@ async function mongoCheck(keyWord){
       }
       var distanceSearchResult = search.distanceSearch(titles, keyWord, list)
       if (distanceSearchResult && distanceSearchResult.title.toLowerCase().includes(keyWord.toLowerCase())){
-        await videoInfoScheme.findByIdAndUpdate(id, {$addToSet: {keyWords: keyWord}})
-        url = result.url
+        await videoInfoScheme.findByIdAndUpdate(distanceSearchResult._id, {$addToSet: {keyWords: keyWord}})
+        url = distanceSearchResult?.url
         break info
       }
       // Search with youtube API | Bu yere gelene kadar sadece 1 await
@@ -66,7 +66,7 @@ async function mongoCheck(keyWord){
   return url
 }
 
-async function mongoFind(url){
+async function videoInfoFind(url){
   let result
   await mongo().then(async mongoose => {
     try{

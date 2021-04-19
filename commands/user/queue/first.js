@@ -1,6 +1,6 @@
 const {embedEdit} = require('../../../utils/API/messageWorks')
 const {play} = require('../../../utils/Video&Song/ytdlThings')
-const {mongoCheck, mongoFind}  = require('../../../utils/database/infoGet')
+const {videoFind, videoInfoFind}  = require('../../../utils/database/info')
 const {calculateTime} = require('../../../utils/Video&Song/ytdlThings')
 const ytdl = require('ytdl-core')
 
@@ -16,15 +16,15 @@ module.exports = {
         var server = client.servers[message.guild.id]
         var result
         if(ytdl.validateURL(message.content)){
-          result = await mongoFind(message.content)
+          result = await videoInfoFind(message.content)
           server.queue.url.push(result.url)            
           server.queue.title.push(result.title)  
           server.queue.time.push(calculateTime(result.time)) 
           server.queue.image.push(result.image)  
           server.queue.requester.push(message.author.id)  
         } else {
-          result = await mongoCheck(message.content)
-          result = await mongoFind(result)
+          result = await videoFind(message.content)
+          result = await videoInfoFind(result)
           server.queue.url.push(result.url)            
           server.queue.title.push(result.title)  
           server.queue.time.push(calculateTime(result.time))  

@@ -1,4 +1,4 @@
-const mongo = require('../../utils/database/mongo')
+const mongo = require('../../utils/database/connect')
 
 module.exports = {
   minArgs: 0,

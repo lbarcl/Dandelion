@@ -1,5 +1,5 @@
 const {deleteAfterSend} = require('../API/messageWorks')
-const {mongoCheck, mongoFind} = require('../database/infoGet')
+const {videoFind, videoInfoFind} = require('../database/info')
 const config = require('../../config.json');
 //--------------------------Youtube-----------------------------------
 const { calculateTime } = require('./ytdlThings')
@@ -9,7 +9,7 @@ const ytpl = require('ytpl');
 const spotifyUri = require('spotify-uri')
 const spotify = require('../API/spotify')
 
-module.exports = {songAdd, firstPlace}
+module.exports = {songAdd, firstPlace, shift, unShift}
 
 async function songAdd(server, messageContent, messageDeleteTime, message) {
 
@@ -23,7 +23,7 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
       for(var i = 0; i < list.length; i++){
         try{
           const searchString = list[i].track.artists[0] .name + ' - ' + list[i].track.name
-          var result = await mongoCheck(searchString)
+          var result = await videoFind(searchString)
           server = await shift(result, message, server)
         } catch (err){
           console.error(err)
@@ -35,7 +35,7 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
       const track = await spotify.getTrack(uriResponse.id, config.api.spotify.client.id, config.api.spotify.client.secret)
       const searchString = track.artists[0].name + ' - ' + track.name
       try{
-        var result = await mongoCheck(searchString)
+        var result = await videoFind(searchString)
         server = await shift(result, message, server)
       } catch (err){
         console.error(err)
@@ -55,7 +55,7 @@ async function songAdd(server, messageContent, messageDeleteTime, message) {
     deleteAfterSend(`video ekleniyor`, messageDeleteTime, message);
   } // kelimeden araştırıp ekleme
   else {
-    let result = await mongoCheck(messageContent)
+    let result = await videoFind(messageContent)
     if (!ytdl.validateURL(result)) {
       deleteAfterSend('Girdiğiniz kelimeler ile bir video bulunamadı', messageDeleteTime, message);
     } else {
@@ -72,7 +72,7 @@ async function firstPlace(server, messageContent, messageDeleteTime, message){
     deleteAfterSend(`video başa ekleniyor`, messageDeleteTime, message);
   } // kelimeden araştırıp ekleme
   else {
-    let result = await mongoCheck(messageContent)
+    let result = await videoFind(messageContent)
     if (!ytdl.validateURL(result)) return deleteAfterSend('Girdiğiniz kelimeler ile bir video bulunamadı', messageDeleteTime, message);
     server = await unShift(url, message, server)
     deleteAfterSend(`video başa ekleniyor`, messageDeleteTime, message);
@@ -81,7 +81,7 @@ async function firstPlace(server, messageContent, messageDeleteTime, message){
 }
 
 async function shift(url, message, server){
-  const result = await mongoFind(url)
+  const result = await videoInfoFind(url)
   server.queue.url.push(result.url)
   server.queue.title.push(result.title)
   server.queue.time.push(calculateTime(result.time))
@@ -91,7 +91,7 @@ async function shift(url, message, server){
 }
 
 async function unShift(url, message, server){
-  const result = await mongoFind(url)
+  const result = await videoInfoFind(url)
   server.queue.url.unshift(result.url)
   server.queue.title.unshift(result.title)
   server.queue.time.unshift(calculateTime(result.time))

@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
-const mongo = require('./utils/database/mongo')
-const videoRemove = require('./utils/database/videoRemove')
+const mongo = require('./utils/database/connect')
+const videoRemove = require('./utils/database/remove')
+const setup = require('./utils/setup')
 const config = require('./config.json')
 const WOKCommands = require('wokcommands');
 const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION'] })
@@ -52,6 +53,11 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION']
     client.config = config
     client.servers = {}
 
+    await client.guilds.cache.forEach(async guild => {
+      var server = await setup(client.servers, guild)
+      client.servers[guild.id] = server
+    })
+
     setInterval(function(){
       var hour = new Date().getHours()
       if (hour == 23) {
@@ -60,4 +66,4 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION']
     }, 1800000)
   });
 
-  client.login(config.api.discord.bot.main);
+  client.login(config.api.discord.bot.test);

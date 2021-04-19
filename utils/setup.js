@@ -1,4 +1,4 @@
-const mongo = require('./database/mongo')
+const mongo = require('./database/connect')
 const serverScheme = require('../schemes/server-scheme')
 const config = require('../config.json')
 
