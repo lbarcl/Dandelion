@@ -8,10 +8,10 @@ module.exports = (client) => {
 
   client.on('message', async (message) => {
     var content = message.content.toLowerCase()
+    var server = await setup(client.servers, guild)
     if (content.startsWith('-')) return
     if (message.author.bot) return //gönderilen mesajın bot tarfından mı olup olmadığı kontrolü
     const {guild, channel, member} = message //guild , channel ve member değerlerinin mesajdan alınması
-    var server = await setup(client.servers, guild) // cache guild kayıdı ve veritabanı bağlantısı
     if(server == null) return
 
     if(server.channelId != channel.id) return // mesajın özel kanala gönderilip gönderilmediği kontrolü
