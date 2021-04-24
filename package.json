@@ -1,6 +1,6 @@
 {
   "name": "dandelion",
-  "version": "2.8.0",
+  "version": "2.8.1",
   "description": "Discord music bot made up with discord.js, ytdl-core, mongoose&mongodb",
   "main": "index.js",
   "scripts": {

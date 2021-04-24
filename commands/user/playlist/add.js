@@ -15,14 +15,16 @@ module.exports = {
         if (!songs) return message.reply('şarkı bulunamadı')
         await mongo().then(async (mongoose) => {
             add: try {
-                if (args[0] == 's'){
-                    if (!message.member.hasPermission('MANAGE_GUILD')){
+                if (args[0] == 's') {
+                    if (!message.member.hasPermission('MANAGE_GUILD')) {
                         message.reply('Bu listeyi editlemek için izniniz yok')
-                        break add 
-                    } 
-                    var list = await client.DBPlaylist.findOne({_id: message.guild.id, 'info.owner': message.guild.id, 'info.type': 'server'})
+                        break add
+                    }
+                    var list = await client.DBPlaylist.findOne({ _id: message.guild.id, 'info.owner': message.guild.id, 'info.type': 'server' })
                     if (list) {
-                        await client.DBPlaylist.findByIdAndUpdate(message.guild.id, {$addToSet: {items: songs}})
+                        for (var i = 0; i < songs.length; i++){
+                            await client.DBPlaylist.findByIdAndUpdate(message.guild.id, { $addToSet: { items: songs[i] } })
+                        }
                     } else {
                         const newList = {
                             _id: message.guild.id,
@@ -43,12 +45,14 @@ module.exports = {
                     } else {
                         message.reply(`\`${songs.length}\` tane şarkı eklendi`)
                     }
-                    
+
                 }
                 else if (args[0] == 'b') {
-                    var list = await client.DBPlaylist.findOne({_id: message.author.id, 'info.owner': message.author.id, 'info.type': 'favs'})
+                    var list = await client.DBPlaylist.findOne({ _id: message.author.id, 'info.owner': message.author.id, 'info.type': 'favs' })
                     if (list) {
-                        await client.DBPlaylist.findByIdAndUpdate(message.author.id, {$addToSet: {items: songs}})
+                        for (var i = 0; i < songs.length; i++){
+                            await client.DBPlaylist.findByIdAndUpdate(message.author.id, { $addToSet: { items: songs[i] } })
+                        }
                     } else {
                         const newList = {
                             _id: message.author.id,
@@ -71,9 +75,11 @@ module.exports = {
                     }
                 }
                 else {
-                    var list = await client.DBPlaylist.findOne({_id: args[0], 'info.owner': message.author.id, 'info.type': 'custom'})
+                    var list = await client.DBPlaylist.findOne({ _id: args[0], 'info.owner': message.author.id, 'info.type': 'custom' })
                     if (list) {
-                        await client.DBPlaylist.findByIdAndUpdate(args[0], {$addToSet: {items: songs}})
+                        for (var i = 0; i < songs.length; i++){
+                            await client.DBPlaylist.findByIdAndUpdate(args[0], { $addToSet: { items: songs[i] } })
+                        }
                         if (typeof songs == 'string') {
                             message.reply('`1` tane şarkı eklendi')
                         } else {
@@ -81,7 +87,7 @@ module.exports = {
                         }
                     } else {
                         message.reply('Liste bulmadık bu sebeb ile şarkı ekleyemiyoruz')
-                    }       
+                    }
                 }
             } catch (error) {
                 console.error(error)
