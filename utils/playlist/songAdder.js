@@ -32,7 +32,7 @@ module.exports = async (messageContent) => {
             const searchString = track.artists[0].name + ' - ' + track.name
             try {
                 let result = await videoFind(searchString)
-                urls = result
+                urls[0] = result
             } catch (err) {
                 console.error(err)
             }
@@ -41,16 +41,16 @@ module.exports = async (messageContent) => {
     else if (ytpl.validateID(messageContent)) {
         const playList = await ytpl(messageContent, { limit: Infinity })
         for (var i = 0; i < playList.items.length; i++) {
-            urls.push(playList[i])
+            urls.push(playList.items[i].shortUrl)
         }
     } // Youtube URL ekleme
     else if (ytdl.validateURL(messageContent)) {
-        urls = messageContent
+        urls[0] = messageContent
     } // kelimeden araştırıp ekleme
     else {
         let result = await videoFind(messageContent)
         if (ytdl.validateURL(result)) {
-            urls = result
+            urls[0] = result
         }
     }
 

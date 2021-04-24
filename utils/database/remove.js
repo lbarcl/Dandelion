@@ -2,7 +2,7 @@ const mongo = require('./connect')
 const videoInfoScheme = require('../../schemes/video-info')
 module.exports = remove
 
-async function remove(threshold){
+async function remove(threshold, client){
     await mongo().then(async (mongoose) => {
         try {
             const videos = await videoInfoScheme.find({})
@@ -12,7 +12,8 @@ async function remove(threshold){
                 dif = parseInt(dif)
                 if (dif > threshold){
                     await videoInfoScheme.findByIdAndRemove(videos[i]._id)
-            }
+                    client.users.cache.get(client.config.owner).send(`${videos[i].url} silindi`)
+                }
         }
         } catch (error) {
             console.error(error)

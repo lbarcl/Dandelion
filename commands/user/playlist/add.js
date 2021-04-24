@@ -12,7 +12,12 @@ module.exports = {
     callback: async ({ message, client, args, text }) => {
         var content = text.replace(`${args[0]} `, '')
         var songs = await songAdder(content)
-        if (!songs) return message.reply('şarkı bulunamadı')
+        let temp = []
+        for (let i = 0; i < songs.length; i++) {
+            if (songs[i] != undefined) temp.push(songs[i])
+        }
+        songs = temp
+        if (songs.length < 1) return message.reply('şarkı bulunamadı')
         await mongo().then(async (mongoose) => {
             add: try {
                 if (args[0] == 's') {
@@ -22,9 +27,7 @@ module.exports = {
                     }
                     var list = await client.DBPlaylist.findOne({ _id: message.guild.id, 'info.owner': message.guild.id, 'info.type': 'server' })
                     if (list) {
-                        for (var i = 0; i < songs.length; i++){
-                            await client.DBPlaylist.findByIdAndUpdate(message.guild.id, { $addToSet: { items: songs[i] } })
-                        }
+                        await client.DBPlaylist.findByIdAndUpdate(message.guild.id, { $addToSet: { items: songs } })
                     } else {
                         const newList = {
                             _id: message.guild.id,
@@ -40,19 +43,11 @@ module.exports = {
                         }
                         await client.DBPlaylist(newList).save()
                     }
-                    if (typeof songs == 'string') {
-                        message.reply('`1` tane şarkı eklendi')
-                    } else {
-                        message.reply(`\`${songs.length}\` tane şarkı eklendi`)
-                    }
-
                 }
                 else if (args[0] == 'b') {
                     var list = await client.DBPlaylist.findOne({ _id: message.author.id, 'info.owner': message.author.id, 'info.type': 'favs' })
                     if (list) {
-                        for (var i = 0; i < songs.length; i++){
-                            await client.DBPlaylist.findByIdAndUpdate(message.author.id, { $addToSet: { items: songs[i] } })
-                        }
+                        await client.DBPlaylist.findByIdAndUpdate(message.author.id, { $addToSet: { items: songs } })
                     } else {
                         const newList = {
                             _id: message.author.id,
@@ -68,27 +63,18 @@ module.exports = {
                         }
                         await client.DBPlaylist(newList).save()
                     }
-                    if (typeof songs == 'string') {
-                        message.reply('`1` tane şarkı eklendi')
-                    } else {
-                        message.reply(`\`${songs.length}\` tane şarkı eklendi`)
-                    }
                 }
                 else {
                     var list = await client.DBPlaylist.findOne({ _id: args[0], 'info.owner': message.author.id, 'info.type': 'custom' })
                     if (list) {
-                        for (var i = 0; i < songs.length; i++){
-                            await client.DBPlaylist.findByIdAndUpdate(args[0], { $addToSet: { items: songs[i] } })
-                        }
-                        if (typeof songs == 'string') {
-                            message.reply('`1` tane şarkı eklendi')
-                        } else {
-                            message.reply(`\`${songs.length}\` tane şarkı eklendi`)
-                        }
+                        await client.DBPlaylist.findByIdAndUpdate(args[0], { $addToSet: { items: songs } })
                     } else {
                         message.reply('Liste bulmadık bu sebeb ile şarkı ekleyemiyoruz')
+                        break add
                     }
                 }
+
+                message.reply(`\`${songs.length}\` tane şarkı eklendi`)
             } catch (error) {
                 console.error(error)
                 message.reply('Üzgünüz çalma listesini alırken bir hata meydana geldi.\nLütfen bir kaç dakika sonra tekrar deneyin, eğer sorun çözülmez ise `-sorunbildir` komutunu kullanın')
