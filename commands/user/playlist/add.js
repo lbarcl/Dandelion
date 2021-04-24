@@ -1,6 +1,5 @@
 const mongo = require('../../../utils/database/connect')
 const songAdder = require('../../../utils/playlist/songAdder')
-const {MessageEmbed} = require('discord.js')
 
 module.exports = {
     name: 'çalmalistesineekle',
