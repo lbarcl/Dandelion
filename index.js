@@ -54,7 +54,7 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION']
     client.servers = {}
     
     try{
-      await client.guilds.cache.forEach(async guild => 
+      await client.guilds.cache.forEach(async guild => {
         var server = await setup(client.servers, guild)
         client.servers[guild.id] = server
       })
