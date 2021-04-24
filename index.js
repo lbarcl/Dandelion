@@ -52,15 +52,6 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION']
     client.DBSong = require('./schemes/video-info') 
     client.config = config
     client.servers = {}
-    
-    try{
-      await client.guilds.cache.forEach(async guild => {
-        var server = await setup(client.servers, guild)
-        client.servers[guild.id] = server
-      })
-    } catch (err) {
-      console.error(`Hata\n${err}`)
-    }
 
     setInterval(function(){
       var hour = new Date().getHours()
