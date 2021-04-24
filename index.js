@@ -66,4 +66,4 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION']
     }, 1800000)
   });
 
-  client.login(config.api.discord.bot.test);
+  client.login(config.api.discord.bot.main);
