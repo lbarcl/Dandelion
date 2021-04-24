@@ -1,4 +1,4 @@
-const mongo = require('../../utils/database/mongo')
+const mongo = require('../../utils/database/connect')
 const { MessageEmbed } = require('discord.js')
 
 module.exports = {
@@ -49,8 +49,12 @@ module.exports = {
         // Oluşturulan kanal ve gönderilen mesaj bilgisini veri tabanına kaydetme
         await new client.DBServer({
           _id: guild.id,
-          channelId: newChannel.id,
-          messageId: newMessage.id
+          channel: {
+            id: newChannel.id,
+            message: {
+              id: newMessage.id
+            }
+          }
         }).save()
         message.reply("Sunucu kurulumu tamamlandı")
       } catch (err) {

@@ -7,13 +7,18 @@ const reqString = {
 
 const setup = mongoose.Schema({
   _id: reqString,
-  channelId: reqString,
-  messageId: reqString,
-  serverOut: String,
-  serverList: [String],
-  imageUrl: String,
-  hexColor: String,
-  description: String
+  channel: {
+    id: reqString,
+    message: {
+      id: reqString,
+      imageUrl: String,
+      hexColor: String,
+      description: String
+    }
+  },
+  settings: {
+    serverOut: String,
+  }
 })
 
 module.exports = mongoose.model('server-infos', setup)

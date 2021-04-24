@@ -1,4 +1,4 @@
-const mongo = require('../../utils/database/mongo')
+const mongo = require('../../utils/database/connect')
 const {embedEdit} = require('../../utils/API/messageWorks')
 
 module.exports = {
@@ -16,9 +16,7 @@ module.exports = {
     await mongo().then(async mongoose => {
         try{
             console.log(`<${guild.id}> Sunucu açıklama değişmek için veritabanına bağlanıyor`)
-            await client.DBServer.findByIdAndUpdate(guild.id, {
-              description: text
-            })
+            await client.DBServer.findByIdAndUpdate(guild.id, {$set: {description: text}})
             client.servers[guild.id].embedInfo.description = text
             if (client.servers[guild.id].queue.url[0]) embedEdit('playing', client.servers[guild.id], client.channels.cache.get(client.servers[guild.id].channelId))
             else if (!client.servers[guild.id].queue.url[0]) embedEdit('noMusic', client.servers[guild.id], client.channels.cache.get(client.servers[guild.id].channelId))

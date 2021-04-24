@@ -7,16 +7,21 @@ const reqString = {
 
 const playlist = mongoose.Schema({
   _id: reqString,
-  ownerId: reqString,
-  title: reqString,
-  list: [String],
-  description: String,
-  image: String,
-  color: String,
-  private: {
-    type: Boolean,
-    default: false
-  }
+  info: {
+    owner: reqString,
+    title: reqString,
+    type: reqString,
+    description: String,
+  },
+  settings: {
+    color: String,
+    image: String,
+    private: {
+      type: Boolean,
+      default: false
+    }
+  },
+  items: [String]
 })
 
 module.exports = mongoose.model('playlists', playlist)

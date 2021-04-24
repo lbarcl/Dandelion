@@ -1,4 +1,4 @@
-const mongo = require('./database/mongo')
+const mongo = require('./database/connect')
 const serverScheme = require('../schemes/server-scheme')
 const config = require('../config.json')
 
@@ -14,15 +14,13 @@ async function setup(cache, guild) {
         console.log(`Veritabanına kanal bilgisi almak için bağlanıyor [${guild.id}]`)
         const result = await serverScheme.findById(guild.id )
         if (result != null) {
-          cache[guild.id].channelId = result.channelId
-          cache[guild.id].messageId = result.messageId
-          if (result.imageUrl) cache[guild.id].embedInfo.imageUrl = result.imageUrl
-          else cache[guild.id].embedInfo.imageUrl = config.embed.image
-          if (result.hexColor) cache[guild.id].embedInfo.hexColor = result.hexColor
-          else cache[guild.id].embedInfo.hexColor = config.embed.color
-          if (result.description) cache[guild.id].embedInfo.description = result.description
-          else cache[guild.id].embedInfo.description = config.embed.description
-          if(result.serverOut) cache[guild.id].serverOut = result.serverOut
+          cache[guild.id].channelId = result.channel.id
+          cache[guild.id].messageId = result.channel.message.id
+          cache[guild.id].embedInfo.imageUrl = result.channel.message.imageUrl || config.embed.image
+          cache[guild.id].embedInfo.hexColor = result.channel.message.hexColor || config.embed.color
+          cache[guild.id].embedInfo.description = result.channel.message.description || config.embed.description
+          cache[guild.id].embedInfo.serverOut = result?.settings?.serverOut || 'kapalı'
+
         } else {
           console.log(`Kanal bilgisi bulunamadı [${guild.id}]`)
           cache[guild.id] = null
