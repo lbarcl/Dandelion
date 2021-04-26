@@ -19,7 +19,7 @@
     "spotify-uri": "^2.1.0",
     "wokcommands": "^1.2.8",
     "ytdl-core": "^4.5.0",
-    "ytpl": "^2.1.0",
+    "ytpl": "^2.2.0",
     "ytsearcher": "^1.2.3"
   }
 }
