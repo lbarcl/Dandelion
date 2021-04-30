@@ -88,7 +88,7 @@ const client = new Discord.Client({ partials: ['MESSAGE', 'CHANNEL', 'REACTION']
       var hour = new Date().getHours()
       if (hour == 23) {
         client.users.cache.get(config.owner).send(`Saat ${hour}:${new Date().getMinutes()} silinecek videolar kontrol ediliyor`)
-        videoRemove(604800)
+        videoRemove(604800, client)
       }
     }, 1800000)
   });
