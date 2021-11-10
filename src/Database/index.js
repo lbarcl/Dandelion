@@ -10,6 +10,7 @@ class db {
         this.Schema = Schema || null;
 
         this.connect().then(callback)
+        mongoose.connection.close()
     }
 
     async connect() {
