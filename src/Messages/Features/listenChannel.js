@@ -18,7 +18,7 @@ module.exports = (client, instance) => {
 
         //* Checking for is user able to use it
         if (message.author.id == client.user.id) return
-        else if (guildData.channel.id != message.channel.id) return
+        else if (guildData?.channel.id != message.channel.id) return
         else if (message.content.slice(0, 1) == instance._defaultPrefix) {
             message.delete()
             message.author.send(`Lütfen ${client.config.embed.title} kanalında komut çalıştırmayın`);
