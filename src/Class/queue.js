@@ -18,7 +18,7 @@ class SongPlayer {
     }
 
     play() {
-        const audioResource = createAudioResource(ytdl(this.SongQue[0].url))
+        const audioResource = createAudioResource(ytdl(this.SongQue[0].url, {quality: 'highestaudio'}))
         this.AudioPlayer.play(audioResource)
     }
 
@@ -57,8 +57,8 @@ class SongPlayer {
         this.channel = undefined
         this.AudioPlayer = undefined
 
-        this.Subscription = undefined
         this.Subscription.unsubscribe()
+        this.Subscription = undefined
 
         this.voiceConnection.destroy()
         this.voiceConnection = undefined
@@ -88,7 +88,7 @@ class SongPlayer {
                         this.quit()
                     }
                 }, 120000)
-            } else {
+            } else if (this.SongQue.length >= 1) {
                 this.play()
             }
         } else {
@@ -102,7 +102,7 @@ class SongPlayer {
         this.loop = !this.loop
     }
 
-    pause() {
+    paunp() {
         if (this.pause) {
             this.AudioPlayer.unpause()
             this.pause = false
