@@ -7,6 +7,9 @@
     "start": "node src/index.js",
     "dev": "set NODE_ENV=development && nodemon src/index.js"
   },
+  "engines": {
+    "node": "16.x"
+  },
   "keywords": [
     "dandelion",
     "music bot",
