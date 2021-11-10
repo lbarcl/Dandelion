@@ -9,12 +9,13 @@ class db {
         this.Options = Options || {};
         this.Schema = Schema || null;
 
-        this.connect().then(callback)
-        mongoose.connection.close()
+        this.callback = callback
+        
     }
 
     async connect() {
         await mongoose.connect(this.URL, this.Options).catch(e => { throw e });
+        this.callback()
         return mongoose;
     }
 
