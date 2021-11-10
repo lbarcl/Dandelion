@@ -1,0 +1,11 @@
+{
+    "embed": {
+        "image": "https://i.imgur.com/Jr83GXM.jpg",
+        "title": "Papatya",
+        "hexColor": "#4300d4",
+        "description": "Şu an çalmakta olan hiçbir müzik yok"
+    },
+    "bot": {
+        "prefix": "-"
+    }
+}
