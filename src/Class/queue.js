@@ -62,6 +62,7 @@ class SongPlayer {
 
         this.voiceConnection.destroy()
         this.voiceConnection = undefined
+        this.guildData.DefaultEmbed()
     }
 
     clear() {
