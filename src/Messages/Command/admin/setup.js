@@ -64,7 +64,14 @@ module.exports = {
 
         if (flag == 1) return
 
-        guilData.Load(client, client.config)
+        guildData.Load(client, client.config).catch(async err => {
+            channel.send('Kurulum esnasında bir hata meydana geldi, hata: \n' + err)
+            await PapatyaChannel.delete(`${client.config.embed.title}'ın kurulumu esnasında bir hata olduğu için silindi`)
+            channel.send('Papatya kanalı silindi')
+            flag = 1;
+        })
+
+        if (flag == 1) return
         channel.send('Kurulum tamamlandı, papatyanızı güle güle kullanın');
     }
 }
