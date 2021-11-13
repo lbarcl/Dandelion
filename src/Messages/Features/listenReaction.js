@@ -7,13 +7,14 @@ module.exports = (client, instance) => {
         const guildData = client.guildData.get(message.guild.id)
         const member = message.guild.members.cache.get(user.id)
 
-        reaction.users.remove(user)
-
+        
         if (user.id == client.user.id) return
         else if (guildData.message.id != message.id) return
         else if (!member.voice.channel) return SendDelete('Reaksiyonları kullanabilmek için ses kanalında olmanız gerekiyor', message.channel, 2500);
         else if (!guildData.player?.voiceConnection && member.voice.channelId != guildData.player.channel.id) return SendDelete('Reaksiyonları kullanabilmek için aynı ses kanalında olmanız gerekiyor', message.channel, 2500);
 
+        reaction.users.remove(user)
+        
         switch (emoji) {
             case '⏯️':
                 guildData.player.paunp()
