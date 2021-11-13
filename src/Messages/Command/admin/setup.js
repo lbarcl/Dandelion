@@ -13,8 +13,8 @@ module.exports = {
     description: 'Dandelionun kurulumunu yapar. Her sunucu için bir defa',
     syntaxError: 'Yanlış kullanım, sadece "{PREFIX}"kurulum yazmanız yeterli',
     callback: async ({ channel, guild, client }) => {
-        const res = await client.guildData.has(guild.id);
-        if (res) {
+        const guildData = client.guildData.get(guild.id);
+        if (guildData.channel) {
             channel.send('Bu sunucuda zaten papatya var')
             return
         }
@@ -64,7 +64,7 @@ module.exports = {
 
         if (flag == 1) return
 
-
+        guilData.Load(client, client.config)
         channel.send('Kurulum tamamlandı, papatyanızı güle güle kullanın');
     }
 }
