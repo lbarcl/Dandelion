@@ -1,7 +1,9 @@
 //* Importing required modules
 const embedEditor = require('../../utils/DesignEmbed');
 const SendDelete = require('../../utils/Send&Delete');
+const { tube } = require('../../Class/youtube');
 const queue = require('../../Class/queue');
+const chalk = require('chalk');
 
 //* Creating Regular exprenations for URIs
 const regex = new RegExp("((http|https)://)(www.)?" +
@@ -34,67 +36,83 @@ module.exports = (client, instance) => {
         //* Deleting message after 250ms 
         setTimeout(() => {
             message.delete()
-        }, 250);
+        }, 2500);
 
+        GetData(guildData, message)
 
-        if (!guildData.player?.voiceConnection) {
-
-            if (!message.member.voice.channel) {
-                SendDelete('Kullanabilmek için ses kanalında olmanız gerekiyor', message.channel, 2500);
-                return
-            }
-
-            guildData.player = new queue.SongPlayer(guildData)
-            guildData.player.connect(message.member.voice.channel)
-
-            if (regex.test(message.content)) {
-                //? TO-DO This place is going to check for incoming data
-                if (message.content.includes('https://www.youtube.com')) {
-                    const song = new queue.Song(message.content)
-                    await song.getData()
-                    guildData.player.SongQue.push(song)
-
-                    firePlayer(guildData)
-                } else {
-                    SendDelete('Şuan diğer yöntemleri kullanamıyoruz, bir kaç güne gelicek', message.channel, 2500);
-                    return
-                }
-            }
-
-
-        } else {
-
-            if (message.member.voice.channel.id != guildData.player.channel.id) {
-                SendDelete('Kullanabilmek için aynı ses kanalında olmanız gerekiyor', message.channel, 2500);
-                return
-            }
-
-            if (regex.test(message.content)) {
-                //? TO-DO This place is going to check for incoming data
-                if (message.content.includes('https://www.youtube.com')) {
-                    const song = new queue.Song(message.content)
-                    await song.getData()
-                    guildData.player.SongQue.push(song)
-
-                    if (guildData.player.SongQue.length == 1) {
-                        guildData.player.play()
-                    } else {
-                        const embed = embedEditor(guildData.player.SongQue)
-                        guildData.updateEmbed(embed)
-                    }
-                } else {
-                    SendDelete('Şuan diğer yöntemleri kullanamıyoruz, bir kaç güne gelicek', message.channel, 2500);
-                    return
-                }
-            }
-
-        }
     });
 }
 
+
+
+async function GetData(guildData, message) {
+    var isConnected = false
+    if (guildData.player?.voiceConnection) {
+        //? When bot is connected to a channel
+        isConnected = true
+
+        if (message.member.voice.channelId != guildData.player.channel.id) {
+            //? When user is not in the same voice channel with the bot
+            SendDelete(`Kullanabilmek için ${guildData.embed.title} ile aynı kanalda olmanız gerekiyor`, message.channel, 2500)
+            return
+        }
+    } else if (!message.member.voice.channelId) {
+        //? When bot is not connected to a channel and user is not connected to any voice channel
+        SendDelete('Kullanabilmek için bir ses kanalında olmanız gerekiyor', message.channel, 2500)
+        return
+    }
+
+    if (regex.test(message.content)) {
+        //? If content is a URL
+
+        if (message.content.includes('https://www.youtube.com')) {
+            const yt = new tube()
+            const result = await yt.getUrlData(message.content, message.author.id)
+            
+            if (result.type == 'playlist') {
+
+                if (isConnected) {
+                    if (guildData.player.SongQue.length == 0) var flag = true
+                
+                    guildData.player.SongQue = guildData.player.SongQue.concat(result.data)
+                
+                    if (flag) guildData.player.play()
+                    else guildData.updateEmbed(embedEditor(guildData.player.SongQue))
+                
+                } else {
+                    guildData.player = new queue.SongPlayer(guildData)
+                    guildData.player.connect(message.member.voice.channel)
+                    guildData.player.SongQue = result.data
+                
+                    firePlayer(guildData)
+                }
+            } else if (result.type == 'video') {
+                
+                if (isConnected) {
+                    if (guildData.player.SongQue.length == 0) var flag = true 
+                
+                    guildData.player.SongQue.push(result.data)
+                
+                    if (flag) guildData.player.play()
+                    else guildData.updateEmbed(embedEditor(guildData.player.SongQue))
+                } else {
+                    guildData.player = new queue.SongPlayer(guildData)
+                    guildData.player.connect(message.member.voice.channel)
+                    guildData.player.SongQue.push(result.data)
+                
+                    firePlayer(guildData)
+                }
+            }
+        }
+
+    }
+
+    SendDelete('Şuan için sadece youtube video ve playlistleri destekleniyor, diğerleride yakın zamanda gelicek', message.channel, 2500)
+}
+
 function firePlayer(guildData) {
-    if (guildData.player.SongQue.length == 1) {
-        console.log('Starting Player')
+    if (guildData.player.SongQue.length >= 1) {
+        console.log(chalk.hex('#C53D5C')(`[${guildData.embed.title}] Player started on ${guildData.id}`))
         guildData.player.StartPlayer()
     }
 }

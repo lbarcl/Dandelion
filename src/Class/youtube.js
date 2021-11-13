@@ -1,9 +1,10 @@
-const { YTSearcher } = require('ytsearcher')
+const { YTSearcher } = require('ytsearcher');
+const { Song } = require('./queue');
 const ytsr = require('ytsr');
 const ytpl = require('ytpl');
 
 class tube {
-    constructor (key) {
+    constructor(key) {
         this.APIkey = key || null;
     }
 
@@ -25,6 +26,38 @@ class tube {
 
         const playlist = await ytpl(url, { limit: Infinity, gl: 'TR', hl: 'tr' })
         return playlist
+    }
+
+    async getUrlData(url, requester) {
+        if (url.includes('/playlist')) {
+            const result = await this.GetPlaylistUf(url)
+            const items = result.items
+            const songs = []
+
+            for (let i = 0; i < items.length; i++) {
+                const song = new Song(items[i].shortUrl)
+                song.id = items[i].id
+                song.title = items[i].title
+                song.image = items[i].bestThumbnail.url
+                song.length = items[i].duration
+                song.requester = requester
+                songs.push(song)
+            }
+
+            return {
+                type: 'playlist',
+                data: songs
+            }
+        } else if (url.includes('/watch')) {
+            const song = new Song(url)
+            await song.getData()
+            song.requester = requester
+
+            return {
+                type: 'video',
+                data: song
+            }
+        }
     }
 }
 

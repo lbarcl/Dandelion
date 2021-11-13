@@ -18,8 +18,12 @@ class SongPlayer {
     }
 
     play() {
-        const audioResource = createAudioResource(ytdl(this.SongQue[0].url, {quality: 'highestaudio'}))
-        this.AudioPlayer.play(audioResource)
+        try {
+            const audioResource = createAudioResource(ytdl(this.SongQue[0].url, {quality: 'highestaudio'}))
+            this.AudioPlayer.play(audioResource)
+        } catch (err) {
+            this.skip()
+        }
     }
 
     connect(VoiceChannel) {
@@ -130,8 +134,6 @@ class SongPlayer {
             this.SongQue[randomIndex] = temp
         }
 
-        const embed = embedEditor(this.SongQue)
-        this.guildData.updateEmbed(embed)
         this.play()
     }
 }
