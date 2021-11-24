@@ -12,14 +12,14 @@ class SongPlayer {
         this.AudioPlayer
         this.channel
 
-        this.SongQue = []
-        this.pause = false
-        this.loop = false
+        this.Songs = []
+        this.Pause = false
+        this.Loop = 'kapalı'
     }
 
     play() {
         try {
-            const audioResource = createAudioResource(ytdl(this.SongQue[0].url, {quality: 'highestaudio'}))
+            const audioResource = createAudioResource(ytdl(this.Songs[0].url, {quality: 'highestaudio', filter: 'audioonly'}))
             this.AudioPlayer.play(audioResource)
         } catch (err) {
             this.skip()
@@ -43,21 +43,35 @@ class SongPlayer {
         this.play()
 
         this.AudioPlayer.on(AudioPlayerStatus.Playing, () => {
-            const embed = embedEditor(this.SongQue)
+            const embed = embedEditor(this)
             this.guildData.updateEmbed(embed)
         })
         this.AudioPlayer.on(AudioPlayerStatus.Idle, () => {
             this.skip()
         })
-        this.AudioPlayer.on(AudioPlayerStatus.Error, () => {
+        this.AudioPlayer.on('error', () => {
             SendDelete('Çalmaya çalışırken bir hata meydana geldi', this.guildData.channel, 2500)
-            this.skip()
+            if (this.Songs.length >= 1) {
+                this.Songs.shift()
+                if (this.Songs.length == 0) {
+                    this.guildData.DefaultEmbed()
+                    this.AudioPlayer.stop(true)
+
+                    setTimeout(() => {
+                        if (this.Songs.length == 0) {
+                            this.quit()
+                        }
+                    }, 120000)
+                } else {
+                    this.play()
+                }
+            }
         })
     }
 
 
     quit() {
-        this.SongQue = []
+        this.Songs = []
         this.channel = undefined
         this.AudioPlayer = undefined
 
@@ -70,68 +84,87 @@ class SongPlayer {
     }
 
     clear() {
-        this.SongQue = []
+        this.Songs = []
         this.AudioPlayer.stop(true)
         this.guildData.DefaultEmbed()
 
         setTimeout(() => {
-            if (this.SongQue.length == 0) {
+            if (this.Songs.length == 0) {
                 this.quit()
             }
         }, 120000)
     }
 
     skip() {
-        if (!this.loop) {
-            this.SongQue.shift()
-            if (this.SongQue.length == 0) {
+        if (this.Loop == 'kapalı') {
+            this.Songs.shift()
+            if (this.Songs.length == 0) {
                 this.AudioPlayer.stop(true)
                 this.guildData.DefaultEmbed()
 
                 setTimeout(() => {
-                    if (this.SongQue.length == 0) {
+                    if (this.Songs.length == 0) {
                         this.quit()
                     }
                 }, 120000)
-            } else if (this.SongQue.length >= 1) {
+            } else if (this.Songs.length >= 1) {
                 this.play()
             }
-        } else {
-            this.SongQue.push(this.SongQue[0])
-            this.SongQue.shift()
+
+        } else if (this.Loop == 'şarkı') {
+            this.play()
+        } else if (this.Loop == 'liste'){
+            this.Songs.push(this.Songs[0])
+            this.Songs.shift()
             this.play()
         }
     }
 
-    loop() {
-        this.loop = !this.loop
+    async loop() {
+        switch (this.Loop) {
+            case 'kapalı':
+                this.Loop = 'şarkı'
+                break;
+            case 'şarkı':
+                this.Loop = 'liste'
+                break;
+            case 'liste':
+                this.Loop = 'kapalı'
+                break;
+        }
+
+        const embed = embedEditor(this)
+        this.guildData.updateEmbed(embed)
     }
 
     paunp() {
-        if (this.pause) {
+        if (this.Pause) {
             this.AudioPlayer.unpause()
-            this.pause = false
+            this.Pause = false
         } else {
             this.AudioPlayer.pause(true)
-            this.pause = true
+            this.Pause = true
         }
+
+        const embed = embedEditor(this)
+        this.guildData.updateEmbed(embed)
     }
 
     shuffle() {
-        if (this.SongQue.length == 0) {
+        if (this.Songs.length == 0) {
             SendDelete('Çalma listesinde hiç şarkı yok', this.guildData.channel, 2500)
             return
         }
 
-        var currentIndex = this.SongQue.length
+        var currentIndex = this.Songs.length
 
         while (0 != currentIndex) {
             var randomIndex = Math.floor(Math.random() * currentIndex)
             currentIndex -= 1
 
-            let temp = this.SongQue[currentIndex]
-            this.SongQue[currentIndex] = this.SongQue[randomIndex]
-            this.SongQue[randomIndex] = temp
+            let temp = this.Songs[currentIndex]
+            this.Songs[currentIndex] = this.Songs[randomIndex]
+            this.Songs[randomIndex] = temp
         }
 
         this.play()

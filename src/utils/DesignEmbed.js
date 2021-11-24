@@ -1,23 +1,52 @@
 const { MessageEmbed } = require('discord.js')
 
-module.exports = function (songs) {
+module.exports = function (Player) {
+    var footer = ''
+    
+    switch (Player.Loop) {
+        case 'kapalı':
+            if (Player.Songs.length > 1) {
+                footer = `Listede ${Player.Songs.length} şarkı var`
+            } else {
+                footer = ''
+            }
+            break;
+        case 'şarkı':
+            if (Player.Songs.length > 1) {
+                footer = `Listede ${Player.Songs.length} şarkı var | Şarkı döngüde`
+            } else {
+                footer = 'Şarkı döngüde'
+            }
+            break;
+        case 'liste':
+            if (Player.Songs.length > 1) {
+                footer = `Listede ${Player.Songs.length} şarkı var | Liste döngüde`
+            } else {
+                footer = 'Liste döngüde'
+            }
+            break;
+    }
+
+    if (Player.Pause) footer = 'Duraklatıldı'
 
     const embed = new MessageEmbed()
-        .setTitle(songs[0].title)
-        .setDescription(`${songs[0].length}`)
-        .setImage(songs[0].image)
-        .setURL(songs[0].url)
+        .setTitle(`${Player.Songs[0].title} [${Player.Songs[0].length}]`)
+        .setDescription(`<@${Player.Songs[0].requester}> tarafından eklendi`)
+        .setImage(Player.Songs[0].image)
+        .setURL(Player.Songs[0].url)
     
-    if (songs.length > 1) {
-        const limit = songs.length > 24 ? 24 : songs.length - 1
+    if (footer != '') embed.setFooter(footer)
+    
+    if (Player.Songs.length > 1) {
+        const limit = Player.Songs.length > 24 ? 24 : Player.Songs.length - 1
         
         for (let i = limit; i > 0; i--) {
             if (i == 24) {
-                embed.addField(`${songs.length - 23} daha fazla şarkı...`, '...')
+                embed.addField(`${Player.Songs.length - 23} daha fazla şarkı...`, '...')
                 continue
             }
 
-            embed.addField(`${i} - ${songs[i].title}`, `${songs[0].length}`)
+            embed.addField(`${i} - ${Player.Songs[i].title} [${Player.Songs[i].length}]`, `<@${Player.Songs[i].requester}> tarafından eklendi`)
         }
     }
     

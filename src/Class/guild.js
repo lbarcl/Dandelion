@@ -25,6 +25,7 @@ module.exports = class {
                     this.message = this.channel.messages.cache.get(data.channel.message.id)
                     if (!this.message) this.sendEmbed(this.channel, client)
                     else {
+                        this.DefaultEmbed()
                         this.channel.messages.cache.each((message, id) => {
                             if (id != this.message.id) message.delete()
                         })

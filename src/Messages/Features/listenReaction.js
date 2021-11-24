@@ -10,10 +10,12 @@ module.exports = (client, instance) => {
         
         if (user.id == client.user.id) return
         else if (guildData.message.id != message.id) return
-        else if (!member.voice.channel) return SendDelete('Reaksiyonları kullanabilmek için ses kanalında olmanız gerekiyor', message.channel, 2500);
-        else if (!guildData.player?.voiceConnection && member.voice.channelId != guildData.player.channel.id) return SendDelete('Reaksiyonları kullanabilmek için aynı ses kanalında olmanız gerekiyor', message.channel, 2500);
-
+        
         reaction.users.remove(user)
+        
+        if (!guildData?.player) return SendDelete(client.config.embed.title + ' bir ses kanalına bağlı değil', message.channel, 2500);
+        else if (!member.voice.channelId) return SendDelete('Reaksiyonları kullanabilmek için ses kanalında olmanız gerekiyor', message.channel, 2500);
+        else if (member.voice.channelId != guildData.player?.channel.id) return SendDelete('Reaksiyonları kullanabilmek için aynı ses kanalında olmanız gerekiyor', message.channel, 2500);
         
         switch (emoji) {
             case '⏯️':
