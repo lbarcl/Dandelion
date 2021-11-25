@@ -31,7 +31,7 @@
     "libsodium-wrappers": "^0.7.9",
     "mongoose": "^6.0.13",
     "spotify-uri": "^2.2.0",
-    "wokcommands": "^1.5.1",
+    "wokcommands": "^1.5.3",
     "ytdl-core": "^4.9.1",
     "ytpl": "^2.2.3",
     "ytsearcher": "^1.2.4",
