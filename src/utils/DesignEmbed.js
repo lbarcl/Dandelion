@@ -27,7 +27,10 @@ module.exports = function (Player) {
             break;
     }
 
-    if (Player.Pause) footer = 'Duraklatıldı'
+    if (Player.Pause) {
+        if (footer.length > 1) footer = 'Duraklatıldı | ' + footer
+        else footer = 'Duraklatıldı'
+    }
 
     const embed = new MessageEmbed()
         .setTitle(`${Player.Songs[0].title} [${Player.Songs[0].length}]`)

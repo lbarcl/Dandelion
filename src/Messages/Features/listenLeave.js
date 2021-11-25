@@ -12,7 +12,7 @@ module.exports = (client, instance) => {
                     if (OldState.channelId == guild.player?.channel.id) {
                         const size = OldState.channel.members.size
                         if (size == 1) {
-                            SendDelte('Kanalda kimse kalmadığı için ayrılıyorum', guild.channel, 2500);
+                            SendDelte('Kanalda kimse kalmadığı için ayrılıyorum', guild.channel, 2500, {type: 'embedInfo'});
                             guild.player.quit()
                             guild.player = null
                         }

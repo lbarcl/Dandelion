@@ -31,7 +31,7 @@ module.exports = (client, instance) => {
         }
         else if (message.author.bot) {
             message.delete()
-            SendDelete('Lütfen bu kanalda diğer botları kullanmayın', message.channel, 2500);
+            SendDelete('Lütfen bu kanalda diğer botları kullanmayın', message.channel, 2500, {type: 'embedWarning'});
             return
         }
 
@@ -55,12 +55,12 @@ async function GetData(guildData, message) {
 
         if (message.member.voice.channelId != guildData.player.channel.id) {
             //? When user is not in the same voice channel with the bot
-            SendDelete(`Kullanabilmek için ${guildData.embed.title} ile aynı kanalda olmanız gerekiyor`, message.channel, 2500)
+            SendDelete(`Kullanabilmek için ${guildData.embed.title} ile aynı kanalda olmanız gerekiyor`, message.channel, 2500, {type: 'embedWarning'})
             return
         }
     } else if (!message.member.voice.channelId) {
         //? When bot is not connected to a channel and user is not connected to any voice channel
-        SendDelete('Kullanabilmek için bir ses kanalında olmanız gerekiyor', message.channel, 2500)
+        SendDelete('Kullanabilmek için bir ses kanalında olmanız gerekiyor', message.channel, 2500, {type: 'embedWarning'})
         return
     }
 
