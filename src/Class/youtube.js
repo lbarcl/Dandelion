@@ -17,7 +17,7 @@ class tube {
     async SearchUf(query) {
         var filters = await ytsr.getFilters(query);
         filters = filters.get('Type').get('Video');
-        const result = await ytsr(filters.url, { pages: 1 });
+        const result = await ytsr(filters.url, { pages: 1, limit: 3 });
         return result.items[0]
     }
 

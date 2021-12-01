@@ -49,7 +49,8 @@ class SongPlayer {
         this.AudioPlayer.on(AudioPlayerStatus.Idle, () => {
             this.skip()
         })
-        this.AudioPlayer.on('error', () => {
+        this.AudioPlayer.on('error', (AudioError) => {
+            console.log(AudioError)
             SendDelete('Çalmaya çalışırken bir hata meydana geldi', this.guildData.channel, 2500, {type: 'embedError'})
             if (this.Songs.length >= 1) {
                 this.Songs.shift()
@@ -71,12 +72,15 @@ class SongPlayer {
 
 
     quit() {
+        console.log(this)
         this.Songs = []
         this.channel = undefined
         this.AudioPlayer = undefined
 
-        this.Subscription.unsubscribe()
-        this.Subscription = undefined
+        if (this.Subscription) {
+            this.Subscription.unsubscribe()
+            this.Subscription = undefined
+        }
 
         this.voiceConnection.destroy()
         this.voiceConnection = undefined
@@ -176,8 +180,8 @@ class SongPlayer {
 
         const embed = embedEditor(this)
         this.guildData.updateEmbed(embed)
+        this.play()
         if (this.Pause) {
-            this.play()
             this.AudioPlayer.pause(false);
         }
         SendDelete('Liste karıştırıldı', this.guildData.channel, 2500, {type: 'embedInfo'})

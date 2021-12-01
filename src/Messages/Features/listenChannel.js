@@ -2,8 +2,10 @@
 const embedEditor = require('../../utils/DesignEmbed');
 const SendDelete = require('../../utils/Send&Delete');
 const { tube } = require('../../Class/youtube');
+const st = require('../../Class/spotify');
 const queue = require('../../Class/queue');
 const chalk = require('chalk');
+const convert = require('../../utils/convert');
 
 //* Creating Regular exprenations for URIs
 const regex = new RegExp("((http|https)://)(www.)?" +
@@ -13,6 +15,7 @@ const regex = new RegExp("((http|https)://)(www.)?" +
     "._\\+~#?&//=]*)")
 
 const yt = new tube(process.env.YT_API)
+const spoti = new st(process.env.CLIENT_ID, process.env.CLIENT_SECRET)
 
 module.exports = (client, instance) => {
     //* Registering on message event 
@@ -31,7 +34,7 @@ module.exports = (client, instance) => {
         }
         else if (message.author.bot) {
             message.delete()
-            SendDelete('Lütfen bu kanalda diğer botları kullanmayın', message.channel, 2500, {type: 'embedWarning'});
+            SendDelete('Lütfen bu kanalda diğer botları kullanmayın', message.channel, 2500, { type: 'embedWarning' });
             return
         }
 
@@ -55,12 +58,12 @@ async function GetData(guildData, message) {
 
         if (message.member.voice.channelId != guildData.player.channel.id) {
             //? When user is not in the same voice channel with the bot
-            SendDelete(`Kullanabilmek için ${guildData.embed.title} ile aynı kanalda olmanız gerekiyor`, message.channel, 2500, {type: 'embedWarning'})
+            SendDelete(`Kullanabilmek için ${guildData.embed.title} ile aynı kanalda olmanız gerekiyor`, message.channel, 2500, { type: 'embedWarning' })
             return
         }
     } else if (!message.member.voice.channelId) {
         //? When bot is not connected to a channel and user is not connected to any voice channel
-        SendDelete('Kullanabilmek için bir ses kanalında olmanız gerekiyor', message.channel, 2500, {type: 'embedWarning'})
+        SendDelete('Kullanabilmek için bir ses kanalında olmanız gerekiyor', message.channel, 2500, { type: 'embedWarning' })
         return
     }
 
@@ -70,39 +73,113 @@ async function GetData(guildData, message) {
         if (message.content.includes('https://www.youtube.com')) {
             const result = await yt.getUrlData(message.content, message.author.id)
 
-            if (result.type == 'playlist') {
+            switch (result.type) {
+                case 'playlist':
+                    SendDelete(`${result.data.length} adet video ekleniyor`, message.channel, 4000, { type: 'embedInfo' })
 
-                if (isConnected) {
-                    if (guildData.player.Songs.length == 0) var flag = true
+                    if (isConnected) {
+                        if (guildData.player.Songs.length == 0) var flag = true
 
-                    guildData.player.Songs = guildData.player.Songs.concat(result.data)
+                        guildData.player.Songs = guildData.player.Songs.concat(result.data)
 
-                    if (flag) guildData.player.play()
-                    else guildData.updateEmbed(embedEditor(guildData.player))
+                        if (flag) guildData.player.play()
+                        else guildData.updateEmbed(embedEditor(guildData.player))
 
-                } else {
-                    guildData.player = new queue.SongPlayer(guildData)
-                    guildData.player.connect(message.member.voice.channel)
-                    guildData.player.Songs = result.data
+                    } else {
+                        guildData.player = new queue.SongPlayer(guildData)
+                        guildData.player.connect(message.member.voice.channel)
+                        guildData.player.Songs = result.data
 
-                    firePlayer(guildData)
-                }
-            } else if (result.type == 'video') {
+                        firePlayer(guildData)
+                    }
+                    break;
+                case 'video':
+                    if (isConnected) {
+                        if (guildData.player.Songs.length == 0) var flag = true
 
-                if (isConnected) {
-                    if (guildData.player.Songs.length == 0) var flag = true
+                        guildData.player.Songs.push(result.data)
 
-                    guildData.player.Songs.push(result.data)
+                        if (flag) guildData.player.play()
+                        else guildData.updateEmbed(embedEditor(guildData.player))
+                    } else {
+                        guildData.player = new queue.SongPlayer(guildData)
+                        guildData.player.connect(message.member.voice.channel)
+                        guildData.player.Songs.push(result.data)
 
-                    if (flag) guildData.player.play()
-                    else guildData.updateEmbed(embedEditor(guildData.player))
-                } else {
-                    guildData.player = new queue.SongPlayer(guildData)
-                    guildData.player.connect(message.member.voice.channel)
-                    guildData.player.Songs.push(result.data)
+                        firePlayer(guildData)
+                    }
+                    break;
+            }
+        } else if (message.content.includes('https://open.spotify.com')) {
+            const result = await spoti.GetData(message.content)
 
-                    firePlayer(guildData)
-                }
+            switch (result.type) {
+                case 'playlist':
+                    SendDelete(`${result.data.name} çalma listesinden ${result.data.tracks.length} adet şarkı ekleniyor`, message.channel, 4000, { type: 'embedInfo' })
+                    var flag2 = false
+                    if (isConnected) {
+                        if (guildData.player.Songs.length == 0) var flag = true
+                        for (let i = 0; i < result.data.tracks.length; i++) {
+                            const song = await convert(result.data.tracks[i])
+                            if (song == 500) {
+                                SendDelete(`${result.data.tracks[i].name} Youtube'da bulunamadı`, message.channel, 2500, { type: 'embedError' })     
+                                continue
+                            }
+
+                            song.requester = message.author.id
+                            guildData.player.Songs.push(song)
+                            if (flag && !flag2) {
+                                guildData.player.play()
+                                flag2 = true
+                            }
+                        }
+
+                        guildData.updateEmbed(embedEditor(guildData.player))
+                    } else {
+                        guildData.player = new queue.SongPlayer(guildData)
+                        guildData.player.connect(message.member.voice.channel)
+
+                        for (let i = 0; i < result.data.tracks.length; i++) {
+                            const song = await convert(result.data.tracks[i])
+                            if (song == 500) {
+                                SendDelete(`${result.data.tracks[i].name} Youtube'da bulunamadı`, message.channel, 2500, { type: 'embedError' })    
+                                continue
+                            }
+
+                            song.requester = message.author.id
+                            guildData.player.Songs.push(song)
+
+                            if (!flag2) {
+                                firePlayer(guildData)
+                                flag2 = true
+                            }
+                        }
+                    }
+                    break;
+                case 'track':
+                    const song = await convert(result.data)
+                    if (song == 500) {
+                        SendDelete(`${result.data.name} Youtube'da bulunamadı`, message.channel, 2500, { type: 'embedError' })
+                    
+                        return
+                    }
+                    song.requester = message.author.id
+
+                    if (isConnected) {
+                        if (guildData.player.Songs.length == 0) var flag = true
+
+                        guildData.player.Songs.push(song)
+
+                        if (flag) guildData.player.play()
+                        else guildData.updateEmbed(embedEditor(guildData.player))
+                    } else {
+                        guildData.player = new queue.SongPlayer(guildData)
+                        guildData.player.connect(message.member.voice.channel)
+                        guildData.player.Songs.push(song)
+
+                        firePlayer(guildData)
+                    }
+                    break;
             }
         }
 

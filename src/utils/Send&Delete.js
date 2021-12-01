@@ -22,21 +22,18 @@ async function SendDelete(content, channel, timeInterval, options) {
 
     switch (options.type) {
         case 'embedError':
-                embed.setTitle('Hata')
-                embed.setColor(color.error)
-                embed.setDescription(content)
+            embed.setTitle(content)
+            embed.setColor(color.error)
             MessageContent = { embeds: [embed] }
             break;
         case 'embedWarning':
-                embed.setTitle('Uyarı')
-                embed.setColor(color.warning)
-                embed.setDescription(content)
+            embed.setTitle(content)
+            embed.setColor(color.warning)
             MessageContent = { embeds: [embed] }
             break;
         case 'embedInfo':
-                embed.setTitle('Bilgi')
-                embed.setColor(color.info)
-                embed.setDescription(content)
+            embed.setTitle(content)
+            embed.setColor(color.info)
             MessageContent = { embeds: [embed] }
             break;
         default:
