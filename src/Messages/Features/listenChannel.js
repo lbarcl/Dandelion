@@ -154,6 +154,7 @@ async function GetData(guildData, message) {
                                 flag2 = true
                             }
                         }
+                        guildData.updateEmbed(embedEditor(guildData.player))
                     }
                     break;
                 case 'track':

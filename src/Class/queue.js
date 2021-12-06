@@ -7,7 +7,7 @@ const ytdl = require('ytdl-core')
 class SongPlayer {
     constructor(guildData) {
         this.guildData = guildData
-        
+
         this.VoiceConnection
         this.AudioPlayer
         this.channel
@@ -19,7 +19,7 @@ class SongPlayer {
 
     play() {
         try {
-            const audioResource = createAudioResource(ytdl(this.Songs[0].url, {quality: 'highestaudio', filter: 'audioonly'}))
+            const audioResource = createAudioResource(ytdl(this.Songs[0].url, { quality: 'highestaudio', filter: 'audioonly' }))
             this.AudioPlayer.play(audioResource)
         } catch (err) {
             this.skip()
@@ -51,7 +51,7 @@ class SongPlayer {
         })
         this.AudioPlayer.on('error', (AudioError) => {
             console.log(AudioError)
-            SendDelete('Çalmaya çalışırken bir hata meydana geldi', this.guildData.channel, 2500, {type: 'embedError'})
+            SendDelete('Çalmaya çalışırken bir hata meydana geldi', this.guildData.channel, 2500, { type: 'embedError' })
             if (this.Songs.length >= 1) {
                 this.Songs.shift()
                 if (this.Songs.length == 0) {
@@ -72,7 +72,8 @@ class SongPlayer {
 
 
     quit() {
-        console.log(this)
+        if (!this.voiceConnection) return
+
         this.Songs = []
         this.channel = undefined
         this.AudioPlayer = undefined
@@ -84,15 +85,16 @@ class SongPlayer {
 
         this.voiceConnection.destroy()
         this.voiceConnection = undefined
+
         this.guildData.DefaultEmbed()
-        SendDelete('Kanaldan ayrıldım', this.guildData.channel, 2500, {type: 'embedInfo'})
+        SendDelete('Kanaldan ayrıldım', this.guildData.channel, 2500, { type: 'embedInfo' })
     }
 
     clear() {
         this.Songs = []
         this.AudioPlayer.stop(true)
         this.guildData.DefaultEmbed()
-        SendDelete('Liste temizlendi', this.guildData.channel, 2500, {type: 'embedInfo'})
+        SendDelete('Liste temizlendi', this.guildData.channel, 2500, { type: 'embedInfo' })
 
         setTimeout(() => {
             if (this.Songs.length == 0) {
@@ -119,7 +121,7 @@ class SongPlayer {
 
         } else if (this.Loop == 'şarkı') {
             this.play()
-        } else if (this.Loop == 'liste'){
+        } else if (this.Loop == 'liste') {
             this.Songs.push(this.Songs[0])
             this.Songs.shift()
             this.play()
@@ -130,15 +132,15 @@ class SongPlayer {
         switch (this.Loop) {
             case 'kapalı':
                 this.Loop = 'şarkı'
-                SendDelete('Çalan şarkı döngüye alındı', this.guildData.channel, 2500, {type: 'embedInfo'})
+                SendDelete('Çalan şarkı döngüye alındı', this.guildData.channel, 2500, { type: 'embedInfo' })
                 break;
             case 'şarkı':
                 this.Loop = 'liste'
-                SendDelete('Liste döngüye alındı', this.guildData.channel, 2500, {type: 'embedInfo'})
+                SendDelete('Liste döngüye alındı', this.guildData.channel, 2500, { type: 'embedInfo' })
                 break;
             case 'liste':
                 this.Loop = 'kapalı'
-                SendDelete('Döngü kapandı', this.guildData.channel, 2500, {type: 'embedInfo'})
+                SendDelete('Döngü kapandı', this.guildData.channel, 2500, { type: 'embedInfo' })
                 break;
         }
 
@@ -150,11 +152,11 @@ class SongPlayer {
         if (this.Pause) {
             this.AudioPlayer.unpause()
             this.Pause = false
-            SendDelete('Çalmaya devam ediyor', this.guildData.channel, 2500, {type: 'embedInfo'})
+            SendDelete('Çalmaya devam ediyor', this.guildData.channel, 2500, { type: 'embedInfo' })
         } else {
             this.AudioPlayer.pause(true)
             this.Pause = true
-            SendDelete('Liste duraklatıldı', this.guildData.channel, 2500, {type: 'embedInfo'})
+            SendDelete('Liste duraklatıldı', this.guildData.channel, 2500, { type: 'embedInfo' })
         }
 
         const embed = embedEditor(this)
@@ -163,7 +165,7 @@ class SongPlayer {
 
     shuffle() {
         if (this.Songs.length == 0) {
-            SendDelete('Çalma listesinde hiç şarkı yok', this.guildData.channel, 2500, {type: 'embedWarning'})
+            SendDelete('Çalma listesinde hiç şarkı yok', this.guildData.channel, 2500, { type: 'embedWarning' })
             return
         }
 
@@ -184,7 +186,7 @@ class SongPlayer {
         if (this.Pause) {
             this.AudioPlayer.pause(false);
         }
-        SendDelete('Liste karıştırıldı', this.guildData.channel, 2500, {type: 'embedInfo'})
+        SendDelete('Liste karıştırıldı', this.guildData.channel, 2500, { type: 'embedInfo' })
     }
 }
 
