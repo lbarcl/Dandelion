@@ -7,7 +7,7 @@ const yt = new tube()
 async function convert(track) {
     var data
     try {
-        const response = await axios.get('https://free-pi.herokuapp.com/api/song/spotify?id=' + track?.id)
+        const response = await axios.get('https://free-pi.herokuapp.com/v1/song/spotify?id=' + track?.id)
         data = new Song(response.data.youtube.url)
         data.id = response.data.youtube.id
         data.title = response.data.youtube.title
