@@ -22,7 +22,7 @@ module.exports = (client, instance) => {
                 guildData.player.paunp()
                 break;
             case '⏭️':
-                guildData.player.skip()
+                guildData.player.skip(true)
                 break;
             case '⏏️':
                 guildData.player.quit()

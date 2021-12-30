@@ -103,28 +103,35 @@ class SongPlayer {
         }, 120000)
     }
 
-    skip() {
-        if (this.Loop == 'kapalı') {
+    skip(force) {
+        if (!force) {
+            switch (this.Loop) {
+                case 'kapalı':
+                    skp(this)
+                    break;
+                case 'liste':
+                    this.Songs.push(this.Songs[0])
+                    this.Songs.shift()     
+                    break;
+            }
+            if (this.Songs.length >= 1) {
+                this.play()
+            }
+        } else {
+            skp(this)
+        }
+
+        function skp(this) {
             this.Songs.shift()
             if (this.Songs.length == 0) {
                 this.AudioPlayer.stop(true)
                 this.guildData.DefaultEmbed()
-
                 setTimeout(() => {
                     if (this.Songs.length == 0) {
                         this.quit()
                     }
                 }, 120000)
-            } else if (this.Songs.length >= 1) {
-                this.play()
             }
-
-        } else if (this.Loop == 'şarkı') {
-            this.play()
-        } else if (this.Loop == 'liste') {
-            this.Songs.push(this.Songs[0])
-            this.Songs.shift()
-            this.play()
         }
     }
 
