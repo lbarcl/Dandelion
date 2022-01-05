@@ -1,6 +1,6 @@
 {
   "name": "dandelion",
-  "version": "3.5.2",
+  "version": "3.5.3",
   "description": "Discord music bot",
   "main": "index.js",
   "scripts": {
@@ -35,6 +35,7 @@
     "mongoose": "^6.0.13",
     "spotify-uri": "^2.2.0",
     "wokcommands": "^1.5.3",
+    "ytdl": "^1.4.1",
     "ytdl-core": "^4.9.1",
     "ytpl": "^2.2.3",
     "ytsearcher": "^1.2.4",

@@ -107,35 +107,41 @@ class SongPlayer {
         if (!force) {
             switch (this.Loop) {
                 case 'kapalı':
-                    skp(this)
+                    this.#skip()
+                    break;
+                case 'şarkı':
+                    this.play()
                     break;
                 case 'liste':
                     this.Songs.push(this.Songs[0])
-                    this.Songs.shift()     
+                    this.Songs.shift()
+                    this.play()
                     break;
             }
-            if (this.Songs.length >= 1) {
-                this.play()
-            }
         } else {
-            skp(this)
+            this.#skip()
         }
 
-        function skp(this) {
-            this.Songs.shift()
-            if (this.Songs.length == 0) {
-                this.AudioPlayer.stop(true)
-                this.guildData.DefaultEmbed()
-                setTimeout(() => {
-                    if (this.Songs.length == 0) {
-                        this.quit()
-                    }
-                }, 120000)
-            }
+    }
+
+    #skip() {
+        this.Songs.shift()
+        if (this.Songs.length == 0) {
+            this.AudioPlayer.stop(true)
+            this.guildData.DefaultEmbed()
+            this.Loop = 'kapalı'
+            this.Pause = false
+            setTimeout(() => {
+                if (this.Songs.length == 0) {
+                    this.quit()
+                }
+            }, 120000)
+        } else if (this.Songs.length >= 1) {
+            this.play()
         }
     }
 
-    async loop() {
+    loop() {
         switch (this.Loop) {
             case 'kapalı':
                 this.Loop = 'şarkı'
