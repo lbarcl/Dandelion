@@ -10,7 +10,7 @@ module.exports = (client, instance) => {
         if (!guildData.message && guildData.channel) guildData.Load(client, client.config)
 
         if (user.id == client.user.id) return
-        else if (guildData?.message.id != message.id) return
+        else if (guildData.message?.id != message.id) return
         
         reaction.users.remove(user)
         
