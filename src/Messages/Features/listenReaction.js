@@ -13,7 +13,7 @@ module.exports = (client, instance) => {
         
         reaction.users.remove(user)
         
-        if (!guildData?.player) return SendDelete(client.config.embed.title + ' bir ses kanalına bağlı değil', message.channel, 2500, {type: 'embedWarning'});
+        if (!guildData?.player) return SendDelete(client.user.username + ' bir ses kanalına bağlı değil', message.channel, 2500, { type: 'embedWarning' });
         else if (!member.voice.channelId) return SendDelete('Reaksiyonları kullanabilmek için ses kanalında olmanız gerekiyor', message.channel, 2500, {type: 'embedWarning'});
         else if (member.voice.channelId != guildData.player?.channel.id) return SendDelete('Reaksiyonları kullanabilmek için aynı ses kanalında olmanız gerekiyor', message.channel, 2500, {type: 'embedWarning'});
         

@@ -3,6 +3,7 @@ const Discord = require('discord.js')
 const path          = require('path')
 const wokcommands   = require('wokcommands')
 const chalk         = require('chalk')
+const Sentry        = require("@sentry/node");
 
 //* Importing class & assets 
 const database      = require('./Database')
@@ -19,6 +20,11 @@ if (process.env.NODE_ENV == 'development ') {
     console.log(chalk.yellowBright('[ENV] Runing on development envirionment'))
     require('dotenv').config()
 }
+
+Sentry.init({
+  dsn: process.env.SENTRY,
+  tracesSampleRate: 1.0,
+});
 
 //* Login & creating WS connection to discord
 Client.login(process.env.TOKEN)

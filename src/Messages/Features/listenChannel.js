@@ -25,6 +25,7 @@ module.exports = (client, instance) => {
 
         //* Checking for is user able to use it
         if (message.author.id == client.user.id) return
+        else if (!guildData.message && guildData.channel) guildData.Load(client, client.config)
         else if (!guildData?.channel) return
         else if (guildData?.channel.id != message.channel.id) return
         else if (message.content.slice(0, 1) == instance._defaultPrefix) {
@@ -44,7 +45,6 @@ module.exports = (client, instance) => {
         }, 2500);
 
         GetData(guildData, message)
-
     });
 }
 

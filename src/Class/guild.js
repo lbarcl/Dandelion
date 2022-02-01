@@ -1,4 +1,5 @@
 const { MessageEmbed } = require('discord.js');
+const Sentry = require("@sentry/node");
 
 module.exports = class {
     constructor(ID) {
@@ -23,15 +24,16 @@ module.exports = class {
                 try {
                     await this.channel.messages.fetch()
                     this.message = this.channel.messages.cache.get(data.channel.message.id)
-                    if (!this.message) this.sendEmbed(this.channel, client)
-                    else {
+                    if (!this.message) {
+                        this.sendEmbed(this.channel, client)
+                    } else {
                         this.DefaultEmbed()
                         this.channel.messages.cache.each((message, id) => {
                             if (id != this.message.id) message.delete()
                         })
                     }
                 } catch (err) {
-                    
+                    Sentry.captureException(err);
                 }
             }
         }
@@ -55,7 +57,7 @@ module.exports = class {
         client.db.findByIdAndUpdate(channel.guild.id, {'channel.message.id': PapatyaMessage.id})
     }
 
-    updateEmbed(embed) {
+    async updateEmbed(embed) {
         embed.setColor(this.embed.hexColor)
         this.message.edit({ embeds: [embed] })
     }

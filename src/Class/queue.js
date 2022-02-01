@@ -3,6 +3,7 @@ const embedEditor = require('../utils/DesignEmbed')
 const SendDelete = require('../utils/Send&Delete')
 const time = require('../utils/TimeFixer')
 const ytdl = require('ytdl-core')
+const Sentry = require('@sentry/node');
 
 class SongPlayer {
     constructor(guildData) {
@@ -50,7 +51,7 @@ class SongPlayer {
             this.skip()
         })
         this.AudioPlayer.on('error', (AudioError) => {
-            console.log(AudioError)
+            Sentry.captureException(AudioError);
             SendDelete('Çalmaya çalışırken bir hata meydana geldi', this.guildData.channel, 2500, { type: 'embedError' })
             if (this.Songs.length >= 1) {
                 this.Songs.shift()
