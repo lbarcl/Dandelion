@@ -7,9 +7,10 @@ module.exports = (client, instance) => {
         const guildData = client.guildData.get(message.guild.id)
         const member = message.guild.members.cache.get(user.id)
 
-        
+        if (!guildData.message && guildData.channel) guildData.Load(client, client.config)
+
         if (user.id == client.user.id) return
-        else if (guildData.message.id != message.id) return
+        else if (guildData?.message.id != message.id) return
         
         reaction.users.remove(user)
         
