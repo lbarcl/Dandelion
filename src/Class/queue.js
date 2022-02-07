@@ -19,12 +19,11 @@ class SongPlayer {
     }
 
     play() {
-        try {
+       
             const audioResource = createAudioResource(ytdl(this.Songs[0].url, { quality: 'highestaudio', filter: 'audioonly' }))
             this.AudioPlayer.play(audioResource)
-        } catch (err) {
-            this.skip()
-        }
+        
+  
     }
 
     connect(VoiceChannel) {
