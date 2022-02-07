@@ -9,7 +9,7 @@ module.exports = (client, instance) => {
                     guild.player = null
                     guild.DefaultEmbed()
                 } else {
-                    if (OldState.channelId == guild.player?.channel.id) {
+                    if (OldState.channelId == guild.player.channel?.id) {
                         const size = OldState.channel.members.size
                         if (size == 1) {
                             SendDelte('Kanalda kimse kalmadığı için ayrılıyorum', guild.channel, 2500, {type: 'embedInfo'});

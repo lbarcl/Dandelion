@@ -22,8 +22,9 @@ if (process.env.NODE_ENV == 'development ') {
 }
 
 Sentry.init({
-  dsn: process.env.SENTRY,
-  tracesSampleRate: 1.0,
+    dsn: process.env.SENTRY,
+    release: require('../package.json').name + '@' + require('../package.json').version,  
+    tracesSampleRate: 1.0,
 });
 
 //* Login & creating WS connection to discord

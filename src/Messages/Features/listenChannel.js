@@ -87,7 +87,12 @@ async function GetData(guildData, message) {
 
                     } else {
                         guildData.player = new queue.SongPlayer(guildData)
-                        guildData.player.connect(message.member.voice.channel)
+                        try {
+                            guildData.player.connect(message.member.voice.channel)
+                        } catch (err) {
+                            SendDelete(`<@${client.user.id}>, <#${message.member.voice.channel.id}>'ye bağlanamıyor!\nLütfen başka bir kanala geçin yada yetki verin.`, message.channel, 2500, { type: 'embedError' })
+                            return
+                        }
                         guildData.player.Songs = result.data
 
                         firePlayer(guildData)
@@ -103,7 +108,12 @@ async function GetData(guildData, message) {
                         else guildData.updateEmbed(embedEditor(guildData.player))
                     } else {
                         guildData.player = new queue.SongPlayer(guildData)
-                        guildData.player.connect(message.member.voice.channel)
+                        try {
+                            guildData.player.connect(message.member.voice.channel)
+                        } catch (err) {
+                            SendDelete(`<@${client.user.id}>, <#${message.member.voice.channel.id}>'ye bağlanamıyor!\nLütfen başka bir kanala geçin yada yetki verin.`, message.channel, 2500, { type: 'embedError' })
+                            return
+                        }
                         guildData.player.Songs.push(result.data)
 
                         firePlayer(guildData)
@@ -175,7 +185,12 @@ async function GetData(guildData, message) {
                         else guildData.updateEmbed(embedEditor(guildData.player))
                     } else {
                         guildData.player = new queue.SongPlayer(guildData)
-                        guildData.player.connect(message.member.voice.channel)
+                        try {
+                            guildData.player.connect(message.member.voice.channel)
+                        } catch (err) {
+                            SendDelete(`<@${client.user.id}>, <#${message.member.voice.channel.id}>'ye bağlanamıyor!\nLütfen başka bir kanala geçin yada yetki verin.`, message.channel, 2500, { type: 'embedError' })
+                            return
+                        }
                         guildData.player.Songs.push(song)
 
                         firePlayer(guildData)
@@ -185,21 +200,39 @@ async function GetData(guildData, message) {
         }
 
     } else {
-        const result = await yt.SearchOf(message.content)
-        const song = new queue.Song(result.url)
-        await song.getData()
-        song.requester = message.author.id
+        let song = null
+        if (message.content.toLowerCase().startsWith('+yt')) {
+            const result = await yt.SearchOf(message.content.slice(3))
+            song = new queue.Song(result.url)
+            await song.getData()
+            song.requester = message.author.id
+        } else {
+            let result = await spoti.Search(message.content)
+            if (result.length == 0) {
+                SendDelte(`\`${message.content}\` Spotifyda bulunamadı,\ndilerseniz aynı şeyi başına \`+YT\` yazarak YouTubeda aratabilirsiniz.`)
+            } 
+            result = spoti.FormatTrack(result[0])
+            song = await convert(result)
+            if (song == 500) return SendDelete(`${result.data.name} Youtube'da bulunamadı`, message.channel, 2500, { type: 'embedError' })
+            song.requester = message.author.id
+        }
 
         if (isConnected) {
             if (guildData.player.Songs.length == 0) var flag = true
-
+            
             guildData.player.Songs.push(song)
-
+            
             if (flag) guildData.player.play()
             else guildData.updateEmbed(embedEditor(guildData.player))
         } else {
             guildData.player = new queue.SongPlayer(guildData)
-            guildData.player.connect(message.member.voice.channel)
+            try {
+                guildData.player.connect(message.member.voice.channel)
+            } catch (err) {
+                SendDelete(`<@${client.user.id}>, <#${message.member.voice.channel.id}>'ye bağlanamıyor!\nLütfen başka bir kanala geçin yada yetki verin.`, message.channel, 2500, { type: 'embedError' })
+                return
+            }
+            
             guildData.player.Songs.push(song)
 
             firePlayer(guildData)

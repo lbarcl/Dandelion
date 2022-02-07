@@ -62,7 +62,7 @@ class Spoti {
             uri: 'spotify:playlist:' + id,
             name: mainResponse.data.name,
             tracks: tracks.map((item) => {
-                return FormatTrack(item.track)
+                return this.FormatTrack(item.track)
             })
         }
 
@@ -75,7 +75,7 @@ class Spoti {
         const headers = { headers: { Authorization: 'Bearer ' + this.Token, 'Content-Type': 'application/json' } }
 
         const response = await axios.get(`${endPoint}/tracks/${id}`, headers)
-        const data = FormatTrack(response.data)
+        const data = this.FormatTrack(response.data)
 
         return data
     }
@@ -103,15 +103,15 @@ class Spoti {
 
         return data
     }
-}
 
-function FormatTrack(track) {
-    return {
-        id: track.id,
-        name: track.name,
-        image: track.album.images[0].url,
-        artists: track.artists,
-        explicit: track.explicit
+    FormatTrack(track) {
+        return {
+            id: track.id,
+            name: track.name,
+            image: track.album.images[0].url,
+            artists: track.artists,
+            explicit: track.explicit
+        }
     }
 }
 

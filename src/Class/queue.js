@@ -28,7 +28,7 @@ class SongPlayer {
     }
 
     connect(VoiceChannel) {
-        if (!VoiceChannel.joinable) throw new Error('Client user is not able to connect')
+        if (!VoiceChannel.joinable) throw new Error('Client user is not able to connect to voice channel',)
         this.voiceConnection = joinVoiceChannel({
             channelId: VoiceChannel.id,
             guildId: VoiceChannel.guildId,
