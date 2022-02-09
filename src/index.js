@@ -4,6 +4,7 @@ const path          = require('path')
 const wokcommands   = require('wokcommands')
 const chalk         = require('chalk')
 const Sentry        = require("@sentry/node");
+const topAuto       = require('topgg-autoposter');
 
 //* Importing class & assets 
 const database      = require('./Database')
@@ -19,13 +20,18 @@ const Client = new Discord.Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAG
 if (process.env.NODE_ENV == 'development ') {
     console.log(chalk.yellowBright('[ENV] Runing on development envirionment'))
     require('dotenv').config()
-}
+} else {
+    Sentry.init({
+        dsn: process.env.SENTRY,
+        release: require('../package.json').name + '@' + require('../package.json').version,  
+        tracesSampleRate: 1.0,
+    });
 
-Sentry.init({
-    dsn: process.env.SENTRY,
-    release: require('../package.json').name + '@' + require('../package.json').version,  
-    tracesSampleRate: 1.0,
-});
+    const poster = topAuto.AutoPoster(process.env.TOPGG_TOKEN, Client)
+    poster.on('error', (err) => {
+        Sentry.captureException(err);
+    })
+}
 
 //* Login & creating WS connection to discord
 Client.login(process.env.TOKEN)
