@@ -43,6 +43,6 @@
     "ytsr": "^3.6.0"
   },
   "devDependencies": {
-    "dotenv": "^10.0.0"
+    "dotenv": "^16.0.0"
   }
 }
