@@ -31,7 +31,7 @@
     "axios": "^0.24.0",
     "chalk": "^4.1.2",
     "discord.js": "^13.6.0",
-    "ffmpeg-static": "^4.4.0",
+    "ffmpeg-static": "^4.4.1",
     "libsodium-wrappers": "^0.7.9",
     "mongoose": "^6.2.1",
     "spotify-uri": "^2.2.0",
