@@ -203,13 +203,18 @@ async function GetData(guildData, message) {
         let song = null
         if (message.content.toLowerCase().startsWith('+yt')) {
             const result = await yt.SearchOf(message.content.slice(3))
+            if (!result.url) {
+                SendDelete(`\`${message.content.slice(3).trim()}\` YouTubeda bulunamadı`)
+                return
+            }
             song = new queue.Song(result.url)
             await song.getData()
             song.requester = message.author.id
         } else {
             let result = await spoti.Search(message.content)
             if (result.length == 0) {
-                SendDelte(`\`${message.content}\` Spotifyda bulunamadı,\ndilerseniz aynı şeyi başına \`+YT\` yazarak YouTubeda aratabilirsiniz.`)
+                SendDelete(`\`${message.content}\` Spotifyda bulunamadı,\ndilerseniz aynı şeyi başına \`+YT\` yazarak YouTubeda aratabilirsiniz.`)
+                return
             } 
             result = spoti.FormatTrack(result[0])
             song = await convert(result)
