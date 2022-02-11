@@ -40,7 +40,7 @@
     "ytdl-core": "^4.10.1",
     "ytpl": "^2.2.3",
     "ytsearcher": "^1.2.4",
-    "ytsr": "^3.5.3"
+    "ytsr": "^3.6.0"
   },
   "devDependencies": {
     "dotenv": "^10.0.0"
