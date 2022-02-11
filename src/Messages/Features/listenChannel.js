@@ -203,7 +203,7 @@ async function GetData(guildData, message) {
         let song = null
         if (message.content.toLowerCase().startsWith('+yt')) {
             const result = await yt.SearchOf(message.content.slice(3))
-            if (!result.url) {
+            if (!result?.url) {
                 SendDelete(`\`${message.content.slice(3).trim()}\` YouTubeda bulunamadı`)
                 return
             }

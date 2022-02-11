@@ -83,7 +83,7 @@ class SongPlayer {
             this.Subscription = undefined
         }
 
-        this.voiceConnection.destroy()
+        this.voiceConnection.destroy().catch(err => {})
         this.voiceConnection = undefined
 
         this.guildData.DefaultEmbed()
