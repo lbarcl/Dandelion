@@ -44,13 +44,13 @@ module.exports = (client, instance) => {
             message.delete()
         }, 2500);
 
-        GetData(guildData, message)
+        GetData(guildData, message, client)
     });
 }
 
 
 
-async function GetData(guildData, message) {
+async function GetData(guildData, message, client) {
     var isConnected = false
     if (guildData.player?.voiceConnection) {
         //? When bot is connected to a channel
