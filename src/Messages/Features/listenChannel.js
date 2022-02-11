@@ -147,7 +147,12 @@ async function GetData(guildData, message) {
                         guildData.updateEmbed(embedEditor(guildData.player))
                     } else {
                         guildData.player = new queue.SongPlayer(guildData)
-                        guildData.player.connect(message.member.voice.channel)
+                        try {
+                            guildData.player.connect(message.member.voice.channel)
+                        } catch (err) {
+                            SendDelete(`<@${client.user.id}>, <#${message.member.voice.channel.id}>'ye bağlanamıyor!\nLütfen başka bir kanala geçin yada yetki verin.`, message.channel, 2500, { type: 'embedError' })
+                            return
+                        }
 
                         for (let i = 0; i < result.data.tracks.length; i++) {
                             const song = await convert(result.data.tracks[i])
