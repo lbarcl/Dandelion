@@ -33,14 +33,14 @@
     "discord.js": "^13.2.0",
     "ffmpeg-static": "^4.4.0",
     "libsodium-wrappers": "^0.7.9",
-    "mongoose": "^6.0.13",
+    "mongoose": "^6.2.1",
     "spotify-uri": "^2.2.0",
     "topgg-autoposter": "^2.0.1",
     "wokcommands": "^1.5.3",
     "ytdl-core": "^4.10.1",
     "ytpl": "^2.2.3",
     "ytsearcher": "^1.2.4",
-    "ytsr": "^3.5.3"
+    "ytsr": "^3.6.0"
   },
   "devDependencies": {
     "dotenv": "^10.0.0"
