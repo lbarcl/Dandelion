@@ -27,7 +27,7 @@
   "dependencies": {
     "@discordjs/opus": "^0.7.0",
     "@discordjs/voice": "^0.8.0",
-    "@sentry/node": "^6.17.3",
+    "@sentry/node": "^6.17.8",
     "axios": "^0.25.0",
     "chalk": "^4.1.2",
     "discord.js": "^13.6.0",
