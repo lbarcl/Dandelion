@@ -1,8 +1,9 @@
-const { joinVoiceChannel, createAudioPlayer, AudioPlayerStatus, createAudioResource } = require('@discordjs/voice')
+const { joinVoiceChannel, createAudioPlayer, AudioPlayerStatus, createAudioResource, demuxProbe } = require('@discordjs/voice')
 const embedEditor = require('../utils/DesignEmbed')
 const SendDelete = require('../utils/Send&Delete')
 const time = require('../utils/TimeFixer')
-const ytdl = require('ytdl-core')
+const { getBasicInfo } = require('ytdl-core')
+const {exec: ytdl} = require('youtube-dl-exec')
 const Sentry = require('@sentry/node');
 
 class SongPlayer {
@@ -18,13 +19,45 @@ class SongPlayer {
         this.Loop = 'kapalı'
     }
 
-    play() {
+    async play() {
         if (this.Songs.length > 0) {
             if (this.Songs[0]?.url) {
-                const audioResource = createAudioResource(ytdl(this.Songs[0].url, { quality: 'highestaudio', filter: 'audioonly' }))
+                const audioResource = await this.#createAudioResource(this.Songs[0].url)
                 this.AudioPlayer.play(audioResource)
             }
         }
+    }
+
+    async #createAudioResource(url) {
+        return new Promise((resolve, reject) => {
+            const process = ytdl(
+                url,
+                {
+                    o: '-',
+                    q: '',
+                    f: 'bestaudio[ext=webm+acodec=opus+asr=48000]/bestaudio',
+                    r: '100K',
+                },
+                { stdio: ['ignore', 'pipe', 'ignore'] },
+            )
+
+            if (!process.stdout) {
+                reject(new Error('No stdout'))
+                return
+            }
+            const stream = process.stdout
+            const onError = (error) => {
+                if (!process.killed) process.kill()
+                stream.resume()
+                reject(error)
+            }
+            process.once('spawn', () => {
+                    demuxProbe(stream).then((prope) => {
+                        const audioResource = createAudioResource(prope.stream, { metadata: this, inputType: prope.type })
+                        resolve(audioResource)
+                    }).catch(onError)
+            }).catch(onError)
+        })
     }
 
     connect(VoiceChannel) {
@@ -130,6 +163,8 @@ class SongPlayer {
                 this.Loop = 'kapalı'
                 this.Pause = false
                 this.quit()
+            } else {
+                this.AudioPlayer.stop(true)
             }
         }
     }
@@ -207,7 +242,7 @@ class Song {
     }
 
     async getData() {
-        const data = await ytdl.getBasicInfo(this.url)
+        const data = await getBasicInfo(this.url)
 
         this.id = data.videoDetails.videoId
         this.title = data.videoDetails.title

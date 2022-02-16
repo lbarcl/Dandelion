@@ -102,7 +102,7 @@ async function GetData(guildData, message, client) {
                     if (isConnected) {
                         if (guildData.player.Songs.length == 0) var flag = true
 
-                        guildData.player.Songs.push(result.data)
+                        guildData.addSong(result.data)
 
                         if (flag) guildData.player.play()
                         else guildData.updateEmbed(embedEditor(guildData.player))
@@ -114,7 +114,7 @@ async function GetData(guildData, message, client) {
                             SendDelete(`<@${client.user.id}>, <#${message.member.voice.channel.id}>'ye bağlanamıyor!\nLütfen başka bir kanala geçin yada yetki verin.`, message.channel, 5000, { type: 'embedWarning' })
                             return
                         }
-                        guildData.player.Songs.push(result.data)
+                        guildData.addSong(result.data)
 
                         firePlayer(guildData)
                     }
@@ -137,7 +137,7 @@ async function GetData(guildData, message, client) {
                             }
 
                             song.requester = message.author.id
-                            guildData.player.Songs.push(song)
+                            guildData.addSong(song)
                             if (flag && !flag2) {
                                 guildData.player.play()
                                 flag2 = true
@@ -162,7 +162,7 @@ async function GetData(guildData, message, client) {
                             }
 
                             song.requester = message.author.id
-                            guildData.player.Songs.push(song)
+                            guildData.addSong(song)
 
                             if (!flag2) {
                                 firePlayer(guildData)
@@ -184,7 +184,7 @@ async function GetData(guildData, message, client) {
                     if (isConnected) {
                         if (guildData.player.Songs.length == 0) var flag = true
 
-                        guildData.player.Songs.push(song)
+                        guildData.addSong(song)
 
                         if (flag) guildData.player.play()
                         else guildData.updateEmbed(embedEditor(guildData.player))
@@ -196,7 +196,7 @@ async function GetData(guildData, message, client) {
                             SendDelete(`<@${client.user.id}>, <#${message.member.voice.channel.id}>'ye bağlanamıyor!\nLütfen başka bir kanala geçin yada yetki verin.`, message.channel, 5000, { type: 'embedWarning' })
                             return
                         }
-                        guildData.player.Songs.push(song)
+                        guildData.addSong(song)
 
                         firePlayer(guildData)
                     }
@@ -230,7 +230,7 @@ async function GetData(guildData, message, client) {
         if (isConnected) {
             if (guildData.player.Songs.length == 0) var flag = true
             
-            guildData.player.Songs.push(song)
+            guildData.addSong(song)
             
             if (flag) guildData.player.play()
             else guildData.updateEmbed(embedEditor(guildData.player))
@@ -243,8 +243,7 @@ async function GetData(guildData, message, client) {
                 return
             }
             
-            guildData.player.Songs.push(song)
-
+            guildData.addSong(song)
             firePlayer(guildData)
         }
     }
