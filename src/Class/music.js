@@ -80,10 +80,12 @@ class SongPlayer {
             this.Subscription.unsubscribe()
             this.Subscription = undefined
         }
-
-        this.voiceConnection.destroy().catch(err => {})
+        
+        try {
+            this.voiceConnection.destroy()
+        } catch(err){}
         this.voiceConnection = undefined
-
+        
         this.guildData.DefaultEmbed()
         SendDelete('Kanaldan ayrıldım', this.guildData.channel, 2500, { type: 'embedInfo' })
     } 
