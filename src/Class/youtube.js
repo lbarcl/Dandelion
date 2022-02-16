@@ -1,5 +1,5 @@
 const { YTSearcher } = require('ytsearcher');
-const { Song } = require('./queue');
+const { Song } = require('./music');
 const ytsr = require('ytsr');
 const ytpl = require('ytpl');
 

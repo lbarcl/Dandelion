@@ -3,7 +3,7 @@ const embedEditor = require('../../utils/DesignEmbed');
 const SendDelete = require('../../utils/Send&Delete');
 const { tube } = require('../../Class/youtube');
 const st = require('../../Class/spotify');
-const queue = require('../../Class/queue');
+const queue = require('../../Class/music');
 const chalk = require('chalk');
 const convert = require('../../utils/convert');
 
@@ -207,7 +207,7 @@ async function GetData(guildData, message, client) {
     } else {
         let song = null
         if (message.content.toLowerCase().startsWith('+yt')) {
-            const result = await yt.SearchOf(message.content.slice(3))
+            const result = await yt.SearchUf(message.content.slice(3))
             if (!result?.url) {
                 SendDelete(`\`${message.content.slice(3).trim()}\` YouTubeda bulunamadı`, message.channel, 3000, { type: 'embedInfo' })
                 return
@@ -218,7 +218,7 @@ async function GetData(guildData, message, client) {
         } else {
             let result = await spoti.Search(message.content)
             if (result.length == 0) {
-                SendDelete(`\`${message.content}\` Spotifyda bulunamadı,\ndilerseniz aynı şeyi başına \`+YT\` yazarak YouTubeda aratabilirsiniz.`)
+                SendDelete(`\`${message.content}\` Spotifyda bulunamadı,\ndilerseniz aynı şeyi başına \`+YT\` yazarak YouTubeda aratabilirsiniz.`, message.channel, 5000, {type: "embedInfo"})
                 return
             } 
             result = spoti.FormatTrack(result[0])

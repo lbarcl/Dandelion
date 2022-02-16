@@ -1,7 +1,7 @@
 const axios = require('axios');
 const TimeFixer = require('./TimeFixer');
 const { tube } = require('../Class/youtube');
-const { Song } = require('../Class/queue');
+const { Song } = require('../Class/music');
 const yt = new tube()
 
 async function convert(track) {

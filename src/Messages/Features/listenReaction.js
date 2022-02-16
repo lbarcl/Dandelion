@@ -26,7 +26,7 @@ module.exports = (client, instance) => {
                 guildData.player.skip(true)
                 break;
             case '⏏️':
-                guildData.player.quit()
+                guildData.player.quit(true)
                 break;
             case '🔁':
                 guildData.player.loop()

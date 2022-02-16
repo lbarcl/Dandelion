@@ -19,11 +19,10 @@ class SongPlayer {
     }
 
     play() {
-       
+        if (this.Songs[0].url) {
             const audioResource = createAudioResource(ytdl(this.Songs[0].url, { quality: 'highestaudio', filter: 'audioonly' }))
             this.AudioPlayer.play(audioResource)
-        
-  
+        }
     }
 
     connect(VoiceChannel) {
@@ -48,32 +47,31 @@ class SongPlayer {
         })
         this.AudioPlayer.on(AudioPlayerStatus.Idle, () => {
             this.skip()
+            this.play()
         })
         this.AudioPlayer.on('error', (AudioError) => {
             Sentry.captureException(AudioError);
             SendDelete('Çalmaya çalışırken bir hata meydana geldi', this.guildData.channel, 2500, { type: 'embedError' })
-            if (this.Songs.length >= 1) {
-                this.Songs.shift()
-                if (this.Songs.length == 0) {
-                    this.guildData.DefaultEmbed()
-                    this.AudioPlayer.stop(true)
 
-                    setTimeout(() => {
-                        if (this.Songs.length == 0) {
-                            this.quit()
-                        }
-                    }, 120000)
-                } else {
-                    this.play()
-                }
-            }
+            this.skip(true)
+            this.play()
         })
     }
 
 
-    quit() {
+    quit(force) {
         if (!this.voiceConnection) return
 
+        if (!force) {
+            setTimeout(() => {
+                if (this.Songs.length == 0) this.#q()
+            }, 120000)
+        } else if (force) {
+            this.#q()
+        }
+    }
+
+    #q() {
         this.Songs = []
         this.channel = undefined
         this.AudioPlayer = undefined
@@ -88,7 +86,7 @@ class SongPlayer {
 
         this.guildData.DefaultEmbed()
         SendDelete('Kanaldan ayrıldım', this.guildData.channel, 2500, { type: 'embedInfo' })
-    }
+    } 
 
     clear() {
         this.Songs = []
@@ -96,11 +94,7 @@ class SongPlayer {
         this.guildData.DefaultEmbed()
         SendDelete('Liste temizlendi', this.guildData.channel, 2500, { type: 'embedInfo' })
 
-        setTimeout(() => {
-            if (this.Songs.length == 0) {
-                this.quit()
-            }
-        }, 120000)
+        this.quit()
     }
 
     skip(force) {
@@ -110,12 +104,11 @@ class SongPlayer {
                     this.#skip()
                     break;
                 case 'şarkı':
-                    this.play()
+                    //* Nothing to do
                     break;
                 case 'liste':
                     this.Songs.push(this.Songs[0])
                     this.Songs.shift()
-                    this.play()
                     break;
             }
         } else {
@@ -125,19 +118,15 @@ class SongPlayer {
     }
 
     #skip() {
-        this.Songs.shift()
-        if (this.Songs.length == 0) {
-            this.AudioPlayer.stop(true)
-            this.guildData.DefaultEmbed()
-            this.Loop = 'kapalı'
-            this.Pause = false
-            setTimeout(() => {
-                if (this.Songs.length == 0) {
-                    this.quit()
-                }
-            }, 120000)
-        } else if (this.Songs.length >= 1) {
-            this.play()
+        if (this.Songs.length != 0) {
+            this.Songs.shift()
+            if (this.Songs.length == 0) {
+                this.AudioPlayer.stop(true)
+                this.guildData.DefaultEmbed()
+                this.Loop = 'kapalı'
+                this.Pause = false
+                this.quit()
+            }
         }
     }
 

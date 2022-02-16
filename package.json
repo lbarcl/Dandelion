@@ -1,6 +1,6 @@
 {
   "name": "dandelion",
-  "version": "3.7.3",
+  "version": "3.7.4",
   "description": "Discord music bot",
   "main": "index.js",
   "scripts": {

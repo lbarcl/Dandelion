@@ -1,4 +1,4 @@
-const { MessageEmbed, TextChannel } = require('discord.js');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = SendDelete
 
@@ -20,9 +20,10 @@ async function SendDelete(content, channel, timeInterval, options) {
     var MessageContent
     const embed = new MessageEmbed()
 
-    switch (options.type) {
-        case 'embedError':
-            embed.setTitle(content)
+    if (options?.type) {
+        switch (options.type) {
+            case 'embedError':
+                embed.setTitle(content)
             embed.setColor(color.error)
             MessageContent = { embeds: [embed] }
             break;
@@ -38,6 +39,9 @@ async function SendDelete(content, channel, timeInterval, options) {
             break;
         default:
             MessageContent = content
+        }
+    } else {
+        MessageContent = content
     }
 
     const message = await channel.send(MessageContent);
