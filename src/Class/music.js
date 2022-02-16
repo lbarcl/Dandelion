@@ -19,9 +19,11 @@ class SongPlayer {
     }
 
     play() {
-        if (this.Songs[0].url) {
-            const audioResource = createAudioResource(ytdl(this.Songs[0].url, { quality: 'highestaudio', filter: 'audioonly' }))
-            this.AudioPlayer.play(audioResource)
+        if (this.Songs.length > 0) {
+            if (this.Songs[0]?.url) {
+                const audioResource = createAudioResource(ytdl(this.Songs[0].url, { quality: 'highestaudio', filter: 'audioonly' }))
+                this.AudioPlayer.play(audioResource)
+            }
         }
     }
 
