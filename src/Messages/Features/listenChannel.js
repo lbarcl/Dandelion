@@ -6,6 +6,7 @@ const st = require('../../Class/spotify');
 const queue = require('../../Class/music');
 const chalk = require('chalk');
 const convert = require('../../utils/convert');
+const { default: axios } = require('axios');
 
 //* Creating Regular exprenations for URIs
 const regex = new RegExp("((http|https)://)(www.)?" +
@@ -202,6 +203,32 @@ async function GetData(guildData, message, client) {
                     }
                     break;
             }
+        }
+    
+    } else if (message.content.toLowerCase().trim() == '+r') {
+        const result = await axios.get('https://free-pi.herokuapp.com/v1/song/random');
+        const song = new queue.Song(result.data.youtube.url)
+        await song.getData()
+        song.requester = message.author.id
+
+        if (isConnected) {
+            if (guildData.player.Songs.length == 0) var flag = true
+            
+            guildData.addSong(song)
+            
+            if (flag) guildData.player.play()
+            else guildData.updateEmbed(embedEditor(guildData.player))
+        } else {
+            guildData.player = new queue.SongPlayer(guildData)
+            try {
+                guildData.player.connect(message.member.voice.channel)
+            } catch (err) {
+                SendDelete(`<@${client.user.id}>, <#${message.member.voice.channel.id}>'ye bağlanamıyor!\nLütfen başka bir kanala geçin yada yetki verin.`, message.channel, 5000, { type: 'embedWarning' })
+                return
+            }
+            
+            guildData.addSong(song)
+            firePlayer(guildData)
         }
 
     } else {
