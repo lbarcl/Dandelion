@@ -1,6 +1,8 @@
 const Suri = require('spotify-uri');
+const { Video } = require('./youtube')
 const axios = require('axios');
 const endPoint = 'https://api.spotify.com/v1'
+const time = require('../utils/TimeFixer')
 class Spoti {
     constructor(Client_ID, Client_SECRET) {
         this.Client_ID = Client_ID;
@@ -105,12 +107,33 @@ class Spoti {
     }
 
     FormatTrack(track) {
-        return {
-            id: track.id,
-            name: track.name,
-            image: track.album.images[0].url,
-            artists: track.artists,
-            explicit: track.explicit
+        const T = new Track(track.external_urls.spotify) 
+        T.sid = track.id
+        T.title = track.name
+        T.image = track.album.images[0].url
+        T.durationMS = track.duration_ms
+        T.duration = time(T.durationMS / 1000)
+
+        return T
+    }
+}
+
+class Track extends Video {
+    constructor (url) {
+        super(undefined)
+        this.sid
+        this.sur = url
+    }
+
+    async convert() {
+        try {   
+            const result = await axios.get(`https://kareoke.ga/v1/song/spotify?id=${this.sid}`)
+            this.yid = result.data.youtube.id
+            this.yur = result.data.youtube.url
+
+            return 200
+        } catch (err) {
+            return 404
         }
     }
 }

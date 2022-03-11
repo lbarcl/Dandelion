@@ -1,11 +1,10 @@
 //* Importing required modules
 const embedEditor = require('../../utils/DesignEmbed');
 const SendDelete = require('../../utils/Send&Delete');
-const { tube } = require('../../Class/youtube');
+const { tube, Video } = require('../../Class/youtube');
 const st = require('../../Class/spotify');
-const queue = require('../../Class/music');
+const queue = require('../../Class/DiscordPlayer');
 const chalk = require('chalk');
-const convert = require('../../utils/convert');
 const { default: axios } = require('axios');
 
 //* Creating Regular exprenations for URIs
@@ -130,15 +129,10 @@ async function GetData(guildData, message, client) {
                     var flag2 = false
                     if (isConnected) {
                         if (guildData.player.Songs.length == 0) var flag = true
-                        for (let i = 0; i < result.data.tracks.length; i++) {
-                            const song = await convert(result.data.tracks[i])
-                            if (song == 500) {
-                                SendDelete(`${result.data.tracks[i].name} Youtube'da bulunamadı`, message.channel, 3000, { type: 'embedError' })     
-                                continue
-                            }
 
-                            song.requester = message.author.id
-                            guildData.addSong(song)
+                        for (let i = 0; i < result.data.tracks.length; i++) {
+                            result.data.tracks[i].requester = message.author.id
+                            guildData.addSong(result.data.tracks[i])
                             if (flag && !flag2) {
                                 guildData.player.play()
                                 flag2 = true
@@ -156,14 +150,9 @@ async function GetData(guildData, message, client) {
                         }
 
                         for (let i = 0; i < result.data.tracks.length; i++) {
-                            const song = await convert(result.data.tracks[i])
-                            if (song == 500) {
-                                SendDelete(`${result.data.tracks[i].name} Youtube'da bulunamadı`, message.channel, 3000, { type: 'embedInfo' })    
-                                continue
-                            }
 
-                            song.requester = message.author.id
-                            guildData.addSong(song)
+                            result.data.tracks[i].requester = message.author.id
+                            guildData.addSong(result.data.tracks[i])
 
                             if (!flag2) {
                                 firePlayer(guildData)
@@ -174,18 +163,12 @@ async function GetData(guildData, message, client) {
                     }
                     break;
                 case 'track':
-                    const song = await convert(result.data)
-                    if (song == 500) {
-                        SendDelete(`${result.data.name} Youtube'da bulunamadı`, message.channel, 3000, { type: 'embedInfo' })
-                    
-                        return
-                    }
-                    song.requester = message.author.id
+                    result.data.requester = message.author.id
 
                     if (isConnected) {
                         if (guildData.player.Songs.length == 0) var flag = true
 
-                        guildData.addSong(song)
+                        guildData.addSong(result.data)
 
                         if (flag) guildData.player.play()
                         else guildData.updateEmbed(embedEditor(guildData.player))
@@ -197,8 +180,8 @@ async function GetData(guildData, message, client) {
                             SendDelete(`<@${client.user.id}>, <#${message.member.voice.channel.id}>'ye bağlanamıyor!\nLütfen başka bir kanala geçin yada yetki verin.`, message.channel, 5000, { type: 'embedWarning' })
                             return
                         }
-                        guildData.addSong(song)
-
+                        
+                        guildData.addSong(result.data)
                         firePlayer(guildData)
                     }
                     break;
@@ -206,8 +189,8 @@ async function GetData(guildData, message, client) {
         }
     
     } else if (message.content.toLowerCase().trim() == '+r') {
-        const result = await axios.get('https://free-pi.herokuapp.com/v1/song/random');
-        const song = new queue.Song(result.data.youtube.url)
+        const result = await axios.get('https://kareoke.ga/v1/song/random');
+        const song = new Video(result.data.youtube.url)
         await song.getData()
         song.requester = message.author.id
 
@@ -239,7 +222,7 @@ async function GetData(guildData, message, client) {
                 SendDelete(`\`${message.content.slice(3).trim()}\` YouTubeda bulunamadı`, message.channel, 3000, { type: 'embedInfo' })
                 return
             }
-            song = new queue.Song(result.url)
+            song = new Video(result.url)
             await song.getData()
             song.requester = message.author.id
         } else {
@@ -248,9 +231,7 @@ async function GetData(guildData, message, client) {
                 SendDelete(`\`${message.content}\` Spotifyda bulunamadı,\ndilerseniz aynı şeyi başına \`+YT\` yazarak YouTubeda aratabilirsiniz.`, message.channel, 5000, {type: "embedInfo"})
                 return
             } 
-            result = spoti.FormatTrack(result[0])
-            song = await convert(result)
-            if (song == 500) return SendDelete(`${result.data.name} Youtube'da bulunamadı`, message.channel, 3000, { type: 'embedInfo' })
+            song = spoti.FormatTrack(result[0])
             song.requester = message.author.id
         }
 

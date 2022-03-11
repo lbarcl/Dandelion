@@ -1,7 +1,8 @@
 const { YTSearcher } = require('ytsearcher');
-const { Song } = require('./music');
+const { getBasicInfo } = require('ytdl-core')
 const ytsr = require('ytsr');
 const ytpl = require('ytpl');
+const time = require('../utils/TimeFixer')
 
 class tube {
     constructor(key) {
@@ -35,7 +36,7 @@ class tube {
             const songs = []
 
             for (let i = 0; i < items.length; i++) {
-                const song = new Song(items[i].shortUrl)
+                const song = new Video(items[i].shortUrl)
                 song.id = items[i].id
                 song.title = items[i].title
                 song.image = items[i].bestThumbnail.url
@@ -49,7 +50,7 @@ class tube {
                 data: songs
             }
         } else if (url.includes('/watch')) {
-            const song = new Song(url)
+            const song = new Video(url)
             await song.getData()
             song.requester = requester
 
@@ -61,9 +62,38 @@ class tube {
     }
 }
 
+class Video {
+    constructor (url) {
+        this.yid
+        this.yur = url
+        this.title
+        this.image
+        this.duration
+        this.durationMS
+        this.requester 
+    }
+
+    async getData() {
+        const data = await getBasicInfo(this.yur)
+
+        this.yid = data.videoDetails.videoId
+        this.title = data.videoDetails.title
+        this.image = data.videoDetails.thumbnails[data.videoDetails.thumbnails.length - 1].url
+        this.durationMS = parseInt(data.videoDetails.lengthSeconds) * 1000
+        this.duration = time(this.durationMS / 1000)
+
+        return this.ConvertJSON()
+    }
+
+    ConvertJSON() {
+        return JSON.stringify(this)
+    }
+}
+
 module.exports = {
     tube,
     'pl': ytpl,
     'sr': ytsr,
+    Video,
     'searcher': YTSearcher
 }

@@ -1,8 +1,6 @@
 const { joinVoiceChannel, createAudioPlayer, AudioPlayerStatus, createAudioResource, demuxProbe } = require('@discordjs/voice')
 const embedEditor = require('../utils/DesignEmbed')
 const SendDelete = require('../utils/Send&Delete')
-const time = require('../utils/TimeFixer')
-const { getBasicInfo } = require('ytdl-core')
 const {exec: ytdl} = require('youtube-dl-exec')
 const Sentry = require('@sentry/node');
 
@@ -21,9 +19,18 @@ class SongPlayer {
 
     async play() {
         if (this.Songs.length > 0) {
-            if (this.Songs[0]?.url) {
-                const audioResource = await this.#createAudioResource(this.Songs[0].url)
+            if (this.Songs[0]?.yur) {
+                const audioResource = await this.#createAudioResource(this.Songs[0].yur)
                 this.AudioPlayer.play(audioResource)
+            } else if (this.Songs[0]?.sur) {
+                let result = await this.Songs[0].convert()
+                if (result == 200) {
+                    const audioResource = await this.#createAudioResource(this.Songs[0].yur)
+                    this.AudioPlayer.play(audioResource)
+                } else {
+                    SendDelete(`${this.Songs[0].title} Youtube'da bulunamadı`, this.guildData.channel, 3000, { type: 'embedError' }) 
+                    this.AudioPlayer.emit(AudioPlayerStatus.Idle)
+                }
             }
         }
     }
@@ -231,31 +238,6 @@ class SongPlayer {
     }
 }
 
-class Song {
-    constructor(url) {
-        this.id
-        this.url = url
-        this.title
-        this.image
-        this.length
-        this.requester
-    }
-
-    async getData() {
-        const data = await getBasicInfo(this.url)
-
-        this.id = data.videoDetails.videoId
-        this.title = data.videoDetails.title
-        this.image = data.videoDetails.thumbnails[data.videoDetails.thumbnails.length - 1].url
-        this.length = time(parseInt(data.videoDetails.lengthSeconds))
-    }
-
-    ConvertJSON() {
-        return JSON.stringify(this)
-    }
-}
-
 module.exports = {
-    SongPlayer,
-    Song
+    SongPlayer
 }

@@ -33,12 +33,12 @@ module.exports = function (Player) {
     }
 
     const embed = new MessageEmbed()
-        .setTitle(`${Player.Songs[0].title} [${Player.Songs[0].length}]`)
+        .setTitle(`${Player.Songs[0].title} [${Player.Songs[0].duration}]`)
         .setDescription(`<@${Player.Songs[0].requester}> tarafından eklendi`)
         .setImage(Player.Songs[0].image)
-        .setURL(Player.Songs[0].url)
+        .setURL(Player.Songs[0]?.sur || Player.Songs[0].yur)
     
-    if (footer != '') embed.setFooter(footer)
+    if (footer != '') embed.setFooter({text: footer})
     
     if (Player.Songs.length > 1) {
         const limit = Player.Songs.length > 24 ? 24 : Player.Songs.length - 1
@@ -49,7 +49,7 @@ module.exports = function (Player) {
                 continue
             }
 
-            embed.addField(`${i} - ${Player.Songs[i].title} [${Player.Songs[i].length}]`, `<@${Player.Songs[i].requester}> tarafından eklendi`)
+            embed.addField(`${i} - ${Player.Songs[i].title} [${Player.Songs[i].duration}]`, `<@${Player.Songs[i].requester}> tarafından eklendi`)
         }
     }
     
