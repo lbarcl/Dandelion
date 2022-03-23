@@ -106,14 +106,14 @@ class SongPlayer {
 
         if (!force) {
             setTimeout(() => {
-                if (this.Songs.length == 0) this.#q()
+                if (this.Songs.length == 0) this.#q(true)
             }, 120000)
         } else if (force) {
-            this.#q()
+            this.#q(!force)
         }
     }
 
-    #q() {
+    #q(send) {
         this.Songs = []
         this.channel = undefined
         this.AudioPlayer = undefined
@@ -129,7 +129,7 @@ class SongPlayer {
         this.voiceConnection = undefined
         
         this.guildData.DefaultEmbed()
-        SendDelete('Kanaldan ayrıldım', this.guildData.channel, 2500, { type: 'embedInfo' })
+        if (send) SendDelete('Kanaldan ayrıldım', this.guildData.channel, 2500, { type: 'embedInfo' })
     } 
 
     clear() {
