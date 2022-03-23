@@ -39,7 +39,10 @@ class Spoti {
 
         await this.GetToken()
         const response = await axios.get(`${endPoint}/search?q=${encodeURI(query)}&type=${type}&limit=${limit}`, { headers: { Authorization: 'Bearer ' + this.Token } })
-        return response.data.tracks.items
+        
+        if (response.data.tracks.items.length == 0) return 404
+        
+        return response.data.tracks.items.map(this.FormatTrack)
     }
 
     async GetPlaylist(id) {
@@ -58,7 +61,7 @@ class Spoti {
             next = response.data.next
         }
 
-        const data = {
+        return {
             id: id,
             url: 'https://open.spotify.com/playlist/' + id,
             uri: 'spotify:playlist:' + id,
@@ -67,9 +70,6 @@ class Spoti {
                 return this.FormatTrack(item.track)
             })
         }
-
-        return data
-
     }
 
     async GetTrack(id) {
@@ -77,9 +77,7 @@ class Spoti {
         const headers = { headers: { Authorization: 'Bearer ' + this.Token, 'Content-Type': 'application/json' } }
 
         const response = await axios.get(`${endPoint}/tracks/${id}`, headers)
-        const data = this.FormatTrack(response.data)
-
-        return data
+        return this.FormatTrack(response.data)
     }
 
     async GetData(url) {

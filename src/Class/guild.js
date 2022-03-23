@@ -62,13 +62,6 @@ module.exports = class {
         this.message.edit({ embeds: [embed] })
     }
 
-    addSong(song) {
-        if (!this.player) throw new Error('Player has been destroyed')
-        else {
-            this.player.Songs.push(song)
-        }
-    }
-
     DefaultEmbed() {
         const papatya = new MessageEmbed()
             .setTitle(this.embed.title)

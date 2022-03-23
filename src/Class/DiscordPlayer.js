@@ -238,6 +238,4 @@ class SongPlayer {
     }
 }
 
-module.exports = {
-    SongPlayer
-}
+module.exports = SongPlayer

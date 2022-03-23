@@ -1,21 +1,7 @@
 //* Importing required modules
 const embedEditor = require('../../utils/DesignEmbed');
 const SendDelete = require('../../utils/Send&Delete');
-const { tube, Video } = require('../../Class/youtube');
-const st = require('../../Class/spotify');
-const queue = require('../../Class/DiscordPlayer');
-const chalk = require('chalk');
-const { default: axios } = require('axios');
-
-//* Creating Regular exprenations for URIs
-const regex = new RegExp("((http|https)://)(www.)?" +
-    "[a-zA-Z0-9@:%._\\+~#?&//=]" +
-    "{2,256}\\.[a-z]" +
-    "{2,6}\\b([-a-zA-Z0-9@:%" +
-    "._\\+~#?&//=]*)")
-
-const yt = new tube(process.env.YT_API)
-const spoti = new st(process.env.CLIENT_ID, process.env.CLIENT_SECRET)
+const DPlayer = require('../../Class/DiscordPlayer')
 
 module.exports = (client, instance) => {
     //* Registering on message event 
@@ -44,222 +30,27 @@ module.exports = (client, instance) => {
             message.delete()
         }, 2500);
 
-        GetData(guildData, message, client)
+        const { Songs, type } = await client.getData.fromMessage(message)
+        
+        console.log(Songs, type)
+
+        if (guildData.player?.VoiceConnection) {
+            if (guildData.player.Songs.length == 0) {
+                guildData.player.Songs = Songs
+                guildData.player.play()
+            } else {
+                guildData.player.Songs.concat(Songs)
+                guildData.updateEmbed(embedEditor(guildData.player))
+            }
+        } else {
+            guildData.player = new DPlayer(guildData)
+            if (!message.member.voice.channel.joinable) {
+                SendDelete(`<@${client.user.id}>, <#${message.member.voice.channel.id}>'ye bağlanamıyor!\nLütfen başka bir kanala geçin yada yetki verin.`, message.channel, 5000, { type: 'embedWarning' })
+            } else {
+                guildData.player.connect(message.member.voice.channel)
+                guildData.player.Songs = Songs
+                guildData.player.StartPlayer()
+            }
+        }
     });
-}
-
-
-
-async function GetData(guildData, message, client) {
-    var isConnected = false
-    if (guildData.player?.voiceConnection) {
-        //? When bot is connected to a channel
-        isConnected = true
-
-        if (message.member.voice.channelId != guildData.player.channel.id) {
-            //? When user is not in the same voice channel with the bot
-            SendDelete(`Kullanabilmek için ${guildData.embed.title} ile aynı kanalda olmanız gerekiyor`, message.channel, 5000, { type: 'embedWarning' })
-            return
-        }
-    } else if (!message.member.voice.channelId) {
-        //? When bot is not connected to a channel and user is not connected to any voice channel
-        SendDelete('Kullanabilmek için bir ses kanalında olmanız gerekiyor', message.channel, 5000, { type: 'embedWarning' })
-        return
-    }
-
-    if (regex.test(message.content)) {
-        //? If content is a URL
-
-        if (message.content.includes('https://www.youtube.com')) {
-            const result = await yt.getUrlData(message.content, message.author.id)
-
-            switch (result.type) {
-                case 'playlist':
-                    SendDelete(`${result.data.length} adet video ekleniyor`, message.channel, 4000, { type: 'embedInfo' })
-
-                    if (isConnected) {
-                        if (guildData.player.Songs.length == 0) var flag = true
-
-                        guildData.player.Songs = guildData.player.Songs.concat(result.data)
-
-                        if (flag) guildData.player.play()
-                        else guildData.updateEmbed(embedEditor(guildData.player))
-
-                    } else {
-                        guildData.player = new queue.SongPlayer(guildData)
-                        try {
-                            guildData.player.connect(message.member.voice.channel)
-                        } catch (err) {
-                            SendDelete(`<@${client.user.id}>, <#${message.member.voice.channel.id}>'ye bağlanamıyor!\nLütfen başka bir kanala geçin yada yetki verin.`, message.channel, 5000, { type: 'embedWarning' })
-                            return
-                        }
-                        guildData.player.Songs = result.data
-
-                        firePlayer(guildData)
-                    }
-                    break;
-                case 'video':
-                    if (isConnected) {
-                        if (guildData.player.Songs.length == 0) var flag = true
-
-                        guildData.addSong(result.data)
-
-                        if (flag) guildData.player.play()
-                        else guildData.updateEmbed(embedEditor(guildData.player))
-                    } else {
-                        guildData.player = new queue.SongPlayer(guildData)
-                        try {
-                            guildData.player.connect(message.member.voice.channel)
-                        } catch (err) {
-                            SendDelete(`<@${client.user.id}>, <#${message.member.voice.channel.id}>'ye bağlanamıyor!\nLütfen başka bir kanala geçin yada yetki verin.`, message.channel, 5000, { type: 'embedWarning' })
-                            return
-                        }
-                        guildData.addSong(result.data)
-
-                        firePlayer(guildData)
-                    }
-                    break;
-            }
-        } else if (message.content.includes('https://open.spotify.com')) {
-            const result = await spoti.GetData(message.content)
-
-            switch (result.type) {
-                case 'playlist':
-                    SendDelete(`${result.data.name} çalma listesinden ${result.data.tracks.length} adet şarkı ekleniyor`, message.channel, 4000, { type: 'embedInfo' })
-                    var flag2 = false
-                    if (isConnected) {
-                        if (guildData.player.Songs.length == 0) var flag = true
-
-                        for (let i = 0; i < result.data.tracks.length; i++) {
-                            result.data.tracks[i].requester = message.author.id
-                            guildData.addSong(result.data.tracks[i])
-                            if (flag && !flag2) {
-                                guildData.player.play()
-                                flag2 = true
-                            }
-                        }
-
-                        guildData.updateEmbed(embedEditor(guildData.player))
-                    } else {
-                        guildData.player = new queue.SongPlayer(guildData)
-                        try {
-                            guildData.player.connect(message.member.voice.channel)
-                        } catch (err) {
-                            SendDelete(`<@${client.user.id}>, <#${message.member.voice.channel.id}>'ye bağlanamıyor!\nLütfen başka bir kanala geçin yada yetki verin.`, message.channel, 5000, { type: 'embedWarning' })
-                            return
-                        }
-
-                        for (let i = 0; i < result.data.tracks.length; i++) {
-
-                            result.data.tracks[i].requester = message.author.id
-                            guildData.addSong(result.data.tracks[i])
-
-                            if (!flag2) {
-                                firePlayer(guildData)
-                                flag2 = true
-                            }
-                        }
-                        guildData.updateEmbed(embedEditor(guildData.player))
-                    }
-                    break;
-                case 'track':
-                    result.data.requester = message.author.id
-
-                    if (isConnected) {
-                        if (guildData.player.Songs.length == 0) var flag = true
-
-                        guildData.addSong(result.data)
-
-                        if (flag) guildData.player.play()
-                        else guildData.updateEmbed(embedEditor(guildData.player))
-                    } else {
-                        guildData.player = new queue.SongPlayer(guildData)
-                        try {
-                            guildData.player.connect(message.member.voice.channel)
-                        } catch (err) {
-                            SendDelete(`<@${client.user.id}>, <#${message.member.voice.channel.id}>'ye bağlanamıyor!\nLütfen başka bir kanala geçin yada yetki verin.`, message.channel, 5000, { type: 'embedWarning' })
-                            return
-                        }
-                        
-                        guildData.addSong(result.data)
-                        firePlayer(guildData)
-                    }
-                    break;
-            }
-        }
-    
-    } else if (message.content.toLowerCase().trim() == '+r') {
-        const result = await axios.get('https://kareoke.ga/v1/song/random');
-        const song = new Video(result.data.youtube.url)
-        await song.getData()
-        song.requester = message.author.id
-
-        if (isConnected) {
-            if (guildData.player.Songs.length == 0) var flag = true
-            
-            guildData.addSong(song)
-            
-            if (flag) guildData.player.play()
-            else guildData.updateEmbed(embedEditor(guildData.player))
-        } else {
-            guildData.player = new queue.SongPlayer(guildData)
-            try {
-                guildData.player.connect(message.member.voice.channel)
-            } catch (err) {
-                SendDelete(`<@${client.user.id}>, <#${message.member.voice.channel.id}>'ye bağlanamıyor!\nLütfen başka bir kanala geçin yada yetki verin.`, message.channel, 5000, { type: 'embedWarning' })
-                return
-            }
-            
-            guildData.addSong(song)
-            firePlayer(guildData)
-        }
-
-    } else {
-        let song = null
-        if (message.content.toLowerCase().startsWith('+yt')) {
-            const result = await yt.SearchUf(message.content.slice(3))
-            if (!result?.url) {
-                SendDelete(`\`${message.content.slice(3).trim()}\` YouTubeda bulunamadı`, message.channel, 3000, { type: 'embedInfo' })
-                return
-            }
-            song = new Video(result.url)
-            await song.getData()
-            song.requester = message.author.id
-        } else {
-            let result = await spoti.Search(message.content)
-            if (result.length == 0) {
-                SendDelete(`\`${message.content}\` Spotifyda bulunamadı,\ndilerseniz aynı şeyi başına \`+YT\` yazarak YouTubeda aratabilirsiniz.`, message.channel, 5000, {type: "embedInfo"})
-                return
-            } 
-            song = spoti.FormatTrack(result[0])
-            song.requester = message.author.id
-        }
-
-        if (isConnected) {
-            if (guildData.player.Songs.length == 0) var flag = true
-            
-            guildData.addSong(song)
-            
-            if (flag) guildData.player.play()
-            else guildData.updateEmbed(embedEditor(guildData.player))
-        } else {
-            guildData.player = new queue.SongPlayer(guildData)
-            try {
-                guildData.player.connect(message.member.voice.channel)
-            } catch (err) {
-                SendDelete(`<@${client.user.id}>, <#${message.member.voice.channel.id}>'ye bağlanamıyor!\nLütfen başka bir kanala geçin yada yetki verin.`, message.channel, 5000, { type: 'embedWarning' })
-                return
-            }
-            
-            guildData.addSong(song)
-            firePlayer(guildData)
-        }
-    }
-}
-
-function firePlayer(guildData) {
-    if (guildData.player.Songs.length >= 1) {
-        console.log(chalk.hex('#C53D5C')(`[${guildData.embed.title}] Player started on ${guildData.id}`))
-        guildData.player.StartPlayer()
-    }
 }

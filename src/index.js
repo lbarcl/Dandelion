@@ -10,6 +10,9 @@ const topAuto       = require('topgg-autoposter');
 const database      = require('./Database')
 const Guild         = require('./Class/guild')
 const config        = require('./json/config.json')
+const Yt            = require('./Class/youtube')
+const spoti         = require('./Class/spotify')
+const getData       = require('./utils/GetData')
 
 //* Creating Client
 const { Intents } = Discord
@@ -56,6 +59,11 @@ Client.on('ready', async () => {
     
     Client.config = config
     Client.guildData = guildMap
+
+    Client.youtube = new Yt.tube(process.env.YT_API)
+    Client.spotify = new spoti(process.env.CLIENT_ID, process.env.CLIENT_SECRET)
+    Client.Video = Yt.Video
+    Client.getData = new getData(Client)
 
     new wokcommands(Client, {
         ignoreBots: true,
