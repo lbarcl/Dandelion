@@ -57,7 +57,7 @@ class getData {
                         break;
                 } 
             }
-            else if (content.includes('https://youtube.com')) {
+            else if (content.includes('https://www.youtube.com')) {
                 const result = await this.Client.youtube.getUrlData(content, author.id)
 
                 switch (result.type) {
@@ -78,7 +78,7 @@ class getData {
             if (song == 404) {
                 throw new Error(`\`${message.content.trim()}\` Spotify bulunamadı`)
             }
-
+            song.requester = author.id
             Songs.push(song[0])
             type = 'spotify.search'
         }

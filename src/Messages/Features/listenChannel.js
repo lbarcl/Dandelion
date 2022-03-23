@@ -32,12 +32,17 @@ module.exports = (client, instance) => {
 
         const { Songs } = await client.getData.fromMessage(message)
 
-        if (guildData.player?.VoiceConnection) {
+        console.log(Songs)
+
+        if (guildData.player?.voiceConnection) {
+            console.log(guildData.player.Songs.length)
             if (guildData.player.Songs.length == 0) {
                 guildData.player.Songs = Songs
                 guildData.player.play()
             } else {
-                guildData.player.Songs.concat(Songs)
+                console.log('Test')
+                guildData.player.Songs = guildData.player.Songs.concat(Songs)
+                console.log(guildData.player.Songs)
                 guildData.updateEmbed(embedEditor(guildData.player))
             }
         } else {
