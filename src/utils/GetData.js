@@ -45,8 +45,8 @@ class getData {
                 switch (result.type) {
                     case 'playlist':
                         for (let t in result.data.tracks) {
-                            t.requester = author.id
-                            Songs.push(t)
+                            result.data.tracks[t].requester = author.id
+                            Songs.push(result.data.tracks[t])
                             type = 'spotify.playlist'
                         }
                         break;

@@ -30,9 +30,7 @@ module.exports = (client, instance) => {
             message.delete()
         }, 2500);
 
-        const { Songs, type } = await client.getData.fromMessage(message)
-        
-        console.log(Songs, type)
+        const { Songs } = await client.getData.fromMessage(message)
 
         if (guildData.player?.VoiceConnection) {
             if (guildData.player.Songs.length == 0) {
