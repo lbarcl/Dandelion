@@ -78,7 +78,7 @@ class getData {
             if (song == 404) {
                 throw new Error(`\`${message.content.trim()}\` Spotify bulunamadı`)
             }
-            song.requester = author.id
+            song[0].requester = author.id
             Songs.push(song[0])
             type = 'spotify.search'
         }
