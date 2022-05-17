@@ -1,5 +1,5 @@
-const Discord = require('discord.js')
-//* Importing required 3th parti modules
+const Discord       = require('discord.js')
+//* Importing required 3th party modules
 const path          = require('path')
 const wokcommands   = require('wokcommands')
 const chalk         = require('chalk')

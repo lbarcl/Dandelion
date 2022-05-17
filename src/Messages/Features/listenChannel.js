@@ -30,30 +30,29 @@ module.exports = (client, instance) => {
             message.delete()
         }, 2500);
 
-        const { Songs } = await client.getData.fromMessage(message)
+        try {
+            const { Songs } = await client.getData.fromMessage(message)
 
-        console.log(Songs)
-
-        if (guildData.player?.voiceConnection) {
-            console.log(guildData.player.Songs.length)
-            if (guildData.player.Songs.length == 0) {
-                guildData.player.Songs = Songs
-                guildData.player.play()
+            if (guildData.player?.voiceConnection) {
+                if (guildData.player.Songs.length == 0) {
+                    guildData.player.Songs = Songs
+                    guildData.player.play()
+                } else {
+                    guildData.player.Songs = guildData.player.Songs.concat(Songs)
+                    guildData.updateEmbed(embedEditor(guildData.player))
+                }
             } else {
-                console.log('Test')
-                guildData.player.Songs = guildData.player.Songs.concat(Songs)
-                console.log(guildData.player.Songs)
-                guildData.updateEmbed(embedEditor(guildData.player))
+                guildData.player = new DPlayer(guildData)
+                if (!message.member.voice.channel.joinable) {
+                    SendDelete(`<@${client.user.id}>, <#${message.member.voice.channel.id}>'ye bağlanamıyor!\nLütfen başka bir kanala geçin yada yetki verin.`, message.channel, 5000, { type: 'embedWarning' })
+                } else {
+                    guildData.player.connect(message.member.voice.channel)
+                    guildData.player.Songs = Songs
+                    guildData.player.StartPlayer()
+                }
             }
-        } else {
-            guildData.player = new DPlayer(guildData)
-            if (!message.member.voice.channel.joinable) {
-                SendDelete(`<@${client.user.id}>, <#${message.member.voice.channel.id}>'ye bağlanamıyor!\nLütfen başka bir kanala geçin yada yetki verin.`, message.channel, 5000, { type: 'embedWarning' })
-            } else {
-                guildData.player.connect(message.member.voice.channel)
-                guildData.player.Songs = Songs
-                guildData.player.StartPlayer()
-            }
+        } catch {
+            
         }
     });
 }
