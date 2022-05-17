@@ -23,7 +23,10 @@ module.exports = (client, instance) => {
             message.delete()
             SendDelete('Lütfen bu kanalda diğer botları kullanmayın', message.channel, 5000, { type: 'embedWarning' });
             return
-        }
+        } else if (!message.member.voice?.channel) {
+            SendDelete('Botu kullanabilmek için bir ses kanalına bağlı olmalısınız', message.channel, 5000, { type: 'embedWarning' });
+            return
+       }
 
         //* Deleting message after 250ms 
         setTimeout(() => {
@@ -32,7 +35,6 @@ module.exports = (client, instance) => {
 
         try {
             const { Songs } = await client.getData.fromMessage(message)
-
             if (guildData.player?.voiceConnection) {
                 if (guildData.player.Songs.length == 0) {
                     guildData.player.Songs = Songs
