@@ -14,7 +14,7 @@ module.exports = {
     syntaxError: 'Yanlış kullanım, sadece "{PREFIX}"kurulum yazmanız yeterli',
     callback: async ({ channel, guild, client }) => {
         const guildData = client.guildData.get(guild.id);
-        const target = client.channels.fetch(guildData.channel.id);
+        const target = await client.channels.fetch(guildData.channel.id).catch(err => {});
 
         if (guildData.channel == target) {
             channel.send('Bu sunucuda zaten papatya var')
