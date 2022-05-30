@@ -57,7 +57,7 @@ class getData {
                         break;
                 } 
             }
-            else if (content.includes('https://www.youtube.com')) {
+            else if (content.includes('youtube.com')) {
                 const result = await this.Client.youtube.getUrlData(content, author.id)
 
                 switch (result.type) {

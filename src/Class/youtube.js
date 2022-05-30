@@ -1,5 +1,6 @@
 const { YTSearcher } = require('ytsearcher');
 const { getBasicInfo } = require('ytdl-core')
+const Url = require('url-parse');
 const ytsr = require('ytsr');
 const ytpl = require('ytpl');
 const time = require('../utils/TimeFixer')
@@ -30,6 +31,7 @@ class tube {
     }
 
     async getUrlData(url, requester) {
+        console.log("y")
         if (url.includes('/playlist')) {
             const result = await this.GetPlaylistUf(url)
             const items = result.items
@@ -58,6 +60,12 @@ class tube {
                 type: 'video',
                 data: song
             }
+        } else if (url.includes('/shorts')) {
+            url = new Url(url)
+            id = url.pathname.replace('/shorts/', '')
+            url = "https://www.youtube.com/watch?v=" + id
+            console.log(url)
+
         }
     }
 }

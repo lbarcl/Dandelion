@@ -171,7 +171,7 @@ class SongPlayer {
                 this.Pause = false
                 this.quit()
             } else {
-                this.AudioPlayer.stop(true)
+                this.play()
             }
         }
     }

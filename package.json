@@ -36,6 +36,7 @@
     "mongoose": "^6.2.8",
     "spotify-uri": "^2.2.0",
     "topgg-autoposter": "^2.0.1",
+    "url-parse": "^1.5.10",
     "wokcommands": "^1.5.3",
     "youtube-dl-exec": "^2.0.8",
     "ytdl-core": "^4.11.0",
