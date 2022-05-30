@@ -17,7 +17,7 @@ module.exports = {
         if (guildData) {
             const target = await client.channels.fetch(guildData.channel?.id);
             
-            if (guildData.channel == target) {
+            if (guildData.channel == target && !target) {
                 channel.send('Bu sunucuda zaten papatya var')
                 return
             }
