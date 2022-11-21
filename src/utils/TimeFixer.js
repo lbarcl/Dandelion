@@ -2,6 +2,7 @@ function calculateTime(seconds) {
     var time;
     var m = parseInt(seconds / 60)
     var s = parseInt(seconds % 60)
+    if (s < 10) s = "0" + s.toString();
     if (m > 60) {
         var h = parseInt(m / 60)
         m = parseInt(m % 60)
