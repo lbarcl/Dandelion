@@ -1,5 +1,5 @@
 function calculateTime(seconds) {
-    let s = seconds % 60;
+    let s = parseInt(seconds % 60);
     let flag01 = seconds < 10 || seconds == 0;
     //@ts-ignore
     let m = parseInt(seconds / 60);
