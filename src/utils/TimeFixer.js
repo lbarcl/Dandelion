@@ -1,26 +1,15 @@
 function calculateTime(seconds) {
-    let s = parseInt(seconds % 60);
-    let flag01 = seconds < 10 || seconds == 0;
-    //@ts-ignore
-    let m = parseInt(seconds / 60);
-    if (m >= 60) {
-        let h = m / 60;
-        m = m % 60;
-        let mstr = m.toString();
-        let hstr = h.toString();
-        if (1 > (m / 10)) {
-            mstr = `0${m}`;
-        }
-        if (1 > (h / 10)) {
-            hstr = `0${h}`;
-        }
-        return flag01 ? `${hstr}:${mstr}:0${s}` : `${hstr}:${mstr}:${s}`;
-    }
-    let mstr = m.toString();
-    if (1 > (m / 10)) {
-        mstr = `0${m}`;
-    }
-    return flag01 ? `${mstr}:0${s}` : `${mstr}:${s}`;
+  let minute = Math.floor(seconds / 60);
+  seconds = seconds % 60;
+  
+  let hour = Math.floor(minute / 60);
+  minute = minute % 60;
+  
+  let sstr = (seconds < 10) ? `0${seconds}` : seconds;
+  let mstr = (minute < 10) ? `0${minute}` : minute;
+  let hstr = (hour < 10) ? `0${hour}` : hour;
+  
+  return (hour != 0) ? `${hstr}:${mstr}:${sstr}`: `${mstr}:${sstr}`;
 }
 
 module.exports = calculateTime
