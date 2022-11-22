@@ -1,9 +1,9 @@
 function calculateTime(seconds) {
   let minute = Math.floor(seconds / 60);
-  seconds = seconds % 60;
+  seconds = Math.floor(seconds % 60);
   
   let hour = Math.floor(minute / 60);
-  minute = minute % 60;
+  minute = Math.floor(minute % 60);
   
   let sstr = (seconds < 10) ? `0${seconds}` : seconds;
   let mstr = (minute < 10) ? `0${minute}` : minute;
