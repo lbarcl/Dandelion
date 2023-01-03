@@ -37,7 +37,7 @@
     "spotify-uri": "^2.2.0",
     "topgg-autoposter": "^2.0.1",
     "wokcommands": "^1.5.3",
-    "youtube-dl-exec": "^2.0.8",
+    "youtube-dl-exec": "^2.1.11",
     "ytdl-core": "^4.11.0",
     "ytpl": "^2.3.0",
     "ytsearcher": "^1.2.4",
